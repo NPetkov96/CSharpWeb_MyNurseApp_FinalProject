@@ -17,4 +17,9 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.6" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\MyNurseApp.Data\MyNurseApp.Data.csproj" />
+    <ProjectReference Include="..\MyNurseApp.Web.ViewModels\MyNurseApp.Web.ViewModels.csproj" />
+  </ItemGroup>
+
 </Project>
