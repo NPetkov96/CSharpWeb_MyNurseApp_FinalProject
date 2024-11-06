@@ -31,7 +31,7 @@ namespace MyNurseApp.Data
         [Required]
         [StringLength(PatientConstants.PatientPhoneNumberMaxLength)]
         [Comment("Phone number of the Patient")]
-        public string PhoneNumber { get; set; } = null;
+        public string PhoneNumber { get; set; } = null!;
 
         [Required]
         [StringLength(PatientConstants.PatientMaxNameLength)]
@@ -45,11 +45,8 @@ namespace MyNurseApp.Data
 
         public string? Notes { get; set; }
 
-        [Required]
-        public string UserId { get; set; } = null!;
-        [ForeignKey(nameof(UserId))]
-        [Required]
-        public ApplicationUser User { get; set; } = null!;
+        public string UserId { get; set; }
+        public ApplicationUser User { get; set; }
 
         [Required]
         public bool IsDeleted { get; set; } = false;

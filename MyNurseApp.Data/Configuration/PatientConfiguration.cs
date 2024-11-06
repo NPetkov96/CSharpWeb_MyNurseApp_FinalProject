@@ -7,16 +7,14 @@ namespace MyNurseApp.Data.Configuration
     {
         public void Configure(EntityTypeBuilder<PatientProfile> builder)
         {
-            builder.Property(p => p.IsDeleted)
-                   .HasDefaultValue(false);
+            builder.Property(p => p.IsDeleted).HasDefaultValue(false);
 
-            builder.HasOne(a => a.User)
-                   .WithOne(p => p.Patient)
+            builder.HasOne(p => p.User)
+                   .WithOne(u => u.Patient)
                    .HasForeignKey<PatientProfile>(p => p.UserId)
                    .OnDelete(DeleteBehavior.Cascade);
 
-            builder.HasIndex(n => n.UserId)
-                   .IsUnique();
+            builder.HasIndex(p => p.UserId).IsUnique();
         }
     }
 }

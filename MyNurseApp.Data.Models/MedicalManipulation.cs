@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MyNurseApp.Common.Constants;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MyNurseApp.Data.Models
 {
@@ -24,6 +25,8 @@ namespace MyNurseApp.Data.Models
         public string? Description { get; set; }
 
         [Required]
+        [Column(TypeName = "decimal(28, 6)")]
+        [Precision(18, 2)]
         [Comment("Manipulattion price depents of type of manipulation, location and etc.")]
         public decimal Price { get; set; }
     }

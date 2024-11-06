@@ -2,7 +2,7 @@
 using MyNurseApp.Common.Constants;
 using MyNurseApp.Data.Models;
 using System.ComponentModel.DataAnnotations;
-using System.Reflection.Metadata.Ecma335;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MyNurseApp.Data
 {
@@ -37,8 +37,8 @@ namespace MyNurseApp.Data
         [Required]
         public string Education { get; set; } = null!;
 
-        public string UserId { get; set; } = null!;
-        public ApplicationUser User { get; set; } = null!;
+        public string UserId { get; set; }
+        public ApplicationUser User { get; set; }
 
         public bool IsDeleted { get; set; } = false;
     }
