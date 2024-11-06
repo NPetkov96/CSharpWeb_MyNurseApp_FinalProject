@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35327.3
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyNurseApp", "MyNurseApp\MyNurseApp.csproj", "{CD561C93-4406-4F41-8F0D-94FD3F7F3484}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyNurseApp.Data", "MyNurseApp.Data\MyNurseApp.Data.csproj", "{D44FAB45-DBA4-4E24-BB9F-FED41CA393AC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyNurseApp.Data.Models", "MyNurseApp.Data.Models\MyNurseApp.Data.Models.csproj", "{35D67D60-FC91-455E-B666-8C43C2470BE6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyNurseApp.Common", "MyNurseApp.Common\MyNurseApp.Common.csproj", "{06ABED31-5C5A-4FC9-BA90-F2427E988229}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyNurseApp.Services.Data", "MyNurseApp.Services.Data\MyNurseApp.Services.Data.csproj", "{841599BE-2CC8-4D25-BF7E-2A06A004B72D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyNurseApp.Web.ViewModels", "MyNurseApp.Web.ViewModels\MyNurseApp.Web.ViewModels.csproj", "{94D078CE-2EB5-41E2-9512-C69D49F8B429}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CD561C93-4406-4F41-8F0D-94FD3F7F3484}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD561C93-4406-4F41-8F0D-94FD3F7F3484}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD561C93-4406-4F41-8F0D-94FD3F7F3484}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD561C93-4406-4F41-8F0D-94FD3F7F3484}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D44FAB45-DBA4-4E24-BB9F-FED41CA393AC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D44FAB45-DBA4-4E24-BB9F-FED41CA393AC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D44FAB45-DBA4-4E24-BB9F-FED41CA393AC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D44FAB45-DBA4-4E24-BB9F-FED41CA393AC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35D67D60-FC91-455E-B666-8C43C2470BE6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35D67D60-FC91-455E-B666-8C43C2470BE6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35D67D60-FC91-455E-B666-8C43C2470BE6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35D67D60-FC91-455E-B666-8C43C2470BE6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{06ABED31-5C5A-4FC9-BA90-F2427E988229}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{06ABED31-5C5A-4FC9-BA90-F2427E988229}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06ABED31-5C5A-4FC9-BA90-F2427E988229}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{06ABED31-5C5A-4FC9-BA90-F2427E988229}.Release|Any CPU.Build.0 = Release|Any CPU
+		{841599BE-2CC8-4D25-BF7E-2A06A004B72D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{841599BE-2CC8-4D25-BF7E-2A06A004B72D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{841599BE-2CC8-4D25-BF7E-2A06A004B72D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{841599BE-2CC8-4D25-BF7E-2A06A004B72D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94D078CE-2EB5-41E2-9512-C69D49F8B429}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94D078CE-2EB5-41E2-9512-C69D49F8B429}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94D078CE-2EB5-41E2-9512-C69D49F8B429}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94D078CE-2EB5-41E2-9512-C69D49F8B429}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {104F4E5F-ACCD-493E-BC9C-15E800CC2CA7}
+	EndGlobalSection
+EndGlobal
