@@ -11,6 +11,9 @@ namespace MyNurseApp.Data
         {
         }
 
-       
+        public DbSet<PatientProfile> PatientProfiles { get; set; }
+        public DbSet<NurseProfile> NurseProfiles { get; set; }
+        public DbSet<HomeVisitation> HomeVisitations { get; set; }
+        public DbSet<MedicalManipulation> MedicalManipulations { get; set; }
     }
 }

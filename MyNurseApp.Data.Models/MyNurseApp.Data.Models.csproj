@@ -7,7 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="8.0.10" />
     <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="8.0.10" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MyNurseApp.Common\MyNurseApp.Common.csproj" />
   </ItemGroup>
 
 </Project>
