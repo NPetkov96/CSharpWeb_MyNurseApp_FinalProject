@@ -1,19 +1,20 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using MyNurseApp.Data.Models;
 
 namespace MyNurseApp.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+    public class ApplicationDbContext : IdentityDbContext<IdentityUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
         }
 
-        public DbSet<PatientProfile> PatientProfiles { get; set; }
-        public DbSet<NurseProfile> NurseProfiles { get; set; }
-        public DbSet<HomeVisitation> HomeVisitations { get; set; }
-        public DbSet<MedicalManipulation> MedicalManipulations { get; set; }
+        public DbSet<PatientProfile> PatientProfiles { get; set; } = null!;
+        public DbSet<NurseProfile> NurseProfiles { get; set; } = null!;
+        public DbSet<HomeVisitation> HomeVisitations { get; set; } = null!;
+        public DbSet<MedicalManipulation> MedicalManipulations { get; set; } = null!;
     }
 }

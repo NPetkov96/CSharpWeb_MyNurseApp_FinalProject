@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using MyNurseApp.Data.Models;
 
 namespace MyNurseApp.Data.Configuration
 {

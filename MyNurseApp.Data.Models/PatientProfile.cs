@@ -1,10 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MyNurseApp.Common.Constants;
-using MyNurseApp.Data.Models;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
-namespace MyNurseApp.Data
+namespace MyNurseApp.Data.Models
 {
     public class PatientProfile
     {
@@ -45,8 +43,8 @@ namespace MyNurseApp.Data
 
         public string? Notes { get; set; }
 
-        public string UserId { get; set; }
-        public ApplicationUser User { get; set; }
+        public string UserId { get; set; } = null!;
+        public ApplicationUser User { get; set; } = null!;
 
         [Required]
         public bool IsDeleted { get; set; } = false;

@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Azure.Identity" Version="1.11.4" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.10" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.10" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.10" />
@@ -15,10 +16,15 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.10" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.6" />
+    <PackageReference Include="System.Formats.Asn1" Version="8.0.1" />
+    <PackageReference Include="System.Text.Json" Version="8.0.5" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MyNurseApp.Common\MyNurseApp.Common.csproj" />
+    <ProjectReference Include="..\MyNurseApp.Data.Models\MyNurseApp.Data.Models.csproj" />
     <ProjectReference Include="..\MyNurseApp.Data\MyNurseApp.Data.csproj" />
+    <ProjectReference Include="..\MyNurseApp.Services.Data\MyNurseApp.Services.Data.csproj" />
     <ProjectReference Include="..\MyNurseApp.Web.ViewModels\MyNurseApp.Web.ViewModels.csproj" />
   </ItemGroup>
 
