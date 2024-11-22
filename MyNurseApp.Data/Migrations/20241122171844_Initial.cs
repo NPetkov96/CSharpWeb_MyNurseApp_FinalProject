@@ -11,6 +11,14 @@ namespace MyNurseApp.Data.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AddColumn<string>(
+                name: "Discriminator",
+                table: "AspNetUsers",
+                type: "nvarchar(21)",
+                maxLength: 21,
+                nullable: false,
+                defaultValue: "");
+
             migrationBuilder.CreateTable(
                 name: "HomeVisitations",
                 columns: table => new
@@ -145,6 +153,10 @@ namespace MyNurseApp.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "HomeVisitations");
+
+            migrationBuilder.DropColumn(
+                name: "Discriminator",
+                table: "AspNetUsers");
         }
     }
 }

@@ -5,6 +5,6 @@
         public const int NurseMinNameLength = 3;
         public const int NurseMaxNameLength = 99;
         public const int NursePhoneNumberMinLength = 10;
-        public const int NursePhoneNumberMaxLength = 12;
+        public const int NursePhoneNumberMaxLength = 13;
     }
 }

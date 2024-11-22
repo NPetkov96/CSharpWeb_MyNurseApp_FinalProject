@@ -1,5 +1,5 @@
-﻿@using MyNurseApp.Data.Models
-@model PatientProfile
+﻿@using MyNurseApp.Web.ViewModels.PatientProfile
+@model PatientProfileinputModel
 
 @{
     ViewData["Title"] = "Create Patient Profile";
@@ -48,17 +48,7 @@
         <textarea asp-for="Notes" class="form-control"></textarea>
         <span asp-validation-for="Notes" class="text-danger"></span>
     </div>
-    <div class="form-group">
-        <label asp-for="UserId" class="control-label"></label>
-        <input asp-for="UserId" class="form-control" />
-        <span asp-validation-for="UserId" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="IsDeleted" class="control-label"></label>
-        <input asp-for="IsDeleted" class="form-control" type="checkbox" />
-        <span asp-validation-for="IsDeleted" class="text-danger"></span>
-    </div>
-    <button type="submit" class="btn btn-primary">Create</button>
+    <button type="submit" class="btn btn-primary">Submit</button>
 </form>
 
 @section Scripts {

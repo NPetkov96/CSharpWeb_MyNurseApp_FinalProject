@@ -1,5 +1,6 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using MyNurseApp.Models;
+using MyNurseApp.Web.ViewModels.PatientProfile;
 using System.Diagnostics;
 
 namespace MyNurseApp.Controllers
@@ -13,24 +14,42 @@ namespace MyNurseApp.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
+        [HttpGet]
+        public async Task<IActionResult> Index()
         {
+            await Task.CompletedTask; 
             return View();
         }
 
-        public IActionResult Privacy()
+        [HttpGet]
+        public async Task<IActionResult> Privacy()
         {
+            await Task.CompletedTask;
             return View();
         }
 
-        public IActionResult PatientProfile()
+        [HttpGet]
+        public async Task<IActionResult> CreatePatientProfile()
         {
+            await Task.CompletedTask; 
             return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreatePatientProfile(PatientProfileinputModel inputModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return this.View(inputModel);
+            }
+
+            return View(inputModel);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        public async Task<IActionResult> Error()
         {
+            await Task.CompletedTask; 
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }

@@ -37,8 +37,10 @@ namespace MyNurseApp.Data
         [Required]
         public string Education { get; set; } = null!;
 
-        public string UserId { get; set; }
-        public ApplicationUser User { get; set; }
+        public string UserId { get; set; } = null!;
+
+
+        public ApplicationUser User { get; set; } = null!;
 
         public bool IsDeleted { get; set; } = false;
     }
