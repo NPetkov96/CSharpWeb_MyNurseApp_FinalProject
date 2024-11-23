@@ -5,9 +5,14 @@ using MyNurseApp.Data.Models;
 
 namespace MyNurseApp.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<IdentityUser>
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser,IdentityRole<Guid>,Guid>
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+        public ApplicationDbContext()
+        {
+            
+        }
+
+        public ApplicationDbContext(DbContextOptions options)
             : base(options)
         {
         }

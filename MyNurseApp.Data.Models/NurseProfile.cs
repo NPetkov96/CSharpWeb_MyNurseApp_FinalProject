@@ -9,7 +9,7 @@ namespace MyNurseApp.Data
     public class NurseProfile
     {
         [Key]
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         [Required]
         [StringLength(NurseConstants.NurseMaxNameLength)]
@@ -37,8 +37,7 @@ namespace MyNurseApp.Data
         [Required]
         public string Education { get; set; } = null!;
 
-        public string UserId { get; set; } = null!;
-
+        public Guid UserId { get; set; }
 
         public ApplicationUser User { get; set; } = null!;
 

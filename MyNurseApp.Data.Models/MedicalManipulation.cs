@@ -8,7 +8,7 @@ namespace MyNurseApp.Data.Models
     public class MedicalManipulation
     {
         [Key]
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         [Required]
         [MaxLength(MedicalManipulationConstants.ManipulationNameMaxLength)]

@@ -1,28 +1,46 @@
-﻿using MyNurseApp.Data.Models;
+﻿using Microsoft.AspNetCore.Http;
+using MyNurseApp.Data.Models;
 using MyNurseApp.Data.Repository.Interfaces;
-using System.Globalization;
+using MyNurseApp.Web.ViewModels.PatientProfile;
 
 namespace MyNurseApp.Services.Data
 {
     public class PatientService
     {
-        public async Task<bool> AddMovieAsync(AddMovieInputModel inputModel)
-        {
-            private readonly IRepository<PatientProfile,string> patientRepository;
+        private readonly IRepository<PatientProfile, Guid> _patientRepository;
+        private readonly IHttpContextAccessor _currentAccsessor;
 
-            bool isReleaseDateValid = DateTime
-                .TryParseExact(inputModel.ReleaseDate, ReleaseDateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None,
-                    out DateTime releaseDate);
-            if (!isReleaseDateValid)
+        public PatientService(IRepository<PatientProfile, Guid> patientRepository, IHttpContextAccessor httpContextAccessor)
+        {
+            this._patientRepository = patientRepository;
+            this._currentAccsessor = httpContextAccessor;
+        }
+        
+
+        public async Task<bool> AddPatientAsync(PatientProfileinputModel inputModel, IHttpContextAccessor currentAccsessor)
+        {
+
+            var userId = _currentAccsessor.HttpContext?.User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userId))
             {
-                return false;
+                throw new InvalidOperationException("User is not logged in.");
             }
 
-            Movie movie = new Movie();
-            AutoMapperConfig.MapperInstance.Map(inputModel, movie);
-            movie.ReleaseDate = releaseDate;
+            PatientProfile patient = new PatientProfile()
+            {
+                FirstName = inputModel.FirstName,
+                LastName = inputModel.LastName,
+                DateOfBirth = inputModel.DateOfBirth,
+                HomeAddress = inputModel.HomeAddress,
+                PhoneNumber = inputModel.PhoneNumber,
+                EmergencyContactFullName = inputModel.EmergencyContactFullName,
+                EmergencyContactPhone = inputModel.EmergencyContactPhone,
+                Notes = inputModel.Notes,
+                UserId = Guid.Parse(userId)
+            };
 
-            await this.movieRepository.AddAsync(movie);
+            await _patientRepository.AddAsync(patient);
 
             return true;
         }

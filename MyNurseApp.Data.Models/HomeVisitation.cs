@@ -6,7 +6,7 @@ namespace MyNurseApp.Data.Models
     public class HomeVisitation
     {
         [Key]
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         [Required]
         [Comment("Unique Identification Number of the Patient")]

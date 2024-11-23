@@ -7,7 +7,7 @@ namespace MyNurseApp.Data.Models
     public class PatientProfile
     {
         [Key]
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         [Required]
         [StringLength(PatientConstants.PatientMaxNameLength)]
@@ -43,7 +43,7 @@ namespace MyNurseApp.Data.Models
 
         public string? Notes { get; set; }
 
-        public string UserId { get; set; } = null!;
+        public Guid UserId { get; set; }
         public ApplicationUser User { get; set; } = null!;
 
         [Required]

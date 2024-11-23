@@ -15,11 +15,6 @@ namespace MyNurseApp.Data.Repository
             this.dbSet = this.dbContext.Set<TType>();
         }
 
-        public void Add(TType item)
-        {
-            this.dbSet.Add(item);
-            this.dbContext.SaveChanges();
-        }
 
         public async Task AddAsync(TType item)
         {

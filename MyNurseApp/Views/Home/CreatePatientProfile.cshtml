@@ -48,7 +48,7 @@
         <textarea asp-for="Notes" class="form-control"></textarea>
         <span asp-validation-for="Notes" class="text-danger"></span>
     </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
+    <button type="submit" class="btn btn-primary" asp-action="CreatePatientProfile" >Submit</button>
 </form>
 
 @section Scripts {

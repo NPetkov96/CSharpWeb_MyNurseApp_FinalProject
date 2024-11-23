@@ -2,8 +2,12 @@
 
 namespace MyNurseApp.Data.Models
 {
-    public class ApplicationUser : IdentityUser
+    public class ApplicationUser : IdentityUser<Guid>
     {
+        public ApplicationUser()
+        {
+            this.Id = Guid.NewGuid();
+        }
 
         public PatientProfile? Patient { get; set; }
 
