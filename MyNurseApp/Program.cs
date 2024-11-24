@@ -6,6 +6,7 @@ using MyNurseApp.Data.Repository.Interfaces;
 using MyNurseApp.Data.Repository;
 using MyNurseApp.Services.Data;
 using MyNurseApp.Data.Configuration;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace MyNurseApp
 {

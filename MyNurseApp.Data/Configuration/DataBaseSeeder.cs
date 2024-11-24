@@ -9,6 +9,7 @@ namespace MyNurseApp.Data.Configuration
     {
         public static void SeedRolesAndAdmin(IServiceProvider serviceProvider)
         {
+            using var scope = serviceProvider.CreateScope();
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
             var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
             var configuration = serviceProvider.GetRequiredService<IConfiguration>();

@@ -19,7 +19,7 @@ namespace MyNurseApp.Services.Data
         public async Task<PatientProfileViewModel> GetPatientProfileByUserIdAsync(IHttpContextAccessor httpContextAccessor)
         {
             var userId = _currentAccsessor.HttpContext?.User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-            PatientProfile existingProfile = await _patientRepository.FirstOrDefaultAsync(p => p.UserId == Guid.Parse(userId));
+            PatientProfile existingProfile = await _patientRepository.FirstOrDefaultAsync(p => p.UserId == Guid.Parse(userId!));
 
             if (existingProfile != null)
             {
@@ -38,7 +38,7 @@ namespace MyNurseApp.Services.Data
 
                 return patientProfileViewModel;
             }
-                return null;
+                return null!;
         }
 
 

@@ -16,7 +16,28 @@ namespace MyNurseApp.Services.Data
             this._currentAccsessor = httpContextAccessor;
         }
 
-        public async Task<List<MedicalManipulationsViewModel>> GetAllManipulationsAsync()
+        public async Task AddManipulationAsync(MedicalManipulationsViewModel model)
+        {
+            var isManipulationExist = _manipulationRepository.FirstOrDefaultAsync(m=>m.Name == model.Name);
+
+            if (isManipulationExist != null)
+            {
+                throw new ArgumentException("The manipulation already exist!"); //TODO betther handling the exeption.
+            }
+            MedicalManipulation manipulation = new MedicalManipulation()
+            {
+                Id = Guid.NewGuid(),
+                Name = model.Name,
+                Duration = model.Duration,
+                Description = model.Description,
+                Price = model.Price
+            };
+           
+
+            await _manipulationRepository.AddAsync(manipulation);
+        }
+
+        public async Task<IEnumerable<MedicalManipulationsViewModel>> GetAllManipulationsAsync()
         {
 
             var manipulations = await _manipulationRepository.GetAllAsync();
@@ -37,6 +58,17 @@ namespace MyNurseApp.Services.Data
                 viewMnipulations.Add(currenctManipulation);
             }
             return viewMnipulations;
+        }
+
+        public async Task RemoveManipulationAsync(Guid id)
+        {
+            var manipulationToDelete = await _manipulationRepository.FirstOrDefaultAsync(x => x.Id == id);
+            if (manipulationToDelete == null)
+            {
+                throw new ArgumentException("The manipulation doestn exist!"); //TODO betther handling the exeption.
+            }
+
+            await _manipulationRepository.DeleteAsync(manipulationToDelete);
         }
     }
 }

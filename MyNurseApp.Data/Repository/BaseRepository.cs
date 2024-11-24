@@ -23,11 +23,19 @@ namespace MyNurseApp.Data.Repository
             await this.dbContext.SaveChangesAsync();
         }
 
+        public async Task<bool> DeleteAsync(TType entity)
+        {
+            this.dbSet.Remove(entity);
+            await this.dbContext.SaveChangesAsync();
+
+            return true;
+        }
+
         public async Task<TType> FirstOrDefaultAsync(Expression<Func<TType, bool>> predicate)
         {
-            TType entity = await this.dbSet.FirstOrDefaultAsync(predicate);
+            TType? entity = await this.dbSet.FirstOrDefaultAsync(predicate);
 
-            return entity;
+            return entity!;
         }
 
         public async Task<IEnumerable<TType>> GetAllAsync()
@@ -38,9 +46,10 @@ namespace MyNurseApp.Data.Repository
 
         public async Task<TType> GetByIdAsync(TId id)
         {
-            TType entity = await this.dbSet.FindAsync(id);
 
-            return entity;
+            TType? entity = await this.dbSet.FindAsync(id);
+
+            return entity!;
         }
     }
 }

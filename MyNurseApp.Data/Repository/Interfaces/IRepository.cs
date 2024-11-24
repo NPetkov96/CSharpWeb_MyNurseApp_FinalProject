@@ -1,4 +1,5 @@
-﻿using System.Linq.Expressions;
+﻿using MyNurseApp.Data.Models;
+using System.Linq.Expressions;
 
 namespace MyNurseApp.Data.Repository.Interfaces
 {
@@ -11,5 +12,7 @@ namespace MyNurseApp.Data.Repository.Interfaces
         Task AddAsync(TType item);
 
         Task<TType> FirstOrDefaultAsync(Expression<Func<TType, bool>> predicate);
+
+        Task<bool> DeleteAsync(TType entity);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyNurseApp.Services.Data;
+using MyNurseApp.Web.ViewModels.Manipulations;
 
 namespace MyNurseApp.Controllers
 {
@@ -16,31 +17,40 @@ namespace MyNurseApp.Controllers
         public async Task<IActionResult> Index()
         {
             var manipulations = await _manipulationsService.GetAllManipulationsAsync();
-            //ViewBag.IsAdmin = User.IsInRole("Admin");
+            ViewBag.IsAdmin = User.IsInRole("Admin");
             return View(manipulations);
+
         }
 
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> AddManipulation()
+        {
 
-        //[HttpPost]
-        //[Authorize(Roles = "Admin")]
-        //public async Task<IActionResult> AddManipulation(ManipulationViewModel model)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return RedirectToAction("Index");
-        //    }
+            await Task.CompletedTask;
+            return View();
+        }
 
-        //    await _manipulationsService.AddManipulationAsync(model);
-        //    return RedirectToAction("Index");
-        //}
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> AddManipulation(MedicalManipulationsViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction("Index");
+            }
 
-        //[HttpPost]
-        //[Authorize(Roles = "Admin")]
-        //public async Task<IActionResult> RemoveManipulation(Guid id)
-        //{
-        //    await _manipulationsService.RemoveManipulationAsync(id);
-        //    return RedirectToAction("Index");
-        //}
+            await _manipulationsService.AddManipulationAsync(model);
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> RemoveManipulation(Guid id)
+        {
+            await _manipulationsService.RemoveManipulationAsync(id);
+            return RedirectToAction("Index");
+        }
 
     }
 }
