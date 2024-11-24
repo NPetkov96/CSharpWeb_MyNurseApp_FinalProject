@@ -25,6 +25,7 @@ namespace MyNurseApp.Services.Data
             {
                 PatientProfileViewModel patientProfileViewModel = new PatientProfileViewModel()
                 {
+                    Id = existingProfile.Id,
                     FirstName = existingProfile.FirstName,
                     LastName = existingProfile.LastName,
                     DateOfBirth = existingProfile.DateOfBirth,
@@ -53,6 +54,7 @@ namespace MyNurseApp.Services.Data
 
             PatientProfile patient = new PatientProfile()
             {
+                Id = Guid.Parse(userId),
                 FirstName = inputModel.FirstName,
                 LastName = inputModel.LastName,
                 DateOfBirth = inputModel.DateOfBirth,
