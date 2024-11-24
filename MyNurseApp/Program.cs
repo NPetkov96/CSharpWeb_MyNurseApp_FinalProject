@@ -32,6 +32,12 @@ namespace MyNurseApp
                 .AddDefaultTokenProviders();
 
             builder.Services.AddRazorPages();
+
+            builder.Services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = "/Identity/Account/Login";
+            });
+
             builder.Services.AddControllersWithViews();
 
             builder.Services.AddHttpContextAccessor();
