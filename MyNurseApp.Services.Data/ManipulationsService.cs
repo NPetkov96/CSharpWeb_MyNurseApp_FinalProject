@@ -19,8 +19,24 @@ namespace MyNurseApp.Services.Data
         public async Task<List<MedicalManipulationsViewModel>> GetAllManipulationsAsync()
         {
 
+            var manipulations = await _manipulationRepository.GetAllAsync();
 
-            return null;
+            List<MedicalManipulationsViewModel> viewMnipulations = new List<MedicalManipulationsViewModel>();
+
+            foreach (var manipulation in manipulations)
+            {
+                MedicalManipulationsViewModel currenctManipulation = new MedicalManipulationsViewModel()
+                {
+                    Id = manipulation.Id,
+                    Name = manipulation.Name,
+                    Duration = manipulation.Duration,
+                    Description = manipulation.Description,
+                    Price = manipulation.Price
+                };
+
+                viewMnipulations.Add(currenctManipulation);
+            }
+            return viewMnipulations;
         }
     }
 }

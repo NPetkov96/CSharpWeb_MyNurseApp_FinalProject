@@ -33,6 +33,7 @@ namespace MyNurseApp.Data.Repository
         public async Task<IEnumerable<TType>> GetAllAsync()
         {
             return await this.dbSet.ToListAsync();
+
         }
 
         public async Task<TType> GetByIdAsync(TId id)
