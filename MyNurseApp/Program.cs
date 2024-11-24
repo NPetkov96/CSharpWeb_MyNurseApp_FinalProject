@@ -5,6 +5,7 @@ using MyNurseApp.Data.Models;
 using MyNurseApp.Data.Repository.Interfaces;
 using MyNurseApp.Data.Repository;
 using MyNurseApp.Services.Data;
+using MyNurseApp.Data.Configuration;
 
 namespace MyNurseApp
 {
@@ -39,6 +40,12 @@ namespace MyNurseApp
             builder.Services.AddScoped(typeof(IRepository<,>), typeof(BaseRepository<,>));
 
             var app = builder.Build();
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var serviceProvider = scope.ServiceProvider;
+                DataBaseSeeder.SeedRolesAndAdmin(serviceProvider);
+            }
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
