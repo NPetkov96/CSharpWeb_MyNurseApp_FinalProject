@@ -5,7 +5,7 @@ namespace MyNurseApp.Web.ViewModels.PatientProfile
 {
     public class PatientProfileViewModel
     {
-
+        public Guid Id { get; set; }
 
         [Required(ErrorMessage = "First name is required.")]
         [MinLength(PatientConstants.PatientMinNameLength, ErrorMessage = $"First name must be at least 3 characters long")]
