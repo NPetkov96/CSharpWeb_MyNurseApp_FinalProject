@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MyNurseApp.Data.Repository.Interfaces;
+using System.Linq.Expressions;
 
 namespace MyNurseApp.Data.Repository
 {
@@ -21,5 +22,22 @@ namespace MyNurseApp.Data.Repository
             await this.dbSet.AddAsync(item);
             await this.dbContext.SaveChangesAsync();
         }
+
+        public async Task<TType> FirstOrDefaultAsync(Expression<Func<TType, bool>> predicate)
+        {
+            TType entity = await this.dbSet.FirstOrDefaultAsync(predicate);
+
+            return entity;
+        }
+
+        public async Task<IEnumerable<TType>> GetAllAsync() => await this.dbSet.ToArrayAsync();
+
+        public async Task<TType> GetByIdAsync(TId id)
+        {
+            TType entity = await this.dbSet.FindAsync(id);
+
+            return entity;
+        }
     }
 }
+ 

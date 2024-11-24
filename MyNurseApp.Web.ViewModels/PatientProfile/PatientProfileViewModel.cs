@@ -3,8 +3,10 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MyNurseApp.Web.ViewModels.PatientProfile
 {
-    public class PatientProfileinputModel
+    public class PatientProfileViewModel
     {
+
+
         [Required(ErrorMessage = "First name is required.")]
         [MinLength(PatientConstants.PatientMinNameLength, ErrorMessage = $"First name must be at least 3 characters long")]
         [MaxLength(PatientConstants.PatientMaxNameLength, ErrorMessage = $"First name must not exceed 99 characters.")]

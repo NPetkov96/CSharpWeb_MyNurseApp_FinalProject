@@ -15,9 +15,33 @@ namespace MyNurseApp.Services.Data
             this._patientRepository = patientRepository;
             this._currentAccsessor = httpContextAccessor;
         }
-        
 
-        public async Task<bool> AddPatientAsync(PatientProfileinputModel inputModel, IHttpContextAccessor currentAccsessor)
+        public async Task<PatientProfileViewModel> GetPatientProfileByUserIdAsync(IHttpContextAccessor httpContextAccessor)
+        {
+            var userId = _currentAccsessor.HttpContext?.User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            PatientProfile existingProfile = await _patientRepository.FirstOrDefaultAsync(p => p.UserId == Guid.Parse(userId));
+
+            if (existingProfile != null)
+            {
+                PatientProfileViewModel patientProfileViewModel = new PatientProfileViewModel()
+                {
+                    FirstName = existingProfile.FirstName,
+                    LastName = existingProfile.LastName,
+                    DateOfBirth = existingProfile.DateOfBirth,
+                    HomeAddress = existingProfile.HomeAddress,
+                    PhoneNumber = existingProfile.PhoneNumber,
+                    EmergencyContactFullName = existingProfile.EmergencyContactFullName,
+                    EmergencyContactPhone = existingProfile.EmergencyContactPhone,
+                    Notes = existingProfile.Notes
+                };
+
+                return patientProfileViewModel;
+            }
+                return null;
+        }
+
+
+        public async Task<bool> AddPatientAsync(PatientProfileViewModel inputModel, IHttpContextAccessor currentAccsessor)
         {
 
             var userId = _currentAccsessor.HttpContext?.User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
