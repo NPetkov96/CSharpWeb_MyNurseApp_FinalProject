@@ -1,0 +1,63 @@
+﻿@using MyNurseApp.Web.ViewModels.Manipulations
+@model IEnumerable<MedicalManipulationsViewModel>
+
+<h2>Manipulations</h2>
+
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Price</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var manipulation in Model)
+        {
+            <tr>
+                <td>@manipulation.Name</td>
+                <td>@manipulation.Duration</td>
+                <td>@manipulation.Description</td>
+                <td>@manipulation.Price.ToString("C")</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+@if (ViewBag.IsAdmin)
+{
+    <div class="admin-panel">
+        <h3>Admin Panel</h3>
+        <p>Total Manipulations: @Model.Count()</p>
+
+        <h4>Manipulation List</h4>
+        <ul>
+            @foreach (var manipulation in Model)
+            {
+                <li>
+                    @manipulation.Name
+                    <button class="btn btn-danger btn-sm" onclick="removeManipulation('@manipulation.Id')">Remove</button>
+                </li>
+            }
+        </ul>
+
+        <h4>Add New Manipulation</h4>
+        <form method="post" asp-action="AddManipulation" asp-controller="Manipulations">
+            <div class="form-group">
+                <label for="Name">Name</label>
+                <input type="text" name="Name" class="form-control" required />
+            </div>
+            <div class="form-group">
+                <label for="Description">Description</label>
+                <textarea name="Description" class="form-control" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="Price">Price</label>
+                <input type="number" name="Price" step="0.01" class="form-control" required />
+            </div>
+            <button type="submit" class="btn btn-primary">Add Manipulation</button>
+        </form>
+    </div>
+}
