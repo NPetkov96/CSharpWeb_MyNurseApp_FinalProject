@@ -34,6 +34,7 @@ namespace MyNurseApp.Controllers
 
             var manipulation = _manipulationsService.GetByIdAsync(id).Result;
             AddToTempData("SelectedManipulations", manipulation, this);
+            await Task.CompletedTask;
             return RedirectToAction("Index");
         }
 
@@ -97,7 +98,7 @@ namespace MyNurseApp.Controllers
                 : Newtonsoft.Json.JsonConvert.DeserializeObject<List<T>>(existingData);
 
             // Добавяне на новия елемент
-            list.Add(item);
+            list!.Add(item);
 
             // Запазване обратно в TempData
             controller.TempData[key] = Newtonsoft.Json.JsonConvert.SerializeObject(list);
@@ -109,7 +110,7 @@ namespace MyNurseApp.Controllers
             var data = controller.TempData.Peek(key) as string;
             return string.IsNullOrEmpty(data)
                 ? new List<T>() // Ако няма данни, върнете празен списък
-                : Newtonsoft.Json.JsonConvert.DeserializeObject<List<T>>(data);
+                : Newtonsoft.Json.JsonConvert.DeserializeObject<List<T>>(data)!;
         }
 
         public void ClearTempData(string key, Controller controller)

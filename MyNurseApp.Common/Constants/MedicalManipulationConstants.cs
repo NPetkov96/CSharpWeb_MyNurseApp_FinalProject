@@ -1,5 +1,5 @@
 ﻿namespace MyNurseApp.Common.Constants
-{
+{ 
     public static class MedicalManipulationConstants
     {
         public const int ManipulationNameMaxLength = 150;

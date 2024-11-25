@@ -1,4 +1,5 @@
-﻿using MyNurseApp.Common.Constants;
+﻿
+using MyNurseApp.Common.Constants;
 using System.ComponentModel.DataAnnotations;
 
 namespace MyNurseApp.Web.ViewModels.PatientProfile

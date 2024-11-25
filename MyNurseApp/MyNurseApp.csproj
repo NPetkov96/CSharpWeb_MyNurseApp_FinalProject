@@ -25,6 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MyNurseApp.Common\MyNurseApp.Common.csproj" />
     <ProjectReference Include="..\MyNurseApp.Data.Models\MyNurseApp.Data.Models.csproj" />
     <ProjectReference Include="..\MyNurseApp.Data\MyNurseApp.Data.csproj" />
     <ProjectReference Include="..\MyNurseApp.Services.Data\MyNurseApp.Services.Data.csproj" />
