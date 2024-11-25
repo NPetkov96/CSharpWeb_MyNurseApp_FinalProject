@@ -44,6 +44,11 @@ namespace MyNurseApp.Data.Repository
 
         }
 
+        public IQueryable<TType> GetAllAttached()
+        {
+            return this.dbSet.AsQueryable();
+        }
+
         public async Task<TType> GetByIdAsync(TId id)
         {
 

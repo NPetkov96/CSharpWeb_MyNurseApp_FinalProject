@@ -3,17 +3,41 @@ using MyNurseApp.Data.Models;
 using MyNurseApp.Data.Repository.Interfaces;
 using MyNurseApp.Web.ViewModels.Manipulations;
 
+
 namespace MyNurseApp.Services.Data
 {
     public class ManipulationsService
     {
         private readonly IRepository<MedicalManipulation, Guid> _manipulationRepository;
         private readonly IHttpContextAccessor _currentAccsessor;
+        private readonly List<MedicalManipulationsViewModel> manipulationsViewModellist;
+
 
         public ManipulationsService(IRepository<MedicalManipulation, Guid> manipulationRepository, IHttpContextAccessor httpContextAccessor)
         {
             this._manipulationRepository = manipulationRepository;
             this._currentAccsessor = httpContextAccessor;
+            manipulationsViewModellist = new List<MedicalManipulationsViewModel>();
+        }
+
+        public async Task<List<MedicalManipulationsViewModel>> PatientBookManipulationAsync(Guid manipulationId)
+        {
+            var model = await _manipulationRepository.FirstOrDefaultAsync(m => m.Id == manipulationId);
+
+            var viewModel = new MedicalManipulationsViewModel() 
+            {
+                Id = model.Id,
+                Name = model.Name,
+                Duration = model.Duration,
+                Description = model.Description,
+                Price = model.Price,
+            };
+
+            if (!manipulationsViewModellist.Any(m => m.Id == manipulationId))
+            {
+                manipulationsViewModellist.Add(viewModel);
+            }
+            return manipulationsViewModellist;
         }
 
         public async Task<MedicalManipulationsViewModel> GetByIdAsync(Guid id)
@@ -100,5 +124,6 @@ namespace MyNurseApp.Services.Data
 
             await _manipulationRepository.UpdateAsync(manipulation);
         }
+
     }
 }

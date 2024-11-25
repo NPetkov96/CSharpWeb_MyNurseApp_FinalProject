@@ -30,8 +30,10 @@ else
                     <td>@manipulation.Description</td>
                     <td>@manipulation.Price.ToString("C")</td>
                     <td>
-                        <a class="btn btn-primary btn-sm" asp-action="Schedule" asp-controller="Schedule" @* asp-route-id="@manipulation.Id" *@>Book</a>
 
+                        <form asp-action="AddToSelection" asp-route-id="@manipulation.Id" method="post" style="display:inline;">
+                            <button class="btn btn-primary btn-sm" type="submit">Choose</button>
+                        </form>
                         @if (User.IsInRole("Admin"))
                         {
                             <form asp-action="EditManipulation" asp-route-id="@manipulation.Id" method="get" style="display:inline;">
@@ -46,6 +48,32 @@ else
             }
         </tbody>
     </table>
+
+    <h3>Selected Manipulations</h3>
+    @if (ViewBag.SelectedManipulations != null && ((List<MyNurseApp.Web.ViewModels.Manipulations.MedicalManipulationsViewModel>)ViewBag.SelectedManipulations).Any())
+    {
+        <ul>
+            @foreach (var manipulation in (List<MyNurseApp.Web.ViewModels.Manipulations.MedicalManipulationsViewModel>)ViewBag.SelectedManipulations)
+            {
+                <li>@manipulation.Name - @manipulation.Price.ToString("C")</li>
+            }
+        </ul>
+        <form asp-action="ClearSelection" method="post">
+            <button type="submit" class="btn btn-danger btn-sm">Clear Selection</button>
+        </form>
+    }
+    else
+    {
+        <p>No manipulations selected.</p>
+    }
+
+    @if (!User.IsInRole("Admin"))
+    {
+        <div class="mt-3">
+            <a class="btn btn-primary btn-sm" asp-action="Schedule" asp-controller="Schedule">Order home visitation</a>
+        </div>
+    }
+
     @if (User.IsInRole("Admin"))
     {
         <div class="mt-3">

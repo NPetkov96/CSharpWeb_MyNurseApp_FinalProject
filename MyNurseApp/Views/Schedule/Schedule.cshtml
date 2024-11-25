@@ -1,0 +1,84 @@
+﻿@using MyNurseApp.Web.ViewModels
+@model PatientAndHomeVisitationViewModel
+
+<h2>Schedule Home Visitation</h2>
+<div class="row">
+    <!-- Профил на пациента -->
+    <div class="col-md-6">
+        <div class="patient-profile">
+            <h3>Patient Profile</h3>
+            <p><strong>Name:</strong> @Model.PatientProfile.FirstName @Model.PatientProfile.LastName</p>
+            <p><strong>DateOfBirth:</strong> @Model.PatientProfile.DateOfBirth</p>
+            <p><strong>EGN:</strong> @Model.PatientProfile.UIN</p>
+            <p><strong>Address:</strong> @Model.PatientProfile.HomeAddress</p>
+            <p><strong>Phone:</strong> @Model.PatientProfile.PhoneNumber</p>
+            <p><strong>Emergency contact name:</strong> @Model.PatientProfile.EmergencyContactFullName</p>
+            <p><strong>Emergency contact phone number:</strong> @Model.PatientProfile.EmergencyContactPhone</p>
+            <p><strong>Notes:</strong> @Model.PatientProfile.Notes</p>
+        </div>
+    </div>
+
+    <!-- Формуляр за домашно посещение -->
+    <div class="col-md-6">
+        <form asp-action="CreateHomeVisitation" method="post">
+            <div class="form-group">
+                <label asp-for="HomeVisitation.DateTimeManipulation">Date and Time for Manipulation</label>
+                <input asp-for="HomeVisitation.DateTimeManipulation" type="datetime-local" class="form-control" />
+                <span asp-validation-for="HomeVisitation.DateTimeManipulation" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="HomeVisitation.PaymentMethod">Payment Method</label>
+                <select asp-for="HomeVisitation.PaymentMethod" class="form-control">
+                    <option value="0">Card</option>
+                    <option value="1">Cash</option>
+                </select>
+                <span asp-validation-for="HomeVisitation.PaymentMethod" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="HomeVisitation.Note">Additional Notes</label>
+                <textarea asp-for="HomeVisitation.Note" class="form-control" rows="4" maxlength="500"></textarea>
+                <span asp-validation-for="HomeVisitation.Note" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="HomeVisitation.PriceForVisitation">Price</label>
+                <input asp-for="HomeVisitation.PriceForVisitation" type="number" class="form-control" readonly />
+                <span asp-validation-for="HomeVisitation.PriceForVisitation" class="text-danger"></span>
+            </div>
+
+            <input type="hidden" asp-for="HomeVisitation.IsHomeVisitationConfirmed" />
+
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const dateTimeInput = document.querySelector("[name='DateTimeManipulation']");
+            const priceInput = document.querySelector("[name='PriceForVisitation']");
+            const basePrice = 20;
+
+            // Set the minimum date to today's date and time
+            const today = new Date();
+            const isoDate = today.toISOString().slice(0, 16); // Format as yyyy-MM-ddTHH:mm
+            dateTimeInput.min = isoDate;
+
+            dateTimeInput.addEventListener("change", function () {
+                const selectedDateTime = new Date(dateTimeInput.value);
+
+                // Check if a specific time is selected (non-default)
+                if (selectedDateTime.getHours() || selectedDateTime.getMinutes()) {
+                    priceInput.value = basePrice + 20; // Add extra charge
+                } else {
+                    priceInput.value = basePrice; // Default price
+                }
+            });
+        });
+    </script>
+}

@@ -26,5 +26,7 @@ namespace MyNurseApp.Web.ViewModels.Manipulations
         [DataType(DataType.Currency)]
         [Display(Name = "Price in BGN")]
         public decimal Price { get; set; }
+
+        public IEnumerable<MedicalManipulationsViewModel> ChoosenManilupation { get; set; } = new List<MedicalManipulationsViewModel>();
     }
 }

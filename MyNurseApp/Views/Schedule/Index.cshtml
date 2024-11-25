@@ -1,0 +1,41 @@
+﻿@model IEnumerable<MyNurseApp.Web.ViewModels.HomeVisitation.HomeVisitationViewModel>
+
+@{
+    ViewData["Title"] = "Scheduled Home Visitations";
+}
+
+<h2>Scheduled Home Visitations</h2>
+
+@if (Model == null || !Model.Any())
+{
+    <p>There are no scheduled home visitations at this moment.</p>
+}
+else
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Patient Name</th>
+                <th>Date and Time</th>
+                <th>Payment Method</th>
+                <th>Price</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var schedule in Model)
+            {
+                <tr>
+                    @* <td>@schedule.PatientName</td> *@
+                    <td>@schedule.DateTimeManipulation.ToString("g")</td>
+                    <td>@schedule.PaymentMethod</td>
+                    <td>@schedule.PriceForVisitation.ToString("C")</td>
+                    <td>
+                        <a class="btn btn-primary btn-sm" asp-action="Details" asp-route-id="@schedule.Id">Details</a>
+                        <a class="btn btn-danger btn-sm" asp-action="Delete" asp-route-id="@schedule.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

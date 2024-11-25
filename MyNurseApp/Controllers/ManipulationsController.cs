@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using MyNurseApp.Services.Data;
 using MyNurseApp.Web.ViewModels.Manipulations;
 
+
 namespace MyNurseApp.Controllers
 {
     [Authorize]
@@ -12,15 +13,35 @@ namespace MyNurseApp.Controllers
         public ManipulationsController(ManipulationsService manipulationsService)
         {
             _manipulationsService = manipulationsService;
+           
         }
 
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var manipulations = await _manipulationsService.GetAllManipulationsAsync();
-            ViewBag.IsAdmin = User.IsInRole("Admin");
-            return View(manipulations);
+            // Извличане на данните от TempData
+            var selectedManipulations = GetFromTempData<MedicalManipulationsViewModel>("SelectedManipulations", this);
 
+            ViewBag.SelectedManipulations = selectedManipulations;
+
+            var manipulations = await _manipulationsService.GetAllManipulationsAsync();
+            return View(manipulations);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddToSelection(Guid id)
+        {
+
+            var manipulation = _manipulationsService.GetByIdAsync(id).Result;
+            AddToTempData("SelectedManipulations", manipulation, this);
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public IActionResult ClearSelection()
+        {
+            ClearTempData("SelectedManipulations", this);
+            return RedirectToAction("Index");
         }
 
         [HttpGet]
@@ -66,10 +87,35 @@ namespace MyNurseApp.Controllers
             return RedirectToAction("Index");
         }
 
-        public async Task<IActionResult> BookManipulation()
+
+        public void AddToTempData<T>(string key, T item, Controller controller)
         {
-            await Task.CompletedTask;
-            return View();
+            // Извличане на текущите данни от TempData
+            var existingData = controller.TempData[key] as string;
+            var list = string.IsNullOrEmpty(existingData)
+                ? new List<T>() // Ако няма данни, създайте нов списък
+                : Newtonsoft.Json.JsonConvert.DeserializeObject<List<T>>(existingData);
+
+            // Добавяне на новия елемент
+            list.Add(item);
+
+            // Запазване обратно в TempData
+            controller.TempData[key] = Newtonsoft.Json.JsonConvert.SerializeObject(list);
         }
+
+
+        public List<T> GetFromTempData<T>(string key, Controller controller)
+        {
+            var data = controller.TempData.Peek(key) as string;
+            return string.IsNullOrEmpty(data)
+                ? new List<T>() // Ако няма данни, върнете празен списък
+                : Newtonsoft.Json.JsonConvert.DeserializeObject<List<T>>(data);
+        }
+
+        public void ClearTempData(string key, Controller controller)
+        {
+            controller.TempData[key] = null;
+        }
+
     }
 }
