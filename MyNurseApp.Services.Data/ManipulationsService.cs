@@ -58,7 +58,7 @@ namespace MyNurseApp.Services.Data
 
         public async Task AddManipulationAsync(MedicalManipulationsViewModel model)
         {
-            var isManipulationExist = await _manipulationRepository.FirstOrDefaultAsync(m => m.Name == model.Name);
+            var isManipulationExist = await _manipulationRepository.FirstOrDefaultAsync(m => m.Id == model.Id);
 
             if (isManipulationExist != null)
             {

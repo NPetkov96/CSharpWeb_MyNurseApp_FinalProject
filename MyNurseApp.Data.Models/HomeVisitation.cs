@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MyNurseApp.Common.Enums;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MyNurseApp.Data.Models
 {
@@ -23,11 +24,15 @@ namespace MyNurseApp.Data.Models
 
         [Required]
         public bool IsHomeVisitationConfirmed { get; set; } = false;
-        
-        [Required]
-        public ApplicationUser UserId { get; set; } = null!;
 
         [Required]
+        public Guid PatientId { get; set; }
+
+        [ForeignKey(nameof(PatientId))]
+        [Required]
+        public PatientProfile Patient { get; set; } = null!;
+
+
         public ICollection<MedicalManipulation> MedicalManipulations { get; set; } = new List<MedicalManipulation>();
     }
 }

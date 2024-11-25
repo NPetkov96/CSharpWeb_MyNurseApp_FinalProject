@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MyNurseApp.Common\MyNurseApp.Common.csproj" />
+    <ProjectReference Include="..\MyNurseApp.Data.Models\MyNurseApp.Data.Models.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,46 +1,59 @@
-﻿@using MyNurseApp.Web.ViewModels.HomeVisitation
-@model IEnumerable<HomeVisitationViewModel>
+﻿@model IEnumerable<MyNurseApp.Web.ViewModels.PatientAndHomeVisitationViewModel>
 
-@{
-    ViewData["Title"] = "Scheduled Home Visitations";
-}
+<h1>Home Visitations</h1>
 
-<h2>Scheduled Home Visitations</h2>
-
-@if (Model == null || !Model.Any())
-{
-    <p>There are no scheduled home visitations at this moment.</p>
-    <p>If you would like to request a home visitation, please click the button below:</p>
-    <a asp-controller="Manipulations" asp-action="Index" class="btn btn-primary">
-        Request Home Visitation
-    </a>
-}
-else
-{
-    <table class="table table-bordered">
-        <thead>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Visitation Date</th>
+            <th>Patient Name</th>
+            <th>Address</th>
+            <th>Phone</th>
+            <th>Emergency Contact</th>
+            <th>Payment Method</th>
+            <th>Price</th>
+            <th>Status</th>
+            <th>Manipulations</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var visitation in Model)
+        {
             <tr>
-                <th>Patient Name</th>
-                <th>Date and Time</th>
-                <th>Payment Method</th>
-                <th>Price</th>
-                <th>Actions</th>
+                <td>@visitation.HomeVisitation.DateTimeManipulation.ToString("g")</td>
+                <td>@visitation.PatientProfile.FirstName @visitation.PatientProfile.LastName</td>
+                <td>@visitation.PatientProfile.HomeAddress</td>
+                <td>@visitation.PatientProfile.PhoneNumber</td>
+                <td>
+                    @visitation.PatientProfile.EmergencyContactFullName
+                    <br />
+                    @visitation.PatientProfile.EmergencyContactPhone
+                </td>
+                <td>@visitation.HomeVisitation.PaymentMethod</td>
+                <td>@visitation.HomeVisitation.PriceForVisitation.ToString("C")</td>
+                <td>@(visitation.HomeVisitation.IsHomeVisitationConfirmed ? "Confirmed" : "Pending")</td>
+                <td>
+                    @if (visitation.MedicalManipulations.Any())
+                    {
+                        <ul>
+                            @foreach (var manipulation in visitation.MedicalManipulations)
+                            {
+                                <li>
+                                    <strong>@manipulation.Name</strong> -
+                                    @manipulation.Duration minutes,
+                                    @manipulation.Price.ToString("C")
+                                    <br />
+                                    <small>@manipulation.Description</small>
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <span>No manipulations</span>
+                    }
+                </td>
             </tr>
-        </thead>
-        <tbody>
-            @foreach (var schedule in Model)
-            {
-                <tr>
-                    @* <td>@schedule.PatientName</td> *@
-                    <td>@schedule.DateTimeManipulation.ToString("g")</td>
-                    <td>@schedule.PaymentMethod</td>
-                    <td>@schedule.PriceForVisitation.ToString("C")</td>
-                    <td>
-                        <a class="btn btn-primary btn-sm" asp-action="Details" asp-route-id="@schedule.Id">Details</a>
-                        <a class="btn btn-danger btn-sm" asp-action="Delete" asp-route-id="@schedule.Id">Delete</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
+        }
+    </tbody>
+</table>

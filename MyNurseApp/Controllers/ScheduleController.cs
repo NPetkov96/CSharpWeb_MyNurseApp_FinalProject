@@ -20,37 +20,51 @@ namespace MyNurseApp.Controllers
 
         public async Task<IActionResult> Index()
         {
-            await Task.CompletedTask;
-            return View();
+           var model = await _scheduleService.GetAllVisitationsAsync();
+            return View(model);
         }
 
         [HttpGet]
         public async Task<IActionResult> Schedule()
         {
-            // Вземане на манипулациите от сесията
-            var manipulationsJson = HttpContext.Session.GetString("SelectedManipulations");
-            List<MedicalManipulationsViewModel> selectedManipulations = manipulationsJson != null
-                ? JsonConvert.DeserializeObject<List<MedicalManipulationsViewModel>>(manipulationsJson)
-                : new List<MedicalManipulationsViewModel>();
-
-            PatientProfileViewModel patientModel = await _scheduleService.GetPatient();
+            List<MedicalManipulationsViewModel> selectedManipulations = GetSelectedManipulations();
+            PatientProfileViewModel patientModel = await _scheduleService.GetPatientAync();
             HomeVisitationViewModel homeVisitation = new HomeVisitationViewModel();
-           
+
             PatientAndHomeVisitationViewModel viewModel = new PatientAndHomeVisitationViewModel()
             {
                 HomeVisitation = homeVisitation,
                 PatientProfile = patientModel,
-                MedicalManipulations = selectedManipulations
+                MedicalManipulations = selectedManipulations!
             };
 
             return View(viewModel);
         }
 
-        [HttpGet]
+        [HttpPost]
         public async Task<IActionResult> Schedule(PatientAndHomeVisitationViewModel model)
         {
-            //Add visitation do DB
+            List<MedicalManipulationsViewModel> selectedManipulations = GetSelectedManipulations();
+            PatientProfileViewModel patientModel = await _scheduleService.GetPatientAync();
+
+            model.MedicalManipulations = selectedManipulations;
+            model.PatientProfile = patientModel;
+
+            await _scheduleService.AddHomeVisitationAsync(model);
+
             return RedirectToAction("Index");
+        }
+
+        private List<MedicalManipulationsViewModel> GetSelectedManipulations()
+        {
+            // Вземане на манипулациите от сесията
+            var manipulationsJson = HttpContext.Session.GetString("SelectedManipulations");
+
+            List<MedicalManipulationsViewModel>? selectedManipulations = manipulationsJson != null
+                ? JsonConvert.DeserializeObject<List<MedicalManipulationsViewModel>>(manipulationsJson)
+                : new List<MedicalManipulationsViewModel>();
+
+            return selectedManipulations!;
         }
     }
 }

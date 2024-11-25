@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MyNurseApp.Common.Enums;
+using MyNurseApp.Data.Models;
 using System.ComponentModel.DataAnnotations;
 
 namespace MyNurseApp.Web.ViewModels.HomeVisitation
@@ -28,6 +29,11 @@ namespace MyNurseApp.Web.ViewModels.HomeVisitation
         [Required]
         public bool IsHomeVisitationConfirmed { get; set; } = false;
 
+        [Required]
+        public Guid PatientId { get; set; }
+
         
+        [Required]
+        public ICollection<MedicalManipulation> MedicalManipulations { get; set; } = new List<MedicalManipulation>();
     }
 }

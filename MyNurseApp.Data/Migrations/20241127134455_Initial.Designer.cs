@@ -12,7 +12,7 @@ using MyNurseApp.Data;
 namespace MyNurseApp.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241123090738_Initial")]
+    [Migration("20241127134455_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -24,6 +24,21 @@ namespace MyNurseApp.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("HomeVisitationMedicalManipulation", b =>
+                {
+                    b.Property<Guid>("MedicalManipulationsId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("homeVisitationsId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("MedicalManipulationsId", "homeVisitationsId");
+
+                    b.HasIndex("homeVisitationsId");
+
+                    b.ToTable("HomeVisitationMedicalManipulation");
+                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>
                 {
@@ -235,14 +250,26 @@ namespace MyNurseApp.Data.Migrations
                         .HasColumnType("datetime2")
                         .HasComment("Date and time for applying the manipulation");
 
-                    b.Property<string>("UIN")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("Unique Identification Number of the Patient");
+                    b.Property<bool>("IsHomeVisitationConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Note")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("PatientId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("PaymentMethod")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("PriceForVisitation")
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ApplicationUserId");
+
+                    b.HasIndex("PatientId");
 
                     b.ToTable("HomeVisitations");
                 });
@@ -263,13 +290,10 @@ namespace MyNurseApp.Data.Migrations
                         .HasColumnType("int")
                         .HasComment("Duration of single manipualton in minutes");
 
-                    b.Property<Guid?>("HomeVisitationId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
                         .HasComment("Name of the manipulation");
 
                     b.Property<decimal>("Price")
@@ -278,8 +302,6 @@ namespace MyNurseApp.Data.Migrations
                         .HasComment("Manipulattion price depents of type of manipulation, location and etc.");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("HomeVisitationId");
 
                     b.ToTable("MedicalManipulations");
                 });
@@ -333,6 +355,11 @@ namespace MyNurseApp.Data.Migrations
                         .HasMaxLength(13)
                         .HasColumnType("nvarchar(13)")
                         .HasComment("Phone number of the Patient");
+
+                    b.Property<string>("UIN")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasComment("Unique Identification Number of the Patient");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
@@ -397,6 +424,21 @@ namespace MyNurseApp.Data.Migrations
                     b.ToTable("NurseProfiles");
                 });
 
+            modelBuilder.Entity("HomeVisitationMedicalManipulation", b =>
+                {
+                    b.HasOne("MyNurseApp.Data.Models.MedicalManipulation", null)
+                        .WithMany()
+                        .HasForeignKey("MedicalManipulationsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MyNurseApp.Data.Models.HomeVisitation", null)
+                        .WithMany()
+                        .HasForeignKey("homeVisitationsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", null)
@@ -453,13 +495,14 @@ namespace MyNurseApp.Data.Migrations
                     b.HasOne("MyNurseApp.Data.Models.ApplicationUser", null)
                         .WithMany("PatientHomeVisitations")
                         .HasForeignKey("ApplicationUserId");
-                });
 
-            modelBuilder.Entity("MyNurseApp.Data.Models.MedicalManipulation", b =>
-                {
-                    b.HasOne("MyNurseApp.Data.Models.HomeVisitation", null)
-                        .WithMany("MedicalManipulations")
-                        .HasForeignKey("HomeVisitationId");
+                    b.HasOne("MyNurseApp.Data.Models.PatientProfile", "Patient")
+                        .WithMany()
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Patient");
                 });
 
             modelBuilder.Entity("MyNurseApp.Data.Models.PatientProfile", b =>
@@ -491,11 +534,6 @@ namespace MyNurseApp.Data.Migrations
                     b.Navigation("Patient");
 
                     b.Navigation("PatientHomeVisitations");
-                });
-
-            modelBuilder.Entity("MyNurseApp.Data.Models.HomeVisitation", b =>
-                {
-                    b.Navigation("MedicalManipulations");
                 });
 #pragma warning restore 612, 618
         }

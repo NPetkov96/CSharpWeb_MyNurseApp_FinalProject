@@ -28,5 +28,7 @@ namespace MyNurseApp.Data.Models
         [Precision(18, 2)]
         [Comment("Manipulattion price depents of type of manipulation, location and etc.")]
         public decimal Price { get; set; }
+
+        public ICollection<HomeVisitation> homeVisitations { get; set; } = new List<HomeVisitation>();
     }
 }

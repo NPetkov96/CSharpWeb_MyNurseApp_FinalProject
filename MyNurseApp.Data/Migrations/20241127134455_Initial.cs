@@ -51,6 +51,21 @@ namespace MyNurseApp.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "MedicalManipulations",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false, comment: "Name of the manipulation"),
+                    Duration = table.Column<int>(type: "int", maxLength: 120, nullable: false, comment: "Duration of single manipualton in minutes"),
+                    Description = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true, comment: "Description if the manipulation needed to."),
+                    Price = table.Column<decimal>(type: "decimal(28,6)", precision: 18, scale: 2, nullable: false, comment: "Manipulattion price depents of type of manipulation, location and etc.")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MedicalManipulations", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -157,25 +172,6 @@ namespace MyNurseApp.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "HomeVisitations",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UIN = table.Column<string>(type: "nvarchar(max)", nullable: false, comment: "Unique Identification Number of the Patient"),
-                    DateTimeManipulation = table.Column<DateTime>(type: "datetime2", nullable: false, comment: "Date and time for applying the manipulation"),
-                    ApplicationUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_HomeVisitations", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_HomeVisitations_AspNetUsers_ApplicationUserId",
-                        column: x => x.ApplicationUserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "NurseProfiles",
                 columns: table => new
                 {
@@ -209,6 +205,7 @@ namespace MyNurseApp.Data.Migrations
                     FirstName = table.Column<string>(type: "nvarchar(99)", maxLength: 99, nullable: false, comment: "First name of the Patient"),
                     LastName = table.Column<string>(type: "nvarchar(99)", maxLength: 99, nullable: false, comment: "Last name of the Patient"),
                     DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UIN = table.Column<string>(type: "nvarchar(max)", nullable: false, comment: "Unique Identification Number of the Patient"),
                     HomeAddress = table.Column<string>(type: "nvarchar(max)", nullable: false, comment: "Addres for home manipulation of the Patient"),
                     PhoneNumber = table.Column<string>(type: "nvarchar(13)", maxLength: 13, nullable: false, comment: "Phone number of the Patient"),
                     EmergencyContactFullName = table.Column<string>(type: "nvarchar(99)", maxLength: 99, nullable: false, comment: "Full name of relative for Emergancy call if it's needed"),
@@ -229,24 +226,56 @@ namespace MyNurseApp.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "MedicalManipulations",
+                name: "HomeVisitations",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false, comment: "Name of the manipulation"),
-                    Duration = table.Column<int>(type: "int", maxLength: 120, nullable: false, comment: "Duration of single manipualton in minutes"),
-                    Description = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true, comment: "Description if the manipulation needed to."),
-                    Price = table.Column<decimal>(type: "decimal(28,6)", precision: 18, scale: 2, nullable: false, comment: "Manipulattion price depents of type of manipulation, location and etc."),
-                    HomeVisitationId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                    DateTimeManipulation = table.Column<DateTime>(type: "datetime2", nullable: false, comment: "Date and time for applying the manipulation"),
+                    PaymentMethod = table.Column<int>(type: "int", nullable: false),
+                    Note = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PriceForVisitation = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    IsHomeVisitationConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    PatientId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ApplicationUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_MedicalManipulations", x => x.Id);
+                    table.PrimaryKey("PK_HomeVisitations", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_MedicalManipulations_HomeVisitations_HomeVisitationId",
-                        column: x => x.HomeVisitationId,
-                        principalTable: "HomeVisitations",
+                        name: "FK_HomeVisitations_AspNetUsers_ApplicationUserId",
+                        column: x => x.ApplicationUserId,
+                        principalTable: "AspNetUsers",
                         principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_HomeVisitations_PatientProfiles_PatientId",
+                        column: x => x.PatientId,
+                        principalTable: "PatientProfiles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "HomeVisitationMedicalManipulation",
+                columns: table => new
+                {
+                    MedicalManipulationsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    homeVisitationsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_HomeVisitationMedicalManipulation", x => new { x.MedicalManipulationsId, x.homeVisitationsId });
+                    table.ForeignKey(
+                        name: "FK_HomeVisitationMedicalManipulation_HomeVisitations_homeVisitationsId",
+                        column: x => x.homeVisitationsId,
+                        principalTable: "HomeVisitations",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_HomeVisitationMedicalManipulation_MedicalManipulations_MedicalManipulationsId",
+                        column: x => x.MedicalManipulationsId,
+                        principalTable: "MedicalManipulations",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -289,14 +318,19 @@ namespace MyNurseApp.Data.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_HomeVisitationMedicalManipulation_homeVisitationsId",
+                table: "HomeVisitationMedicalManipulation",
+                column: "homeVisitationsId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_HomeVisitations_ApplicationUserId",
                 table: "HomeVisitations",
                 column: "ApplicationUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MedicalManipulations_HomeVisitationId",
-                table: "MedicalManipulations",
-                column: "HomeVisitationId");
+                name: "IX_HomeVisitations_PatientId",
+                table: "HomeVisitations",
+                column: "PatientId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_NurseProfiles_UserId",
@@ -330,19 +364,22 @@ namespace MyNurseApp.Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "MedicalManipulations");
+                name: "HomeVisitationMedicalManipulation");
 
             migrationBuilder.DropTable(
                 name: "NurseProfiles");
-
-            migrationBuilder.DropTable(
-                name: "PatientProfiles");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "HomeVisitations");
+
+            migrationBuilder.DropTable(
+                name: "MedicalManipulations");
+
+            migrationBuilder.DropTable(
+                name: "PatientProfiles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
