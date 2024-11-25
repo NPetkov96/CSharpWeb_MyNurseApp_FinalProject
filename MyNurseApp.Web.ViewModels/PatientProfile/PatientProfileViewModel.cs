@@ -20,6 +20,11 @@ namespace MyNurseApp.Web.ViewModels.PatientProfile
         [Required(ErrorMessage = "Date of birth is required.")]
         public DateTime? DateOfBirth { get; set; }
 
+        [Required(ErrorMessage = "Unique identification number is required.")]
+        [MinLength(PatientConstants.UINlenght, ErrorMessage = "Unique identification number must be exact 10 symbols.")]
+        [MaxLength(PatientConstants.UINlenght, ErrorMessage = "Unique identification number must be exact 10 symbols.")]
+        public string UIN { get; set; } = null!;  // Unique Identification Number
+
         [Required(ErrorMessage = "Home address is required")]
         public string HomeAddress { get; set; } = null!;
 

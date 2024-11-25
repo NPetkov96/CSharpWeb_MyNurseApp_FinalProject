@@ -30,11 +30,10 @@ else
                     <td>@manipulation.Description</td>
                     <td>@manipulation.Price.ToString("C")</td>
                     <td>
-                        <a class="btn btn-primary btn-sm" asp-action="Select" asp-route-id="@manipulation.Id">Select</a>
+                        <a class="btn btn-primary btn-sm" asp-action="Schedule" asp-controller="Schedule" @* asp-route-id="@manipulation.Id" *@>Book</a>
 
                         @if (User.IsInRole("Admin"))
                         {
-                            @* <a class="btn btn-warning btn-sm" asp-action="EditManipulation" asp-route-id="@manipulation.Id">Edit</a> *@
                             <form asp-action="EditManipulation" asp-route-id="@manipulation.Id" method="get" style="display:inline;">
                                 <button class="btn btn-warning btn-sm" type="submit">Edit</button>
                             </form>

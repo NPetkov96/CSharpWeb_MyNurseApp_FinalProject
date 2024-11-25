@@ -23,6 +23,10 @@ namespace MyNurseApp.Data.Models
         public DateTime? DateOfBirth { get; set; }
 
         [Required]
+        [Comment("Unique Identification Number of the Patient")]
+        public string UIN { get; set; } = null!;  // Unique Identification Number
+
+        [Required]
         [Comment("Addres for home manipulation of the Patient")]
         public string HomeAddress { get; set; } = null!;
 

@@ -65,5 +65,11 @@ namespace MyNurseApp.Controllers
             await _manipulationsService.EditManipulationAsync(model);
             return RedirectToAction("Index");
         }
+
+        public async Task<IActionResult> BookManipulation()
+        {
+            await Task.CompletedTask;
+            return View();
+        }
     }
 }
