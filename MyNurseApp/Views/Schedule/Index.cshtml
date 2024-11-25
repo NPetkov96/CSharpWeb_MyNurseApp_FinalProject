@@ -1,4 +1,5 @@
-﻿@model IEnumerable<MyNurseApp.Web.ViewModels.HomeVisitation.HomeVisitationViewModel>
+﻿@using MyNurseApp.Web.ViewModels.HomeVisitation
+@model IEnumerable<HomeVisitationViewModel>
 
 @{
     ViewData["Title"] = "Scheduled Home Visitations";
@@ -9,6 +10,10 @@
 @if (Model == null || !Model.Any())
 {
     <p>There are no scheduled home visitations at this moment.</p>
+    <p>If you would like to request a home visitation, please click the button below:</p>
+    <a asp-controller="Manipulations" asp-action="Index" class="btn btn-primary">
+        Request Home Visitation
+    </a>
 }
 else
 {

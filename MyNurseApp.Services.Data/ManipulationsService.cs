@@ -62,7 +62,7 @@ namespace MyNurseApp.Services.Data
 
             if (isManipulationExist != null)
             {
-                throw new ArgumentException("The manipulation already exist!"); //TODO betther handling the exeption.
+                throw new ArgumentException("The manipulation already exist!"); //TODO better handling the exception.
             }
             MedicalManipulation manipulation = new MedicalManipulation()
             {
@@ -105,7 +105,7 @@ namespace MyNurseApp.Services.Data
             var manipulationToDelete = await _manipulationRepository.FirstOrDefaultAsync(x => x.Id == id);
             if (manipulationToDelete == null)
             {
-                throw new ArgumentException("The manipulation doestn exist!"); //TODO betther handling the exeption.
+                throw new ArgumentException("The manipulation doestn exist!"); //TODO better handling the exception.
             }
 
             await _manipulationRepository.DeleteAsync(manipulationToDelete);

@@ -25,7 +25,7 @@ namespace MyNurseApp.Services.Data
 
             if (patient == null)
             {
-                throw new ArgumentException("No user found"); //make better exception handlig....
+                throw new ArgumentException("No user found"); //make better exception handling....
             }
 
             PatientProfileViewModel viewModel = new PatientProfileViewModel() 
@@ -43,6 +43,11 @@ namespace MyNurseApp.Services.Data
             };
 
             return viewModel;
+        }
+
+        public async Task AddHomeVisitation()
+        {
+
         }
 
     }
