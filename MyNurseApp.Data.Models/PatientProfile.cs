@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using MyNurseApp.Common.Constants;
 using System.ComponentModel.DataAnnotations;
 
 namespace MyNurseApp.Data.Models
@@ -10,12 +9,12 @@ namespace MyNurseApp.Data.Models
         public Guid Id { get; set; }
 
         [Required]
-        [StringLength(PatientConstants.PatientMaxNameLength)]
+        [StringLength(99)]
         [Comment("First name of the Patient")]
         public string FirstName { get; set; } = null!;
 
         [Required]
-        [StringLength(PatientConstants.PatientMaxNameLength)]
+        [StringLength(99)]
         [Comment("Last name of the Patient")]
         public string LastName { get; set; } = null!;
 
@@ -31,17 +30,17 @@ namespace MyNurseApp.Data.Models
         public string HomeAddress { get; set; } = null!;
 
         [Required]
-        [StringLength(PatientConstants.PatientPhoneNumberMaxLength)]
+        [StringLength(13)]
         [Comment("Phone number of the Patient")]
         public string PhoneNumber { get; set; } = null!;
 
         [Required]
-        [StringLength(PatientConstants.PatientMaxNameLength)]
+        [StringLength(99)]
         [Comment("Full name of relative for Emergancy call if it's needed")]
         public string EmergencyContactFullName { get; set; } = null!;
 
         [Required]
-        [StringLength(PatientConstants.PatientPhoneNumberMaxLength)]
+        [StringLength(13)]
         [Comment("Second phone number for Emergancy call if it's needed")]
         public string EmergencyContactPhone { get; set; } = null!;
 
