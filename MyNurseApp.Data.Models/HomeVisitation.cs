@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using MyNurseApp.Common.Enums;
 using System.ComponentModel.DataAnnotations;
 
 namespace MyNurseApp.Data.Models

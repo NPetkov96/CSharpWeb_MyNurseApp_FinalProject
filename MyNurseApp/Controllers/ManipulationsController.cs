@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MyNurseApp.Services.Data;
 using MyNurseApp.Web.ViewModels.Manipulations;
+using Newtonsoft.Json;
 
 
 namespace MyNurseApp.Controllers
@@ -14,6 +15,18 @@ namespace MyNurseApp.Controllers
         {
             _manipulationsService = manipulationsService;
            
+        }
+
+        [HttpGet]
+        public IActionResult SaveSelection()
+        {
+            // Вземане на избраните манипулации от ViewBag (или модел)
+            var selectedManipulations = GetFromTempData<MedicalManipulationsViewModel>("SelectedManipulations", this);
+
+            // Запазване в сесията като JSON
+            HttpContext.Session.SetString("SelectedManipulations", JsonConvert.SerializeObject(selectedManipulations));
+            ClearTempData("SelectedManipulations", this); // ????????
+            return RedirectToAction("Schedule", "Schedule");
         }
 
         [HttpGet]
@@ -31,12 +44,12 @@ namespace MyNurseApp.Controllers
         [HttpPost]
         public async Task<IActionResult> AddToSelection(Guid id)
         {
-
             var manipulation = _manipulationsService.GetByIdAsync(id).Result;
             AddToTempData("SelectedManipulations", manipulation, this);
             await Task.CompletedTask;
             return RedirectToAction("Index");
         }
+
 
         [HttpPost]
         public IActionResult ClearSelection()
@@ -112,11 +125,13 @@ namespace MyNurseApp.Controllers
                 ? new List<T>() // Ако няма данни, върнете празен списък
                 : Newtonsoft.Json.JsonConvert.DeserializeObject<List<T>>(data)!;
         }
-
+        
         public void ClearTempData(string key, Controller controller)
         {
             controller.TempData[key] = null;
         }
+
+
 
     }
 }

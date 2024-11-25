@@ -1,4 +1,5 @@
 ﻿using MyNurseApp.Web.ViewModels.HomeVisitation;
+using MyNurseApp.Web.ViewModels.Manipulations;
 using MyNurseApp.Web.ViewModels.PatientProfile;
 
 namespace MyNurseApp.Web.ViewModels
@@ -7,5 +8,7 @@ namespace MyNurseApp.Web.ViewModels
     {
         public PatientProfileViewModel PatientProfile { get; set; } = null!;
         public HomeVisitationViewModel HomeVisitation { get; set; } = null!;
+
+        public IEnumerable<MedicalManipulationsViewModel> MedicalManipulations = new List<MedicalManipulationsViewModel>();
     }
 }
