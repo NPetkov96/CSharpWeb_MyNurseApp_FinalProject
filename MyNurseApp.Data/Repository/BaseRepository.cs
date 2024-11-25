@@ -51,6 +51,22 @@ namespace MyNurseApp.Data.Repository
 
             return entity!;
         }
+
+        public async Task<bool> UpdateAsync(TType item)
+        {
+            try
+            {
+                this.dbSet.Attach(item);
+                this.dbContext.Entry(item).State = EntityState.Modified;
+                await this.dbContext.SaveChangesAsync();
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
     }
 }
  

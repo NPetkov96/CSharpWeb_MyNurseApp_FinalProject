@@ -16,9 +16,25 @@ namespace MyNurseApp.Services.Data
             this._currentAccsessor = httpContextAccessor;
         }
 
+        public async Task<MedicalManipulationsViewModel> GetByIdAsync(Guid id)
+        {
+            MedicalManipulation model = await _manipulationRepository.GetByIdAsync(id);
+
+            var modelView = new MedicalManipulationsViewModel()
+            {
+                Id = model.Id,
+                Name = model.Name,
+                Duration = model.Duration,
+                Description = model.Description,
+                Price = model.Price,
+            };
+
+            return modelView;
+        }
+
         public async Task AddManipulationAsync(MedicalManipulationsViewModel model)
         {
-            var isManipulationExist = _manipulationRepository.FirstOrDefaultAsync(m=>m.Name == model.Name);
+            var isManipulationExist = await _manipulationRepository.FirstOrDefaultAsync(m => m.Name == model.Name);
 
             if (isManipulationExist != null)
             {
@@ -32,7 +48,7 @@ namespace MyNurseApp.Services.Data
                 Description = model.Description,
                 Price = model.Price
             };
-           
+
 
             await _manipulationRepository.AddAsync(manipulation);
         }
@@ -57,7 +73,7 @@ namespace MyNurseApp.Services.Data
 
                 viewMnipulations.Add(currenctManipulation);
             }
-            return viewMnipulations;
+            return viewMnipulations.OrderBy(m => m.Price);
         }
 
         public async Task RemoveManipulationAsync(Guid id)
@@ -69,6 +85,20 @@ namespace MyNurseApp.Services.Data
             }
 
             await _manipulationRepository.DeleteAsync(manipulationToDelete);
+        }
+
+        public async Task EditManipulationAsync(MedicalManipulationsViewModel model)
+        {
+            MedicalManipulation manipulation = new MedicalManipulation() 
+            {
+                Id = model.Id,
+                Name = model.Name,
+                Duration = model.Duration,
+                Description = model.Description,
+                Price = model.Price
+            };
+
+            await _manipulationRepository.UpdateAsync(manipulation);
         }
     }
 }

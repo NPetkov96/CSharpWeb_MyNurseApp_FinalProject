@@ -5,6 +5,7 @@ using MyNurseApp.Web.ViewModels.Manipulations;
 
 namespace MyNurseApp.Controllers
 {
+    [Authorize]
     public class ManipulationsController : Controller
     {
         private readonly ManipulationsService _manipulationsService;
@@ -26,7 +27,6 @@ namespace MyNurseApp.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AddManipulation()
         {
-
             await Task.CompletedTask;
             return View();
         }
@@ -52,5 +52,18 @@ namespace MyNurseApp.Controllers
             return RedirectToAction("Index");
         }
 
+        [HttpGet]
+        public async Task<IActionResult> EditManipulation(Guid id)
+        {
+            var model = await _manipulationsService.GetByIdAsync(id);
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditManipulation(MedicalManipulationsViewModel model)
+        {
+            await _manipulationsService.EditManipulationAsync(model);
+            return RedirectToAction("Index");
+        }
     }
 }

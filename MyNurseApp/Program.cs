@@ -1,12 +1,11 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MyNurseApp.Data;
-using MyNurseApp.Data.Models;
-using MyNurseApp.Data.Repository.Interfaces;
-using MyNurseApp.Data.Repository;
-using MyNurseApp.Services.Data;
 using MyNurseApp.Data.Configuration;
-using Microsoft.AspNetCore.Authentication.Cookies;
+using MyNurseApp.Data.Models;
+using MyNurseApp.Data.Repository;
+using MyNurseApp.Data.Repository.Interfaces;
+using MyNurseApp.Services.Data;
 
 namespace MyNurseApp
 {
