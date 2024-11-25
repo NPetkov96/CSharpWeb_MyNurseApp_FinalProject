@@ -45,5 +45,12 @@ namespace MyNurseApp.Controllers
 
             return View(viewModel);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Schedule(PatientAndHomeVisitationViewModel model)
+        {
+            //Add visitation do DB
+            return RedirectToAction("Index");
+        }
     }
 }
