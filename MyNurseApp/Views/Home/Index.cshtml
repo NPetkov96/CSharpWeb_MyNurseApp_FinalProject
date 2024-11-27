@@ -7,13 +7,17 @@
     <p class="lead">Here you can find your nurse, who will help you with any medical procedure performed at your home.</p>
 
     <div class="mt-4">
-        <a href="/Account/Login" class="btn btn-primary btn-lg">
+        <a href="/Identity/Account/Login" class="btn btn-primary btn-lg">
             Login
+        </a>
+        <span class="text-muted">or</span>
+        <a href="/Identity/Account/Register" class="btn btn-primary btn-lg">
+            Register
         </a>
     </div>
 
     <div class="mt-4">
-        <a href="/Account/Register" class="btn btn-secondary btn-lg">
+        <a asp-controller="PatientProfile" asp-action="Index" class="btn btn-secondary btn-lg">
             Register as a Patient
         </a>
         <p class="text-muted mt-2">

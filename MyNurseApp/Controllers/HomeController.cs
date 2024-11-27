@@ -1,8 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using MyNurseApp.Models;
-using MyNurseApp.Services.Data;
-using MyNurseApp.Web.ViewModels.PatientProfile;
 using System.Diagnostics;
 
 namespace MyNurseApp.Controllers

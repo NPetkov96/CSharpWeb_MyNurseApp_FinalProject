@@ -72,5 +72,47 @@ namespace MyNurseApp.Services.Data
 
             return true;
         }
+
+        public async Task<PatientProfileViewModel> GetPatientProfileAync(Guid id)
+        {
+            var model = await _patientRepository.GetByIdAsync(id);
+
+            var viewModel = new PatientProfileViewModel()
+            {
+                Id = model.Id,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                DateOfBirth = model.DateOfBirth,
+                UIN = model.UIN,
+                HomeAddress = model.HomeAddress,
+                PhoneNumber = model.PhoneNumber,
+                EmergencyContactFullName = model.EmergencyContactFullName,
+                EmergencyContactPhone = model.EmergencyContactPhone,
+                Notes = model.Notes
+            };
+
+            return viewModel;
+        }
+
+        public async Task EditPatientProfileAync(PatientProfileViewModel model)
+        {
+            var userId = _currentAccsessor.HttpContext?.User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            PatientProfile patient = new PatientProfile()
+            {
+                Id = Guid.Parse(userId),
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                DateOfBirth = model.DateOfBirth,
+                UIN = model.UIN,
+                HomeAddress = model.HomeAddress,
+                PhoneNumber = model.PhoneNumber,
+                EmergencyContactFullName = model.EmergencyContactFullName,
+                EmergencyContactPhone = model.EmergencyContactPhone,
+                Notes = model.Notes,
+                UserId = Guid.Parse(userId)
+            };
+
+            await _patientRepository.UpdateAsync(patient);
+        }
     }
 }

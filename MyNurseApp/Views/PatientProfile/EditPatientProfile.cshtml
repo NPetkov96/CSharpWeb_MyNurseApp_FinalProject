@@ -1,0 +1,72 @@
+﻿@using MyNurseApp.Web.ViewModels.PatientProfile
+@model PatientProfileViewModel
+
+@{
+    ViewData["Title"] = "Edit Patient Profile";
+}
+
+<div class="container mt-5 d-flex justify-content-center">
+    <div class="card shadow-lg" style="max-width: 800px; border-radius: 10px; overflow: hidden;">
+
+        <!-- Form Header -->
+        <div class="bg-primary text-white p-4 text-center">
+            <h3>Edit Patient Profile</h3>
+        </div>
+
+        <!-- Form Body -->
+        <div class="p-4" style="background-color: #f8f9fa;">
+            <form asp-action="EditPatientProfile" asp-controller="PatientProfile" method="post">
+                <div class="row g-3">
+                    <!-- Personal Info -->
+                    <div class="col-md-6">
+                        <label for="FirstName" class="form-label">First Name</label>
+                        <input asp-for="FirstName" class="form-control" id="FirstName" placeholder="Enter first name" />
+                        <span asp-validation-for="FirstName" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="LastName" class="form-label">Last Name</label>
+                        <input asp-for="LastName" class="form-control" id="LastName" placeholder="Enter last name" />
+                        <span asp-validation-for="LastName" class="text-danger"></span>
+                    </div>
+
+                    <!-- Contact Info -->
+                    <div class="col-md-6">
+                        <label for="PhoneNumber" class="form-label">Phone Number</label>
+                        <input asp-for="PhoneNumber" class="form-control" id="PhoneNumber" placeholder="Enter phone number" />
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="HomeAddress" class="form-label">Address</label>
+                        <input asp-for="HomeAddress" class="form-control" id="HomeAddress" placeholder="Enter address" />
+                        <span asp-validation-for="HomeAddress" class="text-danger"></span>
+                    </div>
+
+                    <!-- Emergency Contact -->
+                    <div class="col-md-6">
+                        <label for="EmergencyContactFullName" class="form-label">Emergency Contact Name</label>
+                        <input asp-for="EmergencyContactFullName" class="form-control" id="EmergencyContactFullName" placeholder="Enter emergency contact name" />
+                        <span asp-validation-for="EmergencyContactFullName" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="EmergencyContactPhone" class="form-label">Emergency Contact Phone</label>
+                        <input asp-for="EmergencyContactPhone" class="form-control" id="EmergencyContactPhone" placeholder="Enter emergency contact phone" />
+                        <span asp-validation-for="EmergencyContactPhone" class="text-danger"></span>
+                    </div>
+
+                    <!-- Notes -->
+                    <div class="col-12">
+                        <label for="Notes" class="form-label">Notes</label>
+                        <textarea asp-for="Notes" class="form-control" id="Notes" rows="3" placeholder="Enter additional notes"></textarea>
+                        <span asp-validation-for="Notes" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="text-end mt-4">
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                    <a asp-action="Index" asp-controller="PatientProfile" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

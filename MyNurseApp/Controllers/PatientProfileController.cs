@@ -61,6 +61,22 @@ namespace MyNurseApp.Controllers
             return RedirectToAction("Index");
         }
 
+        [HttpGet]
+        public async Task<IActionResult> EditPatientProfile(Guid id)
+        {
+            var profile = await _patientService.GetPatientProfileAync(id);
+            return View(profile);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditPatientProfile(PatientProfileViewModel model)
+        {
+            await _patientService.EditPatientProfileAync(model);
+            return RedirectToAction("Index");
+        }
+
+
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public async Task<IActionResult> Error()
         {

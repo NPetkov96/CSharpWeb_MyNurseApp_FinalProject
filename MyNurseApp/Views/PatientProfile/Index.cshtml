@@ -1,18 +1,45 @@
-﻿@model MyNurseApp.Web.ViewModels.PatientProfile.PatientProfileViewModel
+﻿@using MyNurseApp.Web.ViewModels.PatientProfile
+@model PatientProfileViewModel
 
-<h2>Your Profile</h2>
+@{
+    ViewData["Title"] = "Patient Profile";
+}
 
-<div>
-    <p><strong>Name:</strong> @Model.FirstName @Model.LastName</p>
-    <p><strong>Date of birth:</strong> @Model.DateOfBirth</p>
-    <p><strong>EGN:</strong> @Model.UIN</p>
-    <p><strong>Address:</strong> @Model.HomeAddress</p>
-    <p><strong>Phone:</strong> @Model.PhoneNumber</p>
-    <p><strong>Emergency contact name:</strong> @Model.EmergencyContactFullName</p>
-    <p><strong>Emergency contact phone number:</strong> @Model.EmergencyContactPhone</p>
-    <p><strong>Notes:</strong> @Model.Notes</p>
+<div class="container mt-5 d-flex justify-content-center">
+    <div class="card shadow-lg d-flex flex-row" style="max-width: 800px; border-radius: 10px; overflow: hidden;">
+
+        <!-- Left Side: Personal Info -->
+        <div class="bg-primary text-white p-4" style="width: 35%; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+            <h3 class="mb-2">@Model.FirstName @Model.LastName</h3>
+            <p class="mb-1"><small>@Model.UIN</small></p>
+            <hr class="w-75" style="border-color: rgba(255, 255, 255, 0.3);" />
+            <p class="mb-1"><strong>DOB:</strong> @Model.DateOfBirth?.ToString("dd/MM/yyyy")</p>
+            <p class="mb-1"><strong>Phone:</strong> @Model.PhoneNumber</p>
+        </div>
+
+        <!-- Right Side: Contact & Additional Info -->
+        <div class="p-4" style="width: 65%; background-color: #f8f9fa;">
+            <div class="mb-3">
+                <h6 class="text-secondary">Contact Information</h6>
+                <p class="mb-1"><strong>Address:</strong> @Model.HomeAddress</p>
+            </div>
+
+            <div class="mb-3">
+                <h6 class="text-secondary">Emergency Contact</h6>
+                <p class="mb-1"><strong>Name:</strong> @Model.EmergencyContactFullName</p>
+                <p class="mb-1"><strong>Phone:</strong> @Model.EmergencyContactPhone</p>
+            </div>
+
+            <div>
+                <h6 class="text-secondary">Notes</h6>
+                <p class="mb-0">@Model.Notes "No notes available"</p>
+            </div>
+
+            <div class="text-end mt-4">
+                <a asp-action="EditPatientProfile" asp-controller="PatientProfile" asp-route-id="@Model.Id" class="btn btn-primary btn-sm">
+                    Edit Profile
+                </a>
+            </div>
+        </div>
+    </div>
 </div>
-
-@* <div>   TODO !!!!!!!!!
-    <a asp-action="EditPatientProfile" asp-controller="PatientProfile" asp-route-id="@Model.Id" class="btn btn-warning">Edit Profile</a>
-</div> *@
