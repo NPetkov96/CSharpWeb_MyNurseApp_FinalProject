@@ -57,7 +57,6 @@ namespace MyNurseApp.Controllers
 
         private List<MedicalManipulationsViewModel> GetSelectedManipulations()
         {
-            // Вземане на манипулациите от сесията
             var manipulationsJson = HttpContext.Session.GetString("SelectedManipulations");
 
             List<MedicalManipulationsViewModel>? selectedManipulations = manipulationsJson != null

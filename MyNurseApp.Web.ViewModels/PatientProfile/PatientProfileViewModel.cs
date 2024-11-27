@@ -22,7 +22,7 @@ namespace MyNurseApp.Web.ViewModels.PatientProfile
         [Required(ErrorMessage = "Unique identification number is required.")]
         [MinLength(10, ErrorMessage = "Unique identification number must be exact 10 symbols.")]
         [MaxLength(10, ErrorMessage = "Unique identification number must be exact 10 symbols.")]
-        public string UIN { get; set; } = null!;  // Unique Identification Number
+        public string UIN { get; set; } = null!;
 
         [Required(ErrorMessage = "Home address is required")]
         public string HomeAddress { get; set; } = null!;

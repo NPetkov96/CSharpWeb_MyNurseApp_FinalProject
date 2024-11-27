@@ -3,7 +3,6 @@
 
 <h2>Schedule Home Visitation</h2>
 <div class="row">
-    <!-- Профил на пациента -->
     <div class="col-md-6">
         <div class="patient-profile">
             <h3>Patient Profile</h3>
@@ -17,8 +16,6 @@
             <p><strong>Notes:</strong> @Model.PatientProfile.Notes</p>
         </div>
     </div>
-
-    <!-- Формуляр за домашно посещение -->
     <div class="col-md-6">
         <form asp-action="CreateHomeVisitation" method="post">
             <div class="form-group">
@@ -82,19 +79,17 @@ else
             const priceInput = document.querySelector("[name='PriceForVisitation']");
             const basePrice = 20;
 
-            // Set the minimum date to today's date and time
             const today = new Date();
-            const isoDate = today.toISOString().slice(0, 16); // Format as yyyy-MM-ddTHH:mm
+            const isoDate = today.toISOString().slice(0, 16);
             dateTimeInput.min = isoDate;
 
             dateTimeInput.addEventListener("change", function () {
                 const selectedDateTime = new Date(dateTimeInput.value);
 
-                // Check if a specific time is selected (non-default)
                 if (selectedDateTime.getHours() || selectedDateTime.getMinutes()) {
-                    priceInput.value = basePrice + 20; // Add extra charge
+                    priceInput.value = basePrice + 20; 
                 } else {
-                    priceInput.value = basePrice; // Default price
+                    priceInput.value = basePrice; 
                 }
             });
         });

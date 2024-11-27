@@ -20,10 +20,8 @@ namespace MyNurseApp.Controllers
         [HttpGet]
         public IActionResult SaveSelection()
         {
-            // Вземане на избраните манипулации от ViewBag (или модел)
             var selectedManipulations = GetFromTempData<MedicalManipulationsViewModel>("SelectedManipulations", this);
 
-            // Запазване в сесията като JSON
             HttpContext.Session.SetString("SelectedManipulations", JsonConvert.SerializeObject(selectedManipulations));
             ClearTempData("SelectedManipulations", this); // ????????
             return RedirectToAction("Schedule", "Schedule");
@@ -32,7 +30,6 @@ namespace MyNurseApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            // Извличане на данните от TempData
             var selectedManipulations = GetFromTempData<MedicalManipulationsViewModel>("SelectedManipulations", this);
 
             ViewBag.SelectedManipulations = selectedManipulations;
@@ -104,17 +101,14 @@ namespace MyNurseApp.Controllers
 
         public void AddToTempData<T>(string key, T item, Controller controller)
         {
-            // Извличане на текущите данни от TempData
             var existingData = controller.TempData[key] as string;
             var list = string.IsNullOrEmpty(existingData)
-                ? new List<T>() // Ако няма данни, създайте нов списък
-                : Newtonsoft.Json.JsonConvert.DeserializeObject<List<T>>(existingData);
+                ? new List<T>() 
+                : JsonConvert.DeserializeObject<List<T>>(existingData);
 
-            // Добавяне на новия елемент
             list!.Add(item);
 
-            // Запазване обратно в TempData
-            controller.TempData[key] = Newtonsoft.Json.JsonConvert.SerializeObject(list);
+            controller.TempData[key] = JsonConvert.SerializeObject(list);
         }
 
 
@@ -122,8 +116,8 @@ namespace MyNurseApp.Controllers
         {
             var data = controller.TempData.Peek(key) as string;
             return string.IsNullOrEmpty(data)
-                ? new List<T>() // Ако няма данни, върнете празен списък
-                : Newtonsoft.Json.JsonConvert.DeserializeObject<List<T>>(data)!;
+                ? new List<T>() 
+                : JsonConvert.DeserializeObject<List<T>>(data)!;
         }
         
         public void ClearTempData(string key, Controller controller)

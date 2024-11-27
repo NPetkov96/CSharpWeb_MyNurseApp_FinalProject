@@ -1,4 +1,4 @@
-html {
+﻿html {
     font-size: 14px;
 }
 
@@ -21,23 +21,100 @@ body {
     margin-bottom: 60px;
 }
 
+/* Уютен фон с топли и сини градиентни цветове */
+body {
+    background: linear-gradient(to bottom, #85d1ff, #80b8ff, #4c94ff);
+    background-size: cover;
+    background-attachment: fixed;
+    color: #333; /* Цветът на текста */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Центриране на съдържанието */
+.text-center {
+    padding-top: 20vh;
+    padding-bottom: 20vh;
+    color: white; /* Бял текст за контраст */
+}
+
+/* Стил за заглавието */
+h1.display-4 {
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6); /* Малка сянка за по-добра четимост */
+}
+
+/* Стил за водещия текст */
+p.lead {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Основен бутон */
+.btn-primary {
+    background-color: #4c94ff;
+    border-color: #4c94ff;
+    color: white;
+    font-size: 1.2rem;
+    padding: 0.75rem 1.5rem;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+    .btn-primary:hover {
+        background-color: #80b8ff;
+        transform: scale(1.05); /* Лек ефект на увеличаване */
+    }
+
+/* Второстепенни бутони */
+.btn-secondary {
+    background-color: #80b8ff;
+    border-color: #80b8ff;
+    color: white;
+    font-size: 1.2rem;
+    padding: 0.75rem 1.5rem;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+    .btn-secondary:hover {
+        background-color: #85d1ff;
+        transform: scale(1.05); /* Лек ефект на увеличаване */
+    }
+
+/* Текст под второстепенните бутони */
+.text-muted {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1rem;
+    margin-top: 0.5rem;
+}
+
+/* За пълноценен вид на текста */
+a {
+    text-decoration: none;
+}
+
+/* Контейнер за подравняване на елементите */
+div {
+    text-align: center;
+}
+
+/* Администраторски панел */
 .admin-panel {
-    border: 2px solid #f5c6cb;
+    border: 2px solid #cce5ff;
     padding: 20px;
-    background-color: #f8d7da;
+    background-color: #e9f7ff;
     margin-top: 20px;
 }
 
     .admin-panel h3 {
-        color: #721c24;
+        color: #004085;
     }
 
+/* Селектирани елементи */
 .selected-item {
     border: 1px solid #ccc;
     padding: 10px;
     margin-bottom: 10px;
     border-radius: 5px;
-    background-color: #f9f9f9;
+    background-color: #f1f9ff;
     position: relative;
 }
 
@@ -46,7 +123,7 @@ body {
     top: 5px;
     right: 5px;
     border: none;
-    background-color: #ff5c5c;
+    background-color: #4c94ff;
     color: white;
     font-size: 16px;
     cursor: pointer;
@@ -56,4 +133,3 @@ body {
     line-height: 20px;
     text-align: center;
 }
-

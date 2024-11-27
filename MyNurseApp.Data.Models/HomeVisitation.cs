@@ -20,7 +20,7 @@ namespace MyNurseApp.Data.Models
         public string? Note { get; set; }
 
         [Required]
-        public decimal PriceForVisitation { get; set; } //Default value is 20 BGN if Patient choose a hour for visitation i will have extra charge.
+        public decimal PriceForVisitation { get; set; }
 
         [Required]
         public bool IsHomeVisitationConfirmed { get; set; } = false;

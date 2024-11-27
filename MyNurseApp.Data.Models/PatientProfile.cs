@@ -23,7 +23,7 @@ namespace MyNurseApp.Data.Models
 
         [Required]
         [Comment("Unique Identification Number of the Patient")]
-        public string UIN { get; set; } = null!;  // Unique Identification Number
+        public string UIN { get; set; } = null!;
 
         [Required]
         [Comment("Addres for home manipulation of the Patient")]
