@@ -2,15 +2,20 @@
     ViewData["Title"] = "Pending Approval";
 }
 
-<div class="container mt-5">
-    <div class="alert alert-warning text-center">
-        <h1 class="text-danger">Вашият акаунт все още не е потвърден!</h1>
-        <p class="mt-4">
-            Благодарим Ви за регистрацията в MyNurseApp. Вашият акаунт изчаква одобрение от администратор.
-            Ще бъдете уведомени веднага щом вашият акаунт бъде одобрен.
+<div class="container mt-5" style="background-color: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+    <div class="alert alert-info text-center">
+        <h1 class="text-primary" style="font-weight: bold; font-size: 2.5rem;">Your Account is Pending Approval</h1>
+        <p class="mt-4" style="font-size: 1.2rem; color: #333;">
+            Thank you for registering with MyNurseApp. Your account is currently awaiting approval by an administrator.
+            You will be notified as soon as your account is approved.
         </p>
-        <p class="mt-4">
-            Ако имате въпроси, моля свържете се с нас чрез <a href="/Home/Contact">формата за контакт</a>.
+        <p class="mt-4" style="font-size: 1.2rem; color: #333;">
+            If you have any questions, feel free to reach out to us using the
+            <a href="/Home/Contact" class="btn btn-link" style="font-weight: bold; text-decoration: underline; color: #0056b3;">Contact Form</a>.
         </p>
+        <p class="mt-4" style="font-size: 1.2rem; color: #333;">
+            In the meantime, you can start creating your profile to speed up the process.
+        </p>
+        <a href="/Nurse/CreateNurseProfile" class="btn btn-primary mt-3" style="font-size: 1.2rem; padding: 10px 20px; border-radius: 5px;">Create Your Profile</a>
     </div>
 </div>

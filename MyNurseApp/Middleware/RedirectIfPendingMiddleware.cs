@@ -16,8 +16,7 @@ public class RedirectIfPendingMiddleware
     {
         // Изключване на определени пътища от проверката
         var path = context.Request.Path.Value;
-        var excludedPaths = new[] { "/Home/PendingApproval", "/Identity/Account/Logout" };
-
+        var excludedPaths = new[] { "/Home/PendingApproval", "/Identity/Account/Logout", "/Nurse/CreateNurseProfile" };
         if (path != null && excludedPaths.Any(p => path.StartsWith(p, StringComparison.OrdinalIgnoreCase)))
         {
             await _next(context);
@@ -25,7 +24,7 @@ public class RedirectIfPendingMiddleware
         }
 
         // Проверка дали потребителят е логнат
-        if (context.User.Identity.IsAuthenticated)
+        if (context.User.Identity!.IsAuthenticated)
         {
             using (var scope = _serviceProvider.CreateScope())
             {

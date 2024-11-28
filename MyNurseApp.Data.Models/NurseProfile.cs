@@ -21,9 +21,6 @@ namespace MyNurseApp.Data
         public string LastName { get; set; } = null!;
 
         [Required]
-        public string Email { get; set; } = null!;
-
-        [Required]
         [StringLength(13)]
         public string PhoneNumber { get; set; } = null!;
 

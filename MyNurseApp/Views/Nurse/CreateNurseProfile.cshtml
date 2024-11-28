@@ -1,0 +1,61 @@
+﻿@using MyNurseApp.Web.ViewModels.NurseProfile
+@model NurseProfileViewModel
+
+@{
+    ViewData["Title"] = "Register as Nurse";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header text-center text-white bg-primary">
+                    <h3>Register as Nurse</h3>
+                </div>
+                <div class="card-body">
+                    <form asp-action="CreateNurseProfile" method="post">
+                        <div class="form-group mb-3">
+                            <label asp-for="FirstName" class="form-label">First Name</label>
+                            <input asp-for="FirstName" class="form-control" placeholder="Enter First Name" />
+                            <span asp-validation-for="FirstName" class="text-danger small"></span>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label asp-for="LastName" class="form-label">Last Name</label>
+                            <input asp-for="LastName" class="form-control" placeholder="Enter Last Name" />
+                            <span asp-validation-for="LastName" class="text-danger small"></span>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label asp-for="PhoneNumber" class="form-label">Phone Number</label>
+                            <input asp-for="PhoneNumber" class="form-control" placeholder="Enter Phone Number" />
+                            <span asp-validation-for="PhoneNumber" class="text-danger small"></span>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label asp-for="YearsOfExperience" class="form-label">Years of Experience</label>
+                            <input asp-for="YearsOfExperience" type="number" class="form-control" placeholder="Enter Years of Experience" />
+                            <span asp-validation-for="YearsOfExperience" class="text-danger small"></span>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label asp-for="Recommendations" class="form-label">Recommendations (Optional)</label>
+                            <textarea asp-for="Recommendations" class="form-control" placeholder="Enter Recommendations"></textarea>
+                            <span asp-validation-for="Recommendations" class="text-danger small"></span>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label asp-for="Education" class="form-label">Education Level</label>
+                            <select asp-for="Education" class="form-select" asp-items="Html.GetEnumSelectList<MyNurseApp.Common.Enums.NurseEducation>()">
+                                <option value="" disabled selected>-- Select Education Level --</option>
+                            </select>
+                            <span asp-validation-for="Education" class="text-danger small"></span>
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary w-100">Register</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
