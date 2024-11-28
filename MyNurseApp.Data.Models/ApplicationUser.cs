@@ -13,6 +13,8 @@ namespace MyNurseApp.Data.Models
 
         public NurseProfile? Nurse { get; set; }
 
+        public bool IsPending { get; set; } = false;
+
         public ICollection<HomeVisitation>? PatientHomeVisitations { get; set; } 
             = new List<HomeVisitation>();
     }

@@ -102,9 +102,18 @@ namespace MyNurseApp.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
+                // Намираме потребителя по имейл
                 var user = await _signInManager.UserManager.FindByEmailAsync(Input.Email);
                 if (user != null)
                 {
+                    //// Проверяваме дали е в статус "Pending"
+                    //if (user.IsPending)
+                    //{
+                    //    ModelState.AddModelError(string.Empty, "Your account is pending approval as a nurse. Please wait for admin confirmation.");
+                    //    return Page();
+                    //}
+
+                    // Продължаваме с нормалния процес на логин
                     var result = await _signInManager.PasswordSignInAsync(user.UserName, Input.Password, Input.RememberMe, lockoutOnFailure: false);
                     if (result.Succeeded)
                     {
@@ -122,10 +131,13 @@ namespace MyNurseApp.Areas.Identity.Pages.Account
                     }
                 }
 
+                // Ако не намерим потребителя или паролата е грешна
                 ModelState.AddModelError(string.Empty, "Invalid login attempt.");
             }
 
+            // Ако има грешки, презареждаме страницата
             return Page();
         }
+
     }
 }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyNurseApp.Data;
 
@@ -11,9 +12,11 @@ using MyNurseApp.Data;
 namespace MyNurseApp.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241128112233_NurseEducationEnumAdded")]
+    partial class NurseEducationEnumAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -186,9 +189,6 @@ namespace MyNurseApp.Data.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsPending")
                         .HasColumnType("bit");
 
                     b.Property<bool>("LockoutEnabled")
@@ -390,9 +390,6 @@ namespace MyNurseApp.Data.Migrations
                         .HasMaxLength(99)
                         .HasColumnType("nvarchar(99)")
                         .HasComment("First name of the nurse");
-
-                    b.Property<int>("IsConfirmed")
-                        .HasColumnType("int");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");

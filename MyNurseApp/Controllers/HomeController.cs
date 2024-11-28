@@ -17,6 +17,10 @@ namespace MyNurseApp.Controllers
             await Task.CompletedTask; 
             return View();
         }
+        public IActionResult PendingApproval()
+        {
+            return View();
+        }
 
         [HttpGet]
         public async Task<IActionResult> Privacy()

@@ -2,16 +2,13 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.WebUtilities;
 using MyNurseApp.Data.Models;
+using MyNurseApp.Services.Data;
+using MyNurseApp.Web.ViewModels.NurseProfile;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
-using System.Text.Encodings.Web;
 
 namespace MyNurseApp.Areas.Identity.Pages.Account
 {
@@ -21,17 +18,21 @@ namespace MyNurseApp.Areas.Identity.Pages.Account
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IUserStore<ApplicationUser> _userStore;
         private readonly ILogger<RegisterModel> _logger;
+        private readonly NurseService _nurseServie;
+
 
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
             IUserStore<ApplicationUser> userStore,
             SignInManager<ApplicationUser> signInManager,
-            ILogger<RegisterModel> logger)
+            ILogger<RegisterModel> logger,
+            NurseService nurseServie)
         {
             _userManager = userManager;
             _userStore = userStore;
             _signInManager = signInManager;
             _logger = logger;
+            _nurseServie = nurseServie;
         }
 
         /// <summary>
@@ -85,6 +86,11 @@ namespace MyNurseApp.Areas.Identity.Pages.Account
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
+
+            public NurseProfileViewModel NurseProfile { get; set; }
+
+            [Required]
+            public bool IsNurse { get; set; }
         }
 
 
@@ -95,35 +101,58 @@ namespace MyNurseApp.Areas.Identity.Pages.Account
             ReturnUrl = returnUrl;
         }
 
+
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
+
             if (ModelState.IsValid)
             {
                 var user = CreateUser();
                 user.Email = Input.Email;
-
                 await _userStore.SetUserNameAsync(user, Input.Username, CancellationToken.None);
+
+                // Задаваме статус на акаунта
+                if (Input.IsNurse)
+                {
+                    user.IsPending = true; // Акаунтът остава изчакващ потвърждение
+                }
+
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)
                 {
-                    _logger.LogInformation("User created a new account with password.");
+                    // Добавяме съответната роля
+                    if (Input.IsNurse)
+                    {
+                        await _userManager.AddToRoleAsync(user, "Nurse");
+                    }
+                    else
+                    {
+                        await _userManager.AddToRoleAsync(user, "User");
+                    }
 
-                    var userId = await _userManager.GetUserIdAsync(user);
-
+                    // Вписваме потребителя, независимо от статуса
                     await _signInManager.SignInAsync(user, isPersistent: false);
+
+                    // Информираме потребителя за изчакващия статус, ако е медицинско лице
+                    if (Input.IsNurse)
+                    {
+                        ModelState.AddModelError(string.Empty, "Your account is pending admin approval. Some features may be restricted.");
+                    }
+
                     return LocalRedirect(returnUrl);
                 }
+
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
 
-            // If we got this far, something failed, redisplay form
             return Page();
         }
+
 
         private ApplicationUser CreateUser()
         {

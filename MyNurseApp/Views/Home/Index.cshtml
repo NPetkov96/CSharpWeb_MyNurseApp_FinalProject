@@ -1,30 +1,26 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Identity
+
+@{
     ViewData["Title"] = "Home Page";
+    var isAuthenticated = User.Identity!.IsAuthenticated;
 }
 
 <div class="text-center">
     <h1 class="display-4">Welcome!</h1>
     <p class="lead">Here you can find your nurse, who will help you with any medical procedure performed at your home.</p>
 
-    <div class="mt-4">
-        <a href="/Identity/Account/Login" class="btn btn-primary btn-lg">
-            Login
-        </a>
-        <span class="text-muted">or</span>
-        <a href="/Identity/Account/Register" class="btn btn-primary btn-lg">
-            Register
-        </a>
-    </div>
-
-    <div class="mt-4">
-        <a asp-controller="PatientProfile" asp-action="Index" class="btn btn-secondary btn-lg">
-            Register as a Patient
-        </a>
-        <p class="text-muted mt-2">
-            Create your account and provide your details to get started with our services.
-        </p>
-    </div>
-
+    @if (!isAuthenticated){
+        <div class="mt-4">
+            <a href="/Identity/Account/Login" class="btn btn-primary btn-lg">
+                Login
+            </a>
+            <span class="text-muted">or</span>
+            <a href="/Identity/Account/Register" class="btn btn-primary btn-lg">
+                Register
+            </a>
+        </div>
+    }
+    
     <div class="mt-4">
         <a href="/Manipulations" class="btn btn-secondary btn-lg">
             View Medical Procedures

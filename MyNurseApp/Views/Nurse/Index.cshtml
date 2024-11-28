@@ -1,0 +1,52 @@
+﻿@using MyNurseApp.Web.ViewModels.NurseProfile
+@model IEnumerable<NurseProfileViewModel>
+
+@{
+    ViewData["Title"] = "Nurse Profiles";
+}
+
+<div class="container mt-4">
+    <h1 class="text-center">Nurse Profiles</h1>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-warning text-center mt-3" style="color: #856404; background-color: #fff3cd; border-color: #ffeeba;">
+            <p style="font-size: 1.2rem;">No nurse profiles found.</p>
+        </div>
+    }
+    else
+    {
+        <div class="row row-cols-1 row-cols-md-3 g-3">
+            @foreach (var nurse in Model)
+            {
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">@nurse.FirstName @nurse.LastName</h5>
+                            <p class="card-text">
+                                <strong>Phone:</strong> @nurse.PhoneNumber <br />
+                                <strong>Experience:</strong> @nurse.YearsOfExperience years <br />
+                                <strong>Education:</strong> @nurse.Education
+                            </p>
+                            <button class="btn btn-link text-primary p-0" type="button" data-bs-toggle="collapse" data-bs-target="#details-@nurse.Id" aria-expanded="false" aria-controls="details-@nurse.Id">
+                                View More Details
+                            </button>
+                            <div class="collapse mt-2" id="details-@nurse.Id">
+                                <p>
+                                    <strong>Email:</strong> @nurse.Email <br />
+                                    @if (!string.IsNullOrEmpty(nurse.Recommendations))
+                                    {
+                                        <strong>Recommendations:</strong> @nurse.Recommendations
+                                    }
+                                </p>
+                            </div>
+                        </div>
+                        <div class="card-footer text-center">
+                            <a asp-action="Details" asp-route-id="@nurse.Id" class="btn btn-primary btn-sm">Go to Profile</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

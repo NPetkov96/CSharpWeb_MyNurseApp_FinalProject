@@ -7,7 +7,7 @@ namespace MyNurseApp.Data.Configuration
 {
     public static class DataBaseSeeder
     {
-        public static void SeedRolesAndAdmin(IServiceProvider serviceProvider)
+        public static void SeedAndAdmin(IServiceProvider serviceProvider)
         {
             using var scope = serviceProvider.CreateScope();
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
@@ -52,5 +52,22 @@ namespace MyNurseApp.Data.Configuration
                 }
             }
         }
+        public static async Task SeedRolesAsync(IServiceProvider serviceProvider)
+        {
+            var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
+
+            // Уверете се, че ролята Nurse съществува
+            if (!await roleManager.RoleExistsAsync("Nurse"))
+            {
+                await roleManager.CreateAsync(new IdentityRole<Guid>("Nurse"));
+            }
+
+            // Уверете се, че ролята User съществува
+            if (!await roleManager.RoleExistsAsync("User"))
+            {
+                await roleManager.CreateAsync(new IdentityRole<Guid>("User"));
+            }
+        }
     }
+
 }

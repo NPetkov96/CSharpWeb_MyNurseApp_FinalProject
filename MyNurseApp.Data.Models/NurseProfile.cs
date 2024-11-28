@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using MyNurseApp.Common.Enums;
 using MyNurseApp.Data.Models;
 using System.ComponentModel.DataAnnotations;
 
@@ -33,11 +34,14 @@ namespace MyNurseApp.Data
         public string? Recommendations { get; set; }
 
         [Required]
-        public string Education { get; set; } = null!;
+        public NurseEducation Education { get; set; }
 
         public Guid UserId { get; set; }
 
         public ApplicationUser User { get; set; } = null!;
+
+        public NurseStatus IsConfirmed { get; set; } = NurseStatus.Pending;
+
 
         public bool IsDeleted { get; set; } = false;
     }

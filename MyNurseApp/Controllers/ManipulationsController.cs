@@ -14,7 +14,6 @@ namespace MyNurseApp.Controllers
         public ManipulationsController(ManipulationsService manipulationsService)
         {
             _manipulationsService = manipulationsService;
-           
         }
 
         [HttpGet]

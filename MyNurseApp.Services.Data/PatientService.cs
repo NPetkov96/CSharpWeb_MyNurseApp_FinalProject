@@ -99,7 +99,7 @@ namespace MyNurseApp.Services.Data
             var userId = _currentAccsessor.HttpContext?.User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             PatientProfile patient = new PatientProfile()
             {
-                Id = Guid.Parse(userId),
+                Id = Guid.Parse(userId!),
                 FirstName = model.FirstName,
                 LastName = model.LastName,
                 DateOfBirth = model.DateOfBirth,
@@ -109,7 +109,7 @@ namespace MyNurseApp.Services.Data
                 EmergencyContactFullName = model.EmergencyContactFullName,
                 EmergencyContactPhone = model.EmergencyContactPhone,
                 Notes = model.Notes,
-                UserId = Guid.Parse(userId)
+                UserId = Guid.Parse(userId!)
             };
 
             await _patientRepository.UpdateAsync(patient);

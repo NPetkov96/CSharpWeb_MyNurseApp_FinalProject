@@ -10,13 +10,11 @@ namespace MyNurseApp.Controllers
     [Authorize]
     public class PatientProfileController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
         private readonly PatientService _patientService;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public PatientProfileController(ILogger<HomeController> logger, PatientService patientService, IHttpContextAccessor httpContextAccessor)
+        public PatientProfileController(PatientService patientService, IHttpContextAccessor httpContextAccessor)
         {
-            _logger = logger;
             _patientService = patientService;
             _httpContextAccessor = httpContextAccessor;
         }

@@ -11,7 +11,7 @@ namespace MyNurseApp
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -54,16 +54,17 @@ namespace MyNurseApp
             builder.Services.AddScoped<PatientService>();
             builder.Services.AddScoped<ManipulationsService>();
             builder.Services.AddScoped<ScheduleService>();
+            builder.Services.AddScoped<NurseService>();
             builder.Services.AddScoped(typeof(IRepository<,>), typeof(BaseRepository<,>));
 
 
             var app = builder.Build();
 
-            using (var scope = app.Services.CreateScope())
-            {
-                var serviceProvider = scope.ServiceProvider;
-                DataBaseSeeder.SeedRolesAndAdmin(serviceProvider);
-            }
+            //using (var scope = app.Services.CreateScope())
+            //{
+            //    var serviceProvider = scope.ServiceProvider;
+            //    DataBaseSeeder.SeedAndAdmin(serviceProvider);
+            //}
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -73,10 +74,8 @@ namespace MyNurseApp
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
@@ -84,6 +83,16 @@ namespace MyNurseApp
 
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseMiddleware<RedirectIfPendingMiddleware>();
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var serviceProvider = scope.ServiceProvider;
+
+                await DataBaseSeeder.SeedRolesAsync(serviceProvider);
+                DataBaseSeeder.SeedAndAdmin(serviceProvider);
+            }
+
 
             app.UseSession();
 
