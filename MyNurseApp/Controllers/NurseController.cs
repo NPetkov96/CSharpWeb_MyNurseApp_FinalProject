@@ -23,21 +23,22 @@ namespace MyNurseApp.Controllers
         }
 
         [HttpGet]
-        public IActionResult CreateNurseProfile()
+        public async Task<IActionResult> CreateNurseProfile()
         {
-            // Върнете View за създаване на профил
+            await Task.CompletedTask;
             return View();
         }
 
         [HttpPost]
-        public IActionResult CreateNurseProfile(NurseProfileViewModel model)
+        public async Task<IActionResult> CreateNurseProfile(NurseProfileViewModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                // Добавете логика за запис на профила
-                return RedirectToAction("Index", "Home"); // Или друга подходяща страница
+                return View(model);
             }
-            return View(model);
+            await _nurseService.RegisterNurseAsync(model);
+
+            return View("Index");
         }
     }
 }

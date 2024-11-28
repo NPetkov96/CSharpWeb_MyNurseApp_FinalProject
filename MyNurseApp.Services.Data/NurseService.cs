@@ -46,6 +46,7 @@ namespace MyNurseApp.Services.Data
                 FirstName = model.FirstName,
                 LastName = model.LastName,
                 Education = model.Education,
+                MedicalLicenseNumber = model.MedicalLicenseNumber,
                 PhoneNumber = model.PhoneNumber,
                 Recommendations = model.Recommendations,
                 YearsOfExperience = model.YearsOfExperience
@@ -62,6 +63,7 @@ namespace MyNurseApp.Services.Data
                 FirstName = viewModel.FirstName,
                 LastName = viewModel.LastName,
                 Education = viewModel.Education,
+                MedicalLicenseNumber = viewModel.MedicalLicenseNumber,
                 PhoneNumber = viewModel.PhoneNumber,
                 Recommendations = viewModel.Recommendations,
                 YearsOfExperience = viewModel.YearsOfExperience

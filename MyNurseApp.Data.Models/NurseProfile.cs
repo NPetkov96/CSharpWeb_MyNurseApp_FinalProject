@@ -28,6 +28,10 @@ namespace MyNurseApp.Data
         [Comment("Min years of experience for this work")]
         public int YearsOfExperience { get; set; }
 
+        [Required]
+        [StringLength(50)]
+        public string MedicalLicenseNumber { get; set; } = null!;
+
         public string? Recommendations { get; set; }
 
         [Required]
