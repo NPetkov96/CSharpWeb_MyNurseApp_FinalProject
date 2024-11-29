@@ -1,5 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using MyNurseApp.Common.Enums;
 using MyNurseApp.Data;
+using MyNurseApp.Data.Models;
 using MyNurseApp.Data.Repository.Interfaces;
 using MyNurseApp.Web.ViewModels.NurseProfile;
 
@@ -9,17 +13,20 @@ namespace MyNurseApp.Services.Data
     {
         private readonly IRepository<NurseProfile, Guid> _nurseRepository;
         private readonly IHttpContextAccessor _currentAccsessor;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public NurseService(IRepository<NurseProfile, Guid> patientRepository, IHttpContextAccessor httpContextAccessor)
+
+        public NurseService(IRepository<NurseProfile, Guid> patientRepository, IHttpContextAccessor httpContextAccessor, UserManager<ApplicationUser> userManager)
         {
             this._nurseRepository = patientRepository;
             this._currentAccsessor = httpContextAccessor;
+            this._userManager = userManager;
         }
 
         public async Task<NurseProfileViewModel> GetNurseProfileAsync()
         {
             var userId = _currentAccsessor.HttpContext?.User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-            var model = await _nurseRepository.FirstOrDefaultAsync(m=>m.UserId == Guid.Parse(userId!));
+            var model = await _nurseRepository.FirstOrDefaultAsync(m => m.UserId == Guid.Parse(userId!));
 
             if (model == null)
             {
@@ -35,7 +42,7 @@ namespace MyNurseApp.Services.Data
 
             foreach (var profile in profiles)
             {
-               var model = ConvertToViewModel(profile);
+                var model = ConvertToViewModel(profile);
                 viewProfiles.Add(model);
             }
 
@@ -60,7 +67,8 @@ namespace MyNurseApp.Services.Data
                 MedicalLicenseNumber = model.MedicalLicenseNumber,
                 PhoneNumber = model.PhoneNumber,
                 Recommendations = model.Recommendations,
-                YearsOfExperience = model.YearsOfExperience
+                YearsOfExperience = model.YearsOfExperience,
+                IsConfirmed = model.IsConfirmed,
             };
 
             return viewModel;
@@ -83,6 +91,20 @@ namespace MyNurseApp.Services.Data
             };
 
             return model;
+        }
+
+        public async Task AprooveNurseAync(Guid id)
+        {
+
+            var user = await _userManager.Users
+                .Include(u => u.Nurse) 
+                .FirstOrDefaultAsync(u => u.Nurse.Id == id);
+
+
+            user.IsAprooved = false;
+            user.Nurse!.IsConfirmed = NurseStatus.Approved;
+            user.Nurse.User.IsAprooved = false;
+            await _userManager.UpdateAsync(user);
         }
     }
 }

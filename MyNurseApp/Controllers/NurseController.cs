@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using MyNurseApp.Services.Data;
 using MyNurseApp.Web.ViewModels.NurseProfile;
 
@@ -47,7 +48,22 @@ namespace MyNurseApp.Controllers
             }
             await _nurseService.RegisterNurseAsync(model);
 
-            return View("Index");
+            return View("Profile");
+        }
+
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetAllNursesProfiles()
+        {
+            var viewModels = await _nurseService.GetAllNursesAsync();
+            return View(viewModels);
+        }
+
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> AprooveNurse(Guid id)
+        {
+            await _nurseService.AprooveNurseAync(id);
+            await Task.CompletedTask;
+            return RedirectToAction("GetAllNursesProfiles");
         }
     }
 }

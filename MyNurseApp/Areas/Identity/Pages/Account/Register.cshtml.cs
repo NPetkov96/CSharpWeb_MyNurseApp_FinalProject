@@ -115,7 +115,7 @@ namespace MyNurseApp.Areas.Identity.Pages.Account
                 // Задаваме статус на акаунта
                 if (Input.IsNurse)
                 {
-                    user.IsPending = true; // Акаунтът остава изчакващ потвърждение
+                    user.IsAprooved = true; // Акаунтът остава изчакващ потвърждение
                 }
 
                 var result = await _userManager.CreateAsync(user, Input.Password);

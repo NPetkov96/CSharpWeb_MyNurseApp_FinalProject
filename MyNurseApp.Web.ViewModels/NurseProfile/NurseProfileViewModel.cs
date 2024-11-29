@@ -1,4 +1,5 @@
 ﻿using MyNurseApp.Common.Enums;
+using MyNurseApp.Data.Models;
 using System.ComponentModel.DataAnnotations;
 
 namespace MyNurseApp.Web.ViewModels.NurseProfile
@@ -38,6 +39,8 @@ namespace MyNurseApp.Web.ViewModels.NurseProfile
         public NurseEducation Education { get; set; }
 
         public bool IsRegistrated { get; set; } = false;
+
+        public NurseStatus IsConfirmed { get; set; }
 
         public Guid UserId { get; set; }
     }
