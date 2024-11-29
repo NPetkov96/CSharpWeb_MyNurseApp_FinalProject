@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Http;
-using MyNurseApp.Common.Enums;
 using MyNurseApp.Data;
 using MyNurseApp.Data.Repository.Interfaces;
 using MyNurseApp.Web.ViewModels.NurseProfile;
@@ -15,6 +14,18 @@ namespace MyNurseApp.Services.Data
         {
             this._nurseRepository = patientRepository;
             this._currentAccsessor = httpContextAccessor;
+        }
+
+        public async Task<NurseProfileViewModel> GetNurseProfileAsync()
+        {
+            var userId = _currentAccsessor.HttpContext?.User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            var model = await _nurseRepository.FirstOrDefaultAsync(m=>m.UserId == Guid.Parse(userId!));
+
+            if (model == null)
+            {
+                return null!;
+            }
+            return ConvertToViewModel(model);
         }
 
         public async Task<List<NurseProfileViewModel>> GetAllNursesAsync()
@@ -34,7 +45,7 @@ namespace MyNurseApp.Services.Data
         public async Task RegisterNurseAsync(NurseProfileViewModel viewModel)
         {
             var nurse = ConvertToModel(viewModel);
-
+            nurse.IsRegistrated = true;
             await _nurseRepository.AddAsync(nurse);
         }
 
@@ -57,16 +68,18 @@ namespace MyNurseApp.Services.Data
 
         private NurseProfile ConvertToModel(NurseProfileViewModel viewModel)
         {
+            var userId = _currentAccsessor.HttpContext?.User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             var model = new NurseProfile()
             {
-                Id = viewModel.Id,
+                Id = Guid.NewGuid(),
                 FirstName = viewModel.FirstName,
                 LastName = viewModel.LastName,
                 Education = viewModel.Education,
                 MedicalLicenseNumber = viewModel.MedicalLicenseNumber,
                 PhoneNumber = viewModel.PhoneNumber,
                 Recommendations = viewModel.Recommendations,
-                YearsOfExperience = viewModel.YearsOfExperience
+                YearsOfExperience = viewModel.YearsOfExperience,
+                UserId = Guid.Parse(userId!)
             };
 
             return model;

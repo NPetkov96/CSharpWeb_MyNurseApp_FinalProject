@@ -37,6 +37,8 @@ namespace MyNurseApp.Web.ViewModels.NurseProfile
         [Required(ErrorMessage = "Education level is required")]
         public NurseEducation Education { get; set; }
 
+        public bool IsRegistrated { get; set; } = false;
+
         public Guid UserId { get; set; }
     }
 }

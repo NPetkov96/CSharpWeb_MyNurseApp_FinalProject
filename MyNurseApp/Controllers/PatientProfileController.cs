@@ -54,7 +54,7 @@ namespace MyNurseApp.Controllers
                 return this.View(inputModel);
             }
 
-            await _patientService.AddPatientAsync(inputModel, _httpContextAccessor);
+            await _patientService.AddPatientAsync(inputModel);
 
             return RedirectToAction("Index");
         }

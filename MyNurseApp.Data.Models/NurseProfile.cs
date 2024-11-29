@@ -43,6 +43,8 @@ namespace MyNurseApp.Data
 
         public NurseStatus IsConfirmed { get; set; } = NurseStatus.Pending;
 
+        [Required]
+        public bool IsRegistrated { get; set; } = false;
 
         public bool IsDeleted { get; set; } = false;
     }

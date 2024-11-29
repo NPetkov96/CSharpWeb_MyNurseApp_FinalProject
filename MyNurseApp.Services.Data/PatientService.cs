@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
+using MyNurseApp.Data;
 using MyNurseApp.Data.Models;
 using MyNurseApp.Data.Repository.Interfaces;
+using MyNurseApp.Web.ViewModels.NurseProfile;
 using MyNurseApp.Web.ViewModels.PatientProfile;
 
 namespace MyNurseApp.Services.Data
@@ -23,27 +25,15 @@ namespace MyNurseApp.Services.Data
 
             if (existingProfile != null)
             {
-                PatientProfileViewModel patientProfileViewModel = new PatientProfileViewModel()
-                {
-                    Id = existingProfile.Id,
-                    FirstName = existingProfile.FirstName,
-                    LastName = existingProfile.LastName,
-                    DateOfBirth = existingProfile.DateOfBirth,
-                    UIN = existingProfile.UIN,
-                    HomeAddress = existingProfile.HomeAddress,
-                    PhoneNumber = existingProfile.PhoneNumber,
-                    EmergencyContactFullName = existingProfile.EmergencyContactFullName,
-                    EmergencyContactPhone = existingProfile.EmergencyContactPhone,
-                    Notes = existingProfile.Notes
-                };
+                PatientProfileViewModel patientProfileViewModel = ConvertToViewModel(existingProfile);
 
                 return patientProfileViewModel;
             }
-                return null!;
+            return null!;
         }
 
 
-        public async Task<bool> AddPatientAsync(PatientProfileViewModel inputModel, IHttpContextAccessor currentAccsessor)
+        public async Task<bool> AddPatientAsync(PatientProfileViewModel inputModel)
         {
 
             var userId = _currentAccsessor.HttpContext?.User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
@@ -53,20 +43,7 @@ namespace MyNurseApp.Services.Data
                 throw new InvalidOperationException("User is not logged in.");
             }
 
-            PatientProfile patient = new PatientProfile()
-            {
-                Id = Guid.Parse(userId),
-                FirstName = inputModel.FirstName,
-                LastName = inputModel.LastName,
-                DateOfBirth = inputModel.DateOfBirth,
-                UIN = inputModel.UIN,
-                HomeAddress = inputModel.HomeAddress,
-                PhoneNumber = inputModel.PhoneNumber,
-                EmergencyContactFullName = inputModel.EmergencyContactFullName,
-                EmergencyContactPhone = inputModel.EmergencyContactPhone,
-                Notes = inputModel.Notes,
-                UserId = Guid.Parse(userId)
-            };
+            PatientProfile patient = ConvertToModel(inputModel);
 
             await _patientRepository.AddAsync(patient);
 
@@ -77,6 +54,33 @@ namespace MyNurseApp.Services.Data
         {
             var model = await _patientRepository.GetByIdAsync(id);
 
+            var viewModel = ConvertToViewModel(model);
+
+            return viewModel;
+        }
+
+        public async Task EditPatientProfileAync(PatientProfileViewModel model)
+        {
+            var userId = _currentAccsessor.HttpContext?.User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            PatientProfile patient = new PatientProfile()
+            {
+                //Id = model.Id,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                DateOfBirth = model.DateOfBirth,
+                UIN = model.UIN,
+                HomeAddress = model.HomeAddress,
+                PhoneNumber = model.PhoneNumber,
+                EmergencyContactFullName = model.EmergencyContactFullName,
+                EmergencyContactPhone = model.EmergencyContactPhone,
+                Notes = model.Notes,
+                //UserId = Guid.Parse(userId!)
+            };
+            await _patientRepository.UpdateAsync(patient);
+        }
+
+        private PatientProfileViewModel ConvertToViewModel(PatientProfile model)
+        {
             var viewModel = new PatientProfileViewModel()
             {
                 Id = model.Id,
@@ -94,25 +98,24 @@ namespace MyNurseApp.Services.Data
             return viewModel;
         }
 
-        public async Task EditPatientProfileAync(PatientProfileViewModel model)
+        private PatientProfile ConvertToModel(PatientProfileViewModel viewModel)
         {
             var userId = _currentAccsessor.HttpContext?.User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-            PatientProfile patient = new PatientProfile()
+            var model = new PatientProfile()
             {
-                Id = Guid.Parse(userId!),
-                FirstName = model.FirstName,
-                LastName = model.LastName,
-                DateOfBirth = model.DateOfBirth,
-                UIN = model.UIN,
-                HomeAddress = model.HomeAddress,
-                PhoneNumber = model.PhoneNumber,
-                EmergencyContactFullName = model.EmergencyContactFullName,
-                EmergencyContactPhone = model.EmergencyContactPhone,
-                Notes = model.Notes,
+                Id = Guid.NewGuid(),
+                FirstName = viewModel.FirstName,
+                LastName = viewModel.LastName,
+                DateOfBirth = viewModel.DateOfBirth,
+                UIN = viewModel.UIN,
+                HomeAddress = viewModel.HomeAddress,
+                PhoneNumber = viewModel.PhoneNumber,
+                EmergencyContactFullName = viewModel.EmergencyContactFullName,
+                EmergencyContactPhone = viewModel.EmergencyContactPhone,
+                Notes = viewModel.Notes,
                 UserId = Guid.Parse(userId!)
             };
-
-            await _patientRepository.UpdateAsync(patient);
+            return model;
         }
     }
 }

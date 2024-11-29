@@ -6,6 +6,12 @@ public class RedirectIfPendingMiddleware
     private readonly RequestDelegate _next;
     private readonly IServiceProvider _serviceProvider;
 
+    private readonly string[] _excludedPaths = [
+    "/Home/PendingApproval",
+    "/Identity/Account/Logout",
+    "/Nurse/CreateNurseProfile",
+    "/Nurse/Profile"
+];
     public RedirectIfPendingMiddleware(RequestDelegate next, IServiceProvider serviceProvider)
     {
         _next = next;
@@ -16,7 +22,7 @@ public class RedirectIfPendingMiddleware
     {
         // Изключване на определени пътища от проверката
         var path = context.Request.Path.Value;
-        var excludedPaths = new[] { "/Home/PendingApproval", "/Identity/Account/Logout", "/Nurse/CreateNurseProfile" };
+        var excludedPaths = _excludedPaths;
         if (path != null && excludedPaths.Any(p => path.StartsWith(p, StringComparison.OrdinalIgnoreCase)))
         {
             await _next(context);

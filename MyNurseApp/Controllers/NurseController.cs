@@ -7,24 +7,33 @@ namespace MyNurseApp.Controllers
     public class NurseController : Controller
     {
         private readonly NurseService _nurseService;
-        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public NurseController(NurseService nurseService, IHttpContextAccessor httpContextAccessor)
+        public NurseController(NurseService nurseService)
         {
             this._nurseService = nurseService;
-            this._httpContextAccessor = httpContextAccessor;
         }
 
 
         public async Task<IActionResult> Index()
         {
-            var viewModels = await _nurseService.GetAllNursesAsync();
+            await Task.CompletedTask;
+            return View();
+        }
+
+        public async Task<IActionResult> Profile()
+        {
+            var viewModels = await _nurseService.GetNurseProfileAsync();
             return View(viewModels);
         }
 
         [HttpGet]
         public async Task<IActionResult> CreateNurseProfile()
         {
+            var viewModels = await _nurseService.GetNurseProfileAsync();
+            if (viewModels != null)
+            {
+                return RedirectToAction("Profile", viewModels);
+            }
             await Task.CompletedTask;
             return View();
         }
