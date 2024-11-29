@@ -12,15 +12,17 @@ namespace MyNurseApp.Services.Data
     public class NurseService
     {
         private readonly IRepository<NurseProfile, Guid> _nurseRepository;
+        private readonly IRepository<ApplicationUser, Guid> _applicationRepository;
         private readonly IHttpContextAccessor _currentAccsessor;
         private readonly UserManager<ApplicationUser> _userManager;
 
 
-        public NurseService(IRepository<NurseProfile, Guid> patientRepository, IHttpContextAccessor httpContextAccessor, UserManager<ApplicationUser> userManager)
+        public NurseService(IRepository<ApplicationUser, Guid> applicationRepository, IRepository<NurseProfile, Guid> patientRepository, IHttpContextAccessor httpContextAccessor, UserManager<ApplicationUser> userManager)
         {
             this._nurseRepository = patientRepository;
             this._currentAccsessor = httpContextAccessor;
             this._userManager = userManager;
+            this._applicationRepository = applicationRepository;
         }
 
         public async Task<NurseProfileViewModel> GetNurseProfileAsync()
@@ -98,12 +100,10 @@ namespace MyNurseApp.Services.Data
 
             var user = await _userManager.Users
                 .Include(u => u.Nurse) 
-                .FirstOrDefaultAsync(u => u.Nurse.Id == id);
+                .FirstOrDefaultAsync(u => u.Nurse!.Id == id);
 
-
-            user.IsAprooved = false;
+            user!.IsPending = false;
             user.Nurse!.IsConfirmed = NurseStatus.Approved;
-            user.Nurse.User.IsAprooved = false;
             await _userManager.UpdateAsync(user);
         }
     }
