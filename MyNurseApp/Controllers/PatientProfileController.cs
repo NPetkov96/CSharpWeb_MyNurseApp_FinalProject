@@ -70,6 +70,10 @@ namespace MyNurseApp.Controllers
         [HttpPost]
         public async Task<IActionResult> EditPatientProfile(PatientProfileViewModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
             await _patientService.EditPatientProfileAync(model);
             return RedirectToAction("Index");
         }

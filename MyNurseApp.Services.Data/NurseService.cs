@@ -6,6 +6,7 @@ using MyNurseApp.Data;
 using MyNurseApp.Data.Models;
 using MyNurseApp.Data.Repository.Interfaces;
 using MyNurseApp.Web.ViewModels.NurseProfile;
+using MyNurseApp.Web.ViewModels.PatientProfile;
 
 namespace MyNurseApp.Services.Data
 {
@@ -50,6 +51,30 @@ namespace MyNurseApp.Services.Data
 
             return viewProfiles;
         }
+        public async Task EditNurseProfileAync(NurseProfileViewModel model)
+        {
+            var nurse = await _nurseRepository.GetByIdAsync(model.Id);
+            if (nurse == null)
+            {
+                throw new ArgumentException("Nurse profile not found.");
+            }
+
+            // Проверка дали UserId е валиден
+            if (!await _userManager.Users.AnyAsync(u => u.Id == model.UserId))
+            {
+                throw new ArgumentException("Invalid UserId. User does not exist.");
+            }
+
+            nurse.FirstName = model.FirstName;
+            nurse.LastName = model.LastName;
+            nurse.MedicalLicenseNumber = model.MedicalLicenseNumber;
+            nurse.PhoneNumber = model.PhoneNumber;
+            nurse.Education = model.Education;
+            nurse.Recommendations = model.Recommendations;
+            nurse.YearsOfExperience = model.YearsOfExperience;
+
+            await _nurseRepository.UpdateAsync(nurse);
+        }
 
         public async Task RegisterNurseAsync(NurseProfileViewModel viewModel)
         {
@@ -58,12 +83,11 @@ namespace MyNurseApp.Services.Data
             await _nurseRepository.AddAsync(nurse);
         }
 
-
         public async Task AprooveNurseAync(Guid id)
         {
 
             var user = await _userManager.Users
-                .Include(u => u.Nurse) 
+                .Include(u => u.Nurse)
                 .FirstOrDefaultAsync(u => u.Nurse!.Id == id);
 
             user!.IsPending = false;
@@ -102,6 +126,7 @@ namespace MyNurseApp.Services.Data
                 PhoneNumber = model.PhoneNumber,
                 Recommendations = model.Recommendations,
                 YearsOfExperience = model.YearsOfExperience,
+                UserId = model.UserId,
                 IsConfirmed = model.IsConfirmed,
             };
 

@@ -61,15 +61,17 @@ namespace MyNurseApp.Data.Repository
         {
             try
             {
-                this.dbSet.Attach(item);
-                this.dbContext.Entry(item).State = EntityState.Modified;
-                await this.dbContext.SaveChangesAsync();
-
+                if (dbContext.Entry(item).State == EntityState.Detached)
+                {
+                    dbSet.Attach(item);
+                }
+                dbContext.Entry(item).State = EntityState.Modified;
+                await dbContext.SaveChangesAsync();
                 return true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return false;
+                throw new Exception($"Error updating entity: {ex.Message}");
             }
         }
     }

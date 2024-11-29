@@ -14,11 +14,22 @@ namespace MyNurseApp.Controllers
             this._nurseService = nurseService;
         }
 
-
-        public async Task<IActionResult> Index()
+        [HttpGet]
+        public async Task<IActionResult> EditNurseProfile(/*Guid id*/)
         {
-            await Task.CompletedTask;
-            return View();
+            var profile = await _nurseService.GetNurseProfileAsync();
+            return View(profile);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditNurseProfile(NurseProfileViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+            await _nurseService.EditNurseProfileAync(model);
+            return RedirectToAction("Profile");
         }
 
         public async Task<IActionResult> Profile()

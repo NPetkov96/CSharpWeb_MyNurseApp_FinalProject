@@ -2,39 +2,53 @@
 @model NurseProfileViewModel
 
 @{
-    ViewData["Title"] = "My Nurse Profile";
+    ViewData["Title"] = "Nurse Profile";
 }
 
-<div class="container mt-4">
-    <h1 class="text-center">My Nurse Profile</h1>
-
+<div class="container mt-5 d-flex justify-content-center">
     @if (Model == null)
     {
         <div class="alert alert-warning text-center mt-3" style="color: #856404; background-color: #fff3cd; border-color: #ffeeba;">
-            <p style="font-size: 1.2rem;">Your dont have registrated profile.</p>
+            <p style="font-size: 1.2rem;">You don't have a registered profile.</p>
             <a asp-action="CreateNurseProfile" class="btn btn-primary btn-sm">Add Profile</a>
         </div>
     }
     else
     {
-        <div class="card mx-auto shadow-sm" style="max-width: 600px;">
-            <div class="card-body">
-                <h5 class="card-title">@Model.FirstName @Model.LastName</h5>
-                <p class="card-text">
-                    <strong>Phone:</strong> @Model.PhoneNumber <br />
-                    <strong>Experience:</strong> @Model.YearsOfExperience years <br />
-                    <strong>Education:</strong> @Model.Education
-                </p>
-                <button class="btn btn-link text-primary p-0" type="button" data-bs-toggle="collapse" data-bs-target="#details-@Model.Id" aria-expanded="false" aria-controls="details-@Model.Id">
-                    View More Details
-                </button>
-                <div class="collapse mt-2" id="details-@Model.Id">
-                    <p>
-                        @if (!string.IsNullOrEmpty(Model.Recommendations))
-                        {
-                            <strong>Recommendations:</strong> @Model.Recommendations
-                        }
-                    </p>
+        <div class="card shadow-lg d-flex flex-row" style="max-width: 800px; border-radius: 10px; overflow: hidden;">
+
+            <!-- Left Section -->
+            <div class="bg-primary text-white p-4" style="width: 35%; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                <h3 class="mb-2">@Model.FirstName @Model.LastName</h3>
+                <p class="mb-1"><small>Experience: @Model.YearsOfExperience years</small></p>
+                <hr class="w-75" style="border-color: rgba(255, 255, 255, 0.3);" />
+                <p class="mb-1"><strong>Phone:</strong> @Model.PhoneNumber</p>
+                <p class="mb-1"><strong>Education:</strong> @Model.Education</p>
+            </div>
+
+            <!-- Right Section -->
+            <div class="p-4" style="width: 65%; background-color: #f8f9fa;">
+                <div class="mb-3">
+                    <h6 class="text-secondary">Additional Information</h6>
+                    @if (!string.IsNullOrEmpty(Model.Recommendations))
+                    {
+                        <p class="mb-1"><strong>Recommendations:</strong> @Model.Recommendations</p>
+                    }
+                    else
+                    {
+                        <p class="mb-1"><strong>Recommendations:</strong> None</p>
+                    }
+                </div>
+
+                <div class="mb-3">
+                    <h6 class="text-secondary">License</h6>
+                    <p class="mb-1"><strong>Medical License Number:</strong> @Model.MedicalLicenseNumber</p>
+                </div>
+
+                <div class="text-end mt-4">
+                    <a asp-action="EditNurseProfile" asp-route-id="@Model.Id" class="btn btn-primary btn-sm">
+                        Edit Profile
+                    </a>
                 </div>
             </div>
         </div>

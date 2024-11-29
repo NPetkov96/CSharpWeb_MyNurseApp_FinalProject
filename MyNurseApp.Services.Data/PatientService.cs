@@ -65,21 +65,22 @@ namespace MyNurseApp.Services.Data
 
         public async Task EditPatientProfileAync(PatientProfileViewModel model)
         {
-            var userId = _currentAccsessor.HttpContext?.User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-            PatientProfile patient = new PatientProfile()
+            var patient = await _patientRepository.GetByIdAsync(model.Id);
+            if (patient == null)
             {
-                //Id = model.Id,
-                FirstName = model.FirstName,
-                LastName = model.LastName,
-                DateOfBirth = model.DateOfBirth,
-                UIN = model.UIN,
-                HomeAddress = model.HomeAddress,
-                PhoneNumber = model.PhoneNumber,
-                EmergencyContactFullName = model.EmergencyContactFullName,
-                EmergencyContactPhone = model.EmergencyContactPhone,
-                Notes = model.Notes,
-                //UserId = Guid.Parse(userId!)
-            };
+                throw new ArgumentException("Patient not found");
+            }
+
+            patient.FirstName = model.FirstName;
+            patient.LastName = model.LastName;
+            patient.DateOfBirth = model.DateOfBirth;
+            patient.UIN = model.UIN;
+            patient.HomeAddress = model.HomeAddress;
+            patient.PhoneNumber = model.PhoneNumber;
+            patient.EmergencyContactFullName = model.EmergencyContactFullName;
+            patient.EmergencyContactPhone = model.EmergencyContactPhone;
+            patient.Notes = model.Notes;
+
             await _patientRepository.UpdateAsync(patient);
         }
 
