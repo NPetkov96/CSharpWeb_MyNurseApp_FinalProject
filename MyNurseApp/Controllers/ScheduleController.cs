@@ -13,14 +13,20 @@ namespace MyNurseApp.Controllers
     public class ScheduleController : Controller
     {
         private readonly ScheduleService _scheduleService;
-        public ScheduleController(ScheduleService manipulationsService)
+        private readonly NurseService _nurseService;
+        public ScheduleController(ScheduleService manipulationsService, NurseService nurseService)
         {
             _scheduleService = manipulationsService;
+            _nurseService = nurseService;
         }
 
         public async Task<IActionResult> Index()
         {
-           var model = await _scheduleService.GetAllVisitationsAsync();
+           var model = await _scheduleService.GetVisitationsForUserAsync();
+            if (model == null)
+            {
+               return RedirectToAction("CreatePatientProfile","PatientProfile");
+            }
             return View(model);
         }
 
@@ -53,6 +59,16 @@ namespace MyNurseApp.Controllers
             await _scheduleService.AddHomeVisitationAsync(model);
 
             return RedirectToAction("Index");
+        }
+
+
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetAllHomeVisitations()
+        {
+            var nurses = await _nurseService.GetAllNursesAsync();
+            ViewData["Nurses"] = nurses;
+            var viewModel = await _scheduleService.GetAllVisitationsAsync();
+            return View(viewModel);
         }
 
         private List<MedicalManipulationsViewModel> GetSelectedManipulations()

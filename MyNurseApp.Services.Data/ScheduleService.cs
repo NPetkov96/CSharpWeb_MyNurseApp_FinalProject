@@ -24,6 +24,71 @@ namespace MyNurseApp.Services.Data
             this._manipulationRepository = manipulationRepository;
         }
 
+        public async Task<IEnumerable<PatientAndHomeVisitationViewModel>> GetVisitationsForUserAsync()
+        {
+            // Вземане на UserId на текущо логнатия потребител
+            var userId = _currentAccsessor.HttpContext?.User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+            if (userId == null)
+            {
+                throw new UnauthorizedAccessException("User is not authenticated.");
+            }
+
+            // Намиране на пациента, свързан с логнатия потребител
+            var patient = await _patientRepository.FirstOrDefaultAsync(p => p.UserId == Guid.Parse(userId));
+
+            if (patient == null)
+            {
+                return null;
+            }
+
+            // Филтриране на домашните посещения за този пациент
+            var visitationsListModel = await _visitationRepository.GetAllAttached()
+                .Where(hv => hv.PatientId == patient.Id) // Филтър за посещения само на логнатия потребител
+                .Include(hv => hv.Patient)
+                .Include(hv => hv.MedicalManipulations)
+                .ToListAsync();
+
+            // Преобразуване на резултатите във ViewModel
+            return visitationsListModel.Select(item => new PatientAndHomeVisitationViewModel
+            {
+                PatientProfile = item.Patient != null ? new PatientProfileViewModel
+                {
+                    Id = item.Patient.Id,
+                    FirstName = item.Patient.FirstName,
+                    LastName = item.Patient.LastName,
+                    DateOfBirth = item.Patient.DateOfBirth,
+                    UIN = item.Patient.UIN,
+                    HomeAddress = item.Patient.HomeAddress,
+                    PhoneNumber = item.Patient.PhoneNumber,
+                    EmergencyContactFullName = item.Patient.EmergencyContactFullName,
+                    EmergencyContactPhone = item.Patient.EmergencyContactPhone,
+                    Notes = item.Patient.Notes
+                } : new PatientProfileViewModel(),
+
+                HomeVisitation = new HomeVisitationViewModel
+                {
+                    Id = item.Id,
+                    DateTimeManipulation = item.DateTimeManipulation,
+                    IsHomeVisitationConfirmed = item.IsHomeVisitationConfirmed,
+                    Note = item.Note,
+                    PaymentMethod = item.PaymentMethod,
+                    PatientId = item.PatientId,
+                    PriceForVisitation = item.PriceForVisitation
+                },
+
+                MedicalManipulations = item.MedicalManipulations?.Select(manipulation => new MedicalManipulationsViewModel
+                {
+                    Id = manipulation.Id,
+                    Name = manipulation.Name,
+                    Duration = manipulation.Duration,
+                    Description = manipulation.Description,
+                    Price = manipulation.Price
+                }).ToList() ?? new List<MedicalManipulationsViewModel>()
+            });
+        }
+
+
         public async Task<IEnumerable<PatientAndHomeVisitationViewModel>> GetAllVisitationsAsync()
         {
 

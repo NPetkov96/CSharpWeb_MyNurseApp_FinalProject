@@ -65,5 +65,21 @@ namespace MyNurseApp.Controllers
             await Task.CompletedTask;
             return RedirectToAction("GetAllNursesProfiles");
         }
+
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeclineNurse(Guid id)
+        {
+            await _nurseService.DeclineNurseAync(id);
+            await Task.CompletedTask;
+            return RedirectToAction("GetAllNursesProfiles");
+        }
+
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteNurse(Guid id)
+        {
+            await _nurseService.DeleteNurseAync(id);
+            await Task.CompletedTask;
+            return RedirectToAction("GetAllNursesProfiles");
+        }
     }
 }

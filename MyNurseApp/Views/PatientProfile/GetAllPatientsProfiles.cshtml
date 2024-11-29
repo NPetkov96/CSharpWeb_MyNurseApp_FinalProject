@@ -1,0 +1,50 @@
+﻿@using MyNurseApp.Web.ViewModels.PatientProfile
+@model IEnumerable<PatientProfileViewModel>
+
+@{
+    ViewData["Title"] = "Patient Profiles";
+}
+
+<div class="container mt-4">
+    <h1 class="text-center">Patient Profiles</h1>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-warning text-center mt-3" style="color: #856404; background-color: #fff3cd; border-color: #ffeeba;">
+            <p style="font-size: 1.2rem;">No patient profiles available.</p>
+        </div>
+    }
+    else
+    {
+        <div class="row row-cols-1 row-cols-md-3 g-3">
+            @foreach (var patient in Model)
+            {
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">@patient.FirstName @patient.LastName</h5>
+                            <p class="card-text">
+                                <strong>Date of Birth:</strong> @patient.DateOfBirth?.ToString("dd/MM/yyyy") <br />
+                                <strong>UIN:</strong> @patient.UIN <br />
+                                <strong>Home Address:</strong> @patient.HomeAddress <br />
+                                <strong>Phone:</strong> @patient.PhoneNumber <br />
+                                <strong>Emergency Contact:</strong> @patient.EmergencyContactFullName <br />
+                                <strong>Emergency Phone:</strong> @patient.EmergencyContactPhone <br />
+                                @if (!string.IsNullOrEmpty(patient.Notes))
+                                {
+                                    <strong>Notes:</strong> @patient.Notes
+                                }
+                            </p>
+                        </div>
+                        <div class="card-footer text-center">
+                            <form asp-action="DeletePatient" asp-controller="PatientProfile" method="post" style="display: inline-block;">
+                                <input type="hidden" name="id" value="@patient.Id" />
+                                <button class="btn btn-danger btn-sm" type="submit">Delete</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

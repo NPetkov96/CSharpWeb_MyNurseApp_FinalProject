@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using MyNurseApp.Data;
 using MyNurseApp.Data.Models;
 using MyNurseApp.Data.Repository.Interfaces;
@@ -11,11 +13,13 @@ namespace MyNurseApp.Services.Data
     {
         private readonly IRepository<PatientProfile, Guid> _patientRepository;
         private readonly IHttpContextAccessor _currentAccsessor;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public PatientService(IRepository<PatientProfile, Guid> patientRepository, IHttpContextAccessor httpContextAccessor)
+        public PatientService(IRepository<PatientProfile, Guid> patientRepository, IHttpContextAccessor httpContextAccessor, UserManager<ApplicationUser> userManager)
         {
             this._patientRepository = patientRepository;
             this._currentAccsessor = httpContextAccessor;
+            this._userManager = userManager;
         }
 
         public async Task<PatientProfileViewModel> GetPatientProfileByUserIdAsync(IHttpContextAccessor httpContextAccessor)
@@ -116,6 +120,29 @@ namespace MyNurseApp.Services.Data
                 UserId = Guid.Parse(userId!)
             };
             return model;
+        }
+
+        public async Task<List<PatientProfileViewModel>> GetAllPatientsAsync()
+        {
+            var profiles = await _patientRepository.GetAllAsync();
+            var viewProfiles = new List<PatientProfileViewModel>();
+
+            foreach (var profile in profiles)
+            {
+                var model = ConvertToViewModel(profile);
+                viewProfiles.Add(model);
+            }
+
+            return viewProfiles;
+        }
+
+        public async Task DeletePatientAync(Guid id)
+        {
+            var user = await _userManager.Users
+               .Include(u => u.Patient)
+               .FirstOrDefaultAsync(u => u.Patient!.Id == id);
+
+            await _userManager.DeleteAsync(user!);
         }
     }
 }

@@ -7,7 +7,7 @@
 }
 
 <div class="container mt-4">
-    <h1 class="text-center">Nurse Profiles</h1>
+    <h1 class="text-center">Nurses Profiles</h1>
 
     @if (!Model.Any())
     {
@@ -35,8 +35,9 @@
                                 }
                             </p>
                         </div>
+                        <strong>Status:</strong> @nurse.IsConfirmed.ToString() <br />
                         <div class="card-footer text-center">
-                            @if (nurse.IsConfirmed == NurseStatus.Pending)
+                            @if (nurse.IsConfirmed == NurseStatus.Pending || nurse.IsConfirmed == NurseStatus.Declined)
                             {
                                 <form asp-action="AprooveNurse" asp-controller="Nurse" method="post" style="display: inline-block;">
                                     <input type="hidden" name="id" value="@nurse.Id" />
@@ -45,12 +46,12 @@
                             }
                             else if (nurse.IsConfirmed == NurseStatus.Approved)
                             {
-                                <form asp-action="AprooveNurse" asp-controller="Nurse" method="post" style="display: inline-block;">
+                                <form asp-action="DeclineNurse" asp-controller="Nurse" method="post" style="display: inline-block;">
                                     <input type="hidden" name="id" value="@nurse.Id" />
-                                    <button class="btn btn-success btn-sm" type="submit">Decline</button>
+                                    <button class="btn btn-warning btn-sm" type="submit">Decline</button>
                                 </form>
                             }
-                            <form asp-action="Delete" asp-controller="Nurse" method="post" style="display: inline-block;">
+                            <form asp-action="DeleteNurse" asp-controller="Nurse" method="post" style="display: inline-block;">
                                 <input type="hidden" name="id" value="@nurse.Id" />
                                 <button class="btn btn-danger btn-sm" type="submit">Delete</button>
                             </form>

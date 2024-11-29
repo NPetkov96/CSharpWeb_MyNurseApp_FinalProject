@@ -37,7 +37,7 @@ public class RedirectIfPendingMiddleware
                 var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
                 var user = await userManager.GetUserAsync(context.User);
 
-                if (user != null && user.IsAprooved)
+                if (user != null && user.IsPending)
                 {
                     // Пренасочване към екшън, ако е в статус Pending
                     context.Response.Redirect("/Home/PendingApproval");

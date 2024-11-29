@@ -58,6 +58,38 @@ namespace MyNurseApp.Services.Data
             await _nurseRepository.AddAsync(nurse);
         }
 
+
+        public async Task AprooveNurseAync(Guid id)
+        {
+
+            var user = await _userManager.Users
+                .Include(u => u.Nurse) 
+                .FirstOrDefaultAsync(u => u.Nurse!.Id == id);
+
+            user!.IsPending = false;
+            user.Nurse!.IsConfirmed = NurseStatus.Approved;
+            await _userManager.UpdateAsync(user);
+        }
+        public async Task DeclineNurseAync(Guid id)
+        {
+
+            var user = await _userManager.Users
+                .Include(u => u.Nurse)
+                .FirstOrDefaultAsync(u => u.Nurse!.Id == id);
+
+            user!.IsPending = true;
+            user.Nurse!.IsConfirmed = NurseStatus.Declined;
+            await _userManager.UpdateAsync(user);
+        }
+        public async Task DeleteNurseAync(Guid id)
+        {
+            var user = await _userManager.Users
+                .Include(u => u.Nurse)
+                .FirstOrDefaultAsync(u => u.Nurse!.Id == id);
+
+            await _userManager.DeleteAsync(user!);
+        }
+
         private NurseProfileViewModel ConvertToViewModel(NurseProfile model)
         {
             var viewModel = new NurseProfileViewModel()
@@ -93,18 +125,6 @@ namespace MyNurseApp.Services.Data
             };
 
             return model;
-        }
-
-        public async Task AprooveNurseAync(Guid id)
-        {
-
-            var user = await _userManager.Users
-                .Include(u => u.Nurse) 
-                .FirstOrDefaultAsync(u => u.Nurse!.Id == id);
-
-            user!.IsPending = false;
-            user.Nurse!.IsConfirmed = NurseStatus.Approved;
-            await _userManager.UpdateAsync(user);
         }
     }
 }

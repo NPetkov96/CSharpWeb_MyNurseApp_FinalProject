@@ -1,0 +1,99 @@
+﻿@using MyNurseApp.Web.ViewModels.NurseProfile
+@using MyNurseApp.Web.ViewModels.PatientProfile
+@using MyNurseApp.Web.ViewModels
+@model IEnumerable<PatientAndHomeVisitationViewModel>
+
+@{
+    ViewData["Title"] = "Home Visitations";
+    var nurses = ViewData["Nurses"] as IEnumerable<NurseProfileViewModel>;
+}
+
+<div class="container mt-4">
+    <h1 class="text-center">Home Visitations</h1>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-warning text-center mt-3" style="color: #856404; background-color: #fff3cd; border-color: #ffeeba;">
+            <p style="font-size: 1.2rem;">No visitations available.</p>
+        </div>
+    }
+    else
+    {
+        <div class="row row-cols-1 row-cols-md-3 g-3">
+            @foreach (var visitation in Model)
+            {
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">@visitation.PatientProfile.FirstName @visitation.PatientProfile.LastName</h5>
+                            <p class="card-text">
+                                <strong>Date of Birth:</strong> @visitation.PatientProfile.DateOfBirth?.ToString("dd/MM/yyyy") <br />
+                                <strong>UIN:</strong> @visitation.PatientProfile.UIN <br />
+                                <strong>Home Address:</strong> @visitation.PatientProfile.HomeAddress <br />
+                                <strong>Phone:</strong> @visitation.PatientProfile.PhoneNumber <br />
+                                <strong>Emergency Contact:</strong> @visitation.PatientProfile.EmergencyContactFullName <br />
+                                <strong>Emergency Phone:</strong> @visitation.PatientProfile.EmergencyContactPhone <br />
+                                @if (!string.IsNullOrEmpty(visitation.PatientProfile.Notes))
+                                {
+                                    <strong>Notes:</strong> @visitation.PatientProfile.Notes
+                                }
+                            </p>
+                            <hr />
+                            <p class="card-text">
+                                <strong>Visitation Details:</strong> <br />
+                                <strong>Date & Time:</strong> @visitation.HomeVisitation.DateTimeManipulation.ToString("dd/MM/yyyy HH:mm") <br />
+                                <strong>Price:</strong> @visitation.HomeVisitation.PriceForVisitation.ToString("C") <br />
+                                <strong>Payment Method:</strong> @visitation.HomeVisitation.PaymentMethod <br />
+                                <strong>Status:</strong> @(visitation.HomeVisitation.IsHomeVisitationConfirmed ? "Confirmed" : "Pending") <br />
+                                @if (!string.IsNullOrEmpty(visitation.HomeVisitation.Note))
+                                {
+                                    <strong>Note:</strong> @visitation.HomeVisitation.Note
+                                }
+                            </p>
+                            <hr />
+                            <p class="card-text">
+                                <strong>Medical Manipulations:</strong>
+                                @if (visitation.MedicalManipulations.Any())
+                                {
+                                    <ul>
+                                        @foreach (var manipulation in visitation.MedicalManipulations)
+                                        {
+                                            <li>
+                                                <strong>@manipulation.Name</strong> - @manipulation.Duration minutes,
+                                                @manipulation.Price.ToString("C")<br />
+                                                <em>@manipulation.Description</em>
+                                            </li>
+                                        }
+                                    </ul>
+                                }
+                                else
+                                {
+                                    <span>No medical manipulations added.</span>
+                                }
+                            </p>
+                        </div>
+                        <div class="card-footer text-center">
+                            <form asp-action="AssignNurse" asp-controller="HomeVisitation" method="post" style="display: inline-block;">
+                                <input type="hidden" name="visitationId" value="@visitation.HomeVisitation.Id" />
+                                <div class="d-flex align-items-center">
+                                    <select class="form-select form-select-sm me-2" name="nurseId" required>
+                                        <option value="">Select Nurse</option>
+                                        @foreach (var nurse in nurses)
+                                        {
+                                            <option value="@nurse.Id">@nurse.FirstName @nurse.LastName</option>
+                                        }
+                                    </select>
+                                    <button class="btn btn-success btn-sm" type="submit">Assign</button>
+                                </div>
+                            </form>
+                            <form asp-action="DeleteVisitation" asp-controller="HomeVisitation" method="post" style="display: inline-block;">
+                                <input type="hidden" name="id" value="@visitation.HomeVisitation.Id" />
+                                <button class="btn btn-danger btn-sm" type="submit">Delete</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

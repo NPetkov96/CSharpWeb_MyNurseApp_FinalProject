@@ -33,10 +33,11 @@ namespace MyNurseApp.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Privacy()
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetAllPatientsProfiles()
         {
-            await Task.CompletedTask;
-            return View();
+            var viewModels = await _patientService.GetAllPatientsAsync();
+            return View(viewModels);
         }
 
         [HttpGet]
@@ -73,7 +74,13 @@ namespace MyNurseApp.Controllers
             return RedirectToAction("Index");
         }
 
-
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeletePatient(Guid id)
+        {
+            await _patientService.DeletePatientAync(id);
+            await Task.CompletedTask;
+            return RedirectToAction("GetAllPatientsProfiles");
+        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public async Task<IActionResult> Error()
