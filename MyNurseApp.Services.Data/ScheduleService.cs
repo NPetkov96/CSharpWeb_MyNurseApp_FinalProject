@@ -83,7 +83,7 @@ namespace MyNurseApp.Services.Data
                     PaymentMethod = item.PaymentMethod,
                     PatientId = item.PatientId,
                     PriceForVisitation = item.PriceForVisitation,
-                    
+
                 },
 
                 MedicalManipulations = item.MedicalManipulations?.Select(manipulation => new MedicalManipulationsViewModel
@@ -216,6 +216,17 @@ namespace MyNurseApp.Services.Data
             nurse.HomeVisitations.Add(homeVisitation);
             homeVisitation.IsHomeVisitationConfirmed = true;
             await _nurseRepository.UpdateAsync(nurse);
+        }
+
+        public async Task<bool> DeleteHomeVisitationAsync(Guid visitationId)
+        {
+            var model = await _visitationRepository.GetByIdAsync(visitationId);
+            var isDeleted = await _visitationRepository.DeleteAsync(model);
+            if (!isDeleted)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

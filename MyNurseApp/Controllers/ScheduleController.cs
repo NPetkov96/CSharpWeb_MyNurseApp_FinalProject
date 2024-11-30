@@ -22,10 +22,10 @@ namespace MyNurseApp.Controllers
 
         public async Task<IActionResult> Index()
         {
-           var model = await _scheduleService.GetVisitationsForUserAsync();
+            var model = await _scheduleService.GetVisitationsForUserAsync();
             if (model == null)
             {
-               return RedirectToAction("CreatePatientProfile","PatientProfile");
+                return RedirectToAction("CreatePatientProfile", "PatientProfile");
             }
             return View(model);
         }
@@ -72,11 +72,26 @@ namespace MyNurseApp.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AssignVisitationToNurse(Guid visitationId, Guid nurseId)
         {
             await _scheduleService.AssignVisitationToNurseAsync(visitationId, nurseId);
             return RedirectToAction("GetAllHomeVisitations");
         }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteHomeVisitation(Guid visitationId)
+        {
+            var isDeleted = await _scheduleService.DeleteHomeVisitationAsync(visitationId);
+            if (isDeleted)
+            {
+                return RedirectToAction("Index"); //TODO Handle exception
+            }
+
+            return RedirectToAction("GetAllHomeVisitations");
+        }
+
 
         private List<MedicalManipulationsViewModel> GetSelectedManipulations()
         {

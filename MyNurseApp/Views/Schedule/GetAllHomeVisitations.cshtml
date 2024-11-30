@@ -1,4 +1,5 @@
-﻿@using MyNurseApp.Web.ViewModels.NurseProfile
+﻿@using MyNurseApp.Common.Enums
+@using MyNurseApp.Web.ViewModels.NurseProfile
 @using MyNurseApp.Web.ViewModels.PatientProfile
 @using MyNurseApp.Web.ViewModels
 @model IEnumerable<PatientAndHomeVisitationViewModel>
@@ -97,7 +98,7 @@
                                     <div class="d-flex align-items-center">
                                         <select class="form-select form-select-sm me-2" name="nurseId" required>
                                             <option value="">Select Nurse</option>
-                                            @foreach (var nurse in nurses!)
+                                            @foreach (var nurse in nurses!.Where(n => n.IsConfirmed == NurseStatus.Approved))
                                             {
                                                 <option value="@nurse.Id">@nurse.FirstName @nurse.LastName</option>
                                             }
@@ -106,8 +107,8 @@
                                     </div>
                                 </form>
                             }
-                            <form asp-action="DeleteVisitation" asp-controller="HomeVisitation" method="post" style="display: inline-block;">
-                                <input type="hidden" name="id" value="@visitation.HomeVisitation.Id" />
+                            <form asp-action="DeleteHomeVisitation" method="post" style="display: inline-block;">
+                                <input type="hidden" name="visitationId" value="@visitation.HomeVisitation.Id" />
                                 <button class="btn btn-danger btn-sm" type="submit">Delete</button>
                             </form>
                         </div>
