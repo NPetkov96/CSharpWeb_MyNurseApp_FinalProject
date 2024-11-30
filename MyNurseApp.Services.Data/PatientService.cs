@@ -125,10 +125,10 @@ namespace MyNurseApp.Services.Data
 
         public async Task<List<PatientProfileViewModel>> GetAllPatientsAsync()
         {
-            var profiles = await _patientRepository.GetAllAsync();
+            var patientsProfiles = await _patientRepository.GetAllAsync();
             var viewProfiles = new List<PatientProfileViewModel>();
 
-            foreach (var profile in profiles)
+            foreach (var profile in patientsProfiles)
             {
                 var model = ConvertToViewModel(profile);
                 viewProfiles.Add(model);

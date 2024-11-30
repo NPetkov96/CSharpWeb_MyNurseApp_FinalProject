@@ -7,8 +7,6 @@ namespace MyNurseApp.Data.Configuration
     {
         public void Configure(EntityTypeBuilder<NurseProfile> builder)
         {
-            builder.Property(n => n.IsDeleted).HasDefaultValue(false);
-
             builder.HasOne(n => n.User)
                    .WithOne(u => u.Nurse)
                    .HasForeignKey<NurseProfile>(n => n.UserId)

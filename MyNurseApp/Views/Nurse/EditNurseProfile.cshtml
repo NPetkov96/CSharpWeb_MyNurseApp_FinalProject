@@ -8,20 +8,16 @@
 <div class="container mt-5 d-flex justify-content-center">
     <div class="card shadow-lg" style="max-width: 800px; border-radius: 10px; overflow: hidden;">
 
-        <!-- Form Header -->
         <div class="bg-primary text-white p-4 text-center">
             <h3>Edit Nurse Profile</h3>
         </div>
 
-        <!-- Form Body -->
         <div class="p-4" style="background-color: #f8f9fa;">
             <form asp-action="EditNurseProfile" asp-controller="NurseProfile" method="post">
-                <!-- Скрито поле за UserId -->
                 <input type="hidden" asp-for="UserId" />
                 <input type="hidden" asp-for="Id" />
 
                 <div class="row g-3">
-                    <!-- Personal Info -->
                     <div class="col-md-6">
                         <label for="FirstName" class="form-label">First Name</label>
                         <input asp-for="FirstName" class="form-control" id="FirstName" placeholder="Enter first name" />
@@ -33,21 +29,18 @@
                         <span asp-validation-for="LastName" class="text-danger"></span>
                     </div>
 
-                    <!-- Contact Info -->
                     <div class="col-md-6">
                         <label for="PhoneNumber" class="form-label">Phone Number</label>
                         <input asp-for="PhoneNumber" class="form-control" id="PhoneNumber" placeholder="Enter phone number" />
                         <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                     </div>
 
-                    <!-- Experience -->
                     <div class="col-md-6">
                         <label for="YearsOfExperience" class="form-label">Years of Experience</label>
                         <input asp-for="YearsOfExperience" class="form-control" id="YearsOfExperience" type="number" placeholder="Enter years of experience" />
                         <span asp-validation-for="YearsOfExperience" class="text-danger"></span>
                     </div>
 
-                    <!-- Education -->
                     <div class="col-md-6">
                         <label for="Education" class="form-label">Education</label>
                         <select asp-for="Education" class="form-select" id="Education">
@@ -62,14 +55,12 @@
                         <span asp-validation-for="Education" class="text-danger"></span>
                     </div>
 
-                    <!-- Medical License -->
                     <div class="col-md-6">
                         <label for="MedicalLicenseNumber" class="form-label">Medical License Number</label>
                         <input asp-for="MedicalLicenseNumber" class="form-control" id="MedicalLicenseNumber" placeholder="Enter license number" />
                         <span asp-validation-for="MedicalLicenseNumber" class="text-danger"></span>
                     </div>
 
-                    <!-- Recommendations -->
                     <div class="col-12">
                         <label for="Recommendations" class="form-label">Recommendations</label>
                         <textarea asp-for="Recommendations" class="form-control" id="Recommendations" rows="3" placeholder="Enter recommendations"></textarea>
@@ -77,7 +68,6 @@
                     </div>
                 </div>
 
-                <!-- Submit Button -->
                 <div class="text-end mt-4">
                     <button type="submit" asp-action="EditNurseProfile" class="btn btn-primary">Save Changes</button>
                     <a asp-action="Profile" class="btn btn-secondary">Cancel</a>

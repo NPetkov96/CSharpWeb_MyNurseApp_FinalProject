@@ -6,24 +6,21 @@ using MyNurseApp.Data;
 using MyNurseApp.Data.Models;
 using MyNurseApp.Data.Repository.Interfaces;
 using MyNurseApp.Web.ViewModels.NurseProfile;
-using MyNurseApp.Web.ViewModels.PatientProfile;
 
 namespace MyNurseApp.Services.Data
 {
     public class NurseService
     {
         private readonly IRepository<NurseProfile, Guid> _nurseRepository;
-        private readonly IRepository<ApplicationUser, Guid> _applicationRepository;
         private readonly IHttpContextAccessor _currentAccsessor;
         private readonly UserManager<ApplicationUser> _userManager;
 
 
-        public NurseService(IRepository<ApplicationUser, Guid> applicationRepository, IRepository<NurseProfile, Guid> patientRepository, IHttpContextAccessor httpContextAccessor, UserManager<ApplicationUser> userManager)
+        public NurseService(IRepository<NurseProfile, Guid> patientRepository, IHttpContextAccessor httpContextAccessor, UserManager<ApplicationUser> userManager)
         {
             this._nurseRepository = patientRepository;
             this._currentAccsessor = httpContextAccessor;
             this._userManager = userManager;
-            this._applicationRepository = applicationRepository;
         }
 
         public async Task<NurseProfileViewModel> GetNurseProfileAsync()

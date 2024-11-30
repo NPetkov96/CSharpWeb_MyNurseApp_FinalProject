@@ -73,19 +73,39 @@
                             </p>
                         </div>
                         <div class="card-footer text-center">
-                            <form asp-action="AssignNurse" asp-controller="HomeVisitation" method="post" style="display: inline-block;">
-                                <input type="hidden" name="visitationId" value="@visitation.HomeVisitation.Id" />
-                                <div class="d-flex align-items-center">
-                                    <select class="form-select form-select-sm me-2" name="nurseId" required>
-                                        <option value="">Select Nurse</option>
-                                        @foreach (var nurse in nurses)
+                            @if (visitation.HomeVisitation.IsHomeVisitationConfirmed)
+                            {
+                                <p style="color: #333;">
+                                    <strong>Assigned Nurse:</strong>
+                                    @{
+                                        var assignedNurse = nurses?.FirstOrDefault(n => n.Id == visitation.HomeVisitation.NurseId);
+                                        if (assignedNurse != null)
                                         {
-                                            <option value="@nurse.Id">@nurse.FirstName @nurse.LastName</option>
+                                            <span>@assignedNurse.FirstName @assignedNurse.LastName</span>
                                         }
-                                    </select>
-                                    <button class="btn btn-success btn-sm" type="submit">Assign</button>
-                                </div>
-                            </form>
+                                        else
+                                        {
+                                            <span>Unknown</span>
+                                        }
+                                    }
+                                </p>
+                            }
+                            else
+                            {
+                                <form asp-action="AssignVisitationToNurse" method="post" style="display: inline-block;">
+                                    <input type="hidden" name="visitationId" value="@visitation.HomeVisitation.Id" />
+                                    <div class="d-flex align-items-center">
+                                        <select class="form-select form-select-sm me-2" name="nurseId" required>
+                                            <option value="">Select Nurse</option>
+                                            @foreach (var nurse in nurses!)
+                                            {
+                                                <option value="@nurse.Id">@nurse.FirstName @nurse.LastName</option>
+                                            }
+                                        </select>
+                                        <button class="btn btn-success btn-sm" type="submit">Assign</button>
+                                    </div>
+                                </form>
+                            }
                             <form asp-action="DeleteVisitation" asp-controller="HomeVisitation" method="post" style="display: inline-block;">
                                 <input type="hidden" name="id" value="@visitation.HomeVisitation.Id" />
                                 <button class="btn btn-danger btn-sm" type="submit">Delete</button>

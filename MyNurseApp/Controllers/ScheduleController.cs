@@ -71,6 +71,13 @@ namespace MyNurseApp.Controllers
             return View(viewModel);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> AssignVisitationToNurse(Guid visitationId, Guid nurseId)
+        {
+            await _scheduleService.AssignVisitationToNurseAsync(visitationId, nurseId);
+            return RedirectToAction("GetAllHomeVisitations");
+        }
+
         private List<MedicalManipulationsViewModel> GetSelectedManipulations()
         {
             var manipulationsJson = HttpContext.Session.GetString("SelectedManipulations");

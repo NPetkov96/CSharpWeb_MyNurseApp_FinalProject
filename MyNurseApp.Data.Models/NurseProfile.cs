@@ -46,6 +46,7 @@ namespace MyNurseApp.Data
         [Required]
         public bool IsRegistrated { get; set; } = false;
 
-        public bool IsDeleted { get; set; } = false;
+        public ICollection<HomeVisitation> HomeVisitations { get; set; } = new List<HomeVisitation>();
+
     }
 }

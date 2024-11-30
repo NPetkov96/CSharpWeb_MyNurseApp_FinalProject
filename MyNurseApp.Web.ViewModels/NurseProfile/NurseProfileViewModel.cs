@@ -43,5 +43,7 @@ namespace MyNurseApp.Web.ViewModels.NurseProfile
         public NurseStatus IsConfirmed { get; set; }
 
         public Guid UserId { get; set; }
+
+        public NurseProfileViewModel? NurseView { get; set; } //???
     }
 }

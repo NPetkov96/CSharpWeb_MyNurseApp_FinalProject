@@ -188,7 +188,7 @@ namespace MyNurseApp.Data.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsAprooved")
+                    b.Property<bool>("IsPending")
                         .HasColumnType("bit");
 
                     b.Property<bool>("LockoutEnabled")
@@ -256,6 +256,9 @@ namespace MyNurseApp.Data.Migrations
                     b.Property<string>("Note")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid?>("NurseId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid>("PatientId")
                         .HasColumnType("uniqueidentifier");
 
@@ -268,6 +271,8 @@ namespace MyNurseApp.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ApplicationUserId");
+
+                    b.HasIndex("NurseId");
 
                     b.HasIndex("PatientId");
 
@@ -390,9 +395,6 @@ namespace MyNurseApp.Data.Migrations
                     b.Property<int>("IsConfirmed")
                         .HasColumnType("int");
 
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
                     b.Property<bool>("IsRegistrated")
                         .HasColumnType("bit");
 
@@ -502,11 +504,17 @@ namespace MyNurseApp.Data.Migrations
                         .WithMany("PatientHomeVisitations")
                         .HasForeignKey("ApplicationUserId");
 
+                    b.HasOne("MyNurseApp.Data.NurseProfile", "Nurse")
+                        .WithMany("HomeVisitations")
+                        .HasForeignKey("NurseId");
+
                     b.HasOne("MyNurseApp.Data.Models.PatientProfile", "Patient")
                         .WithMany()
                         .HasForeignKey("PatientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Nurse");
 
                     b.Navigation("Patient");
                 });
@@ -540,6 +548,11 @@ namespace MyNurseApp.Data.Migrations
                     b.Navigation("Patient");
 
                     b.Navigation("PatientHomeVisitations");
+                });
+
+            modelBuilder.Entity("MyNurseApp.Data.NurseProfile", b =>
+                {
+                    b.Navigation("HomeVisitations");
                 });
 #pragma warning restore 612, 618
         }

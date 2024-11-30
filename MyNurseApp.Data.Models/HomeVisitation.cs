@@ -34,5 +34,7 @@ namespace MyNurseApp.Data.Models
 
 
         public ICollection<MedicalManipulation> MedicalManipulations { get; set; } = new List<MedicalManipulation>();
+
+        public NurseProfile? Nurse { get; set; }
     }
 }

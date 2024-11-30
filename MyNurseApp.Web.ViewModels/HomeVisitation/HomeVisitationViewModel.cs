@@ -32,7 +32,8 @@ namespace MyNurseApp.Web.ViewModels.HomeVisitation
         [Required]
         public Guid PatientId { get; set; }
 
-        
+        public Guid? NurseId { get; set; }
+
         [Required]
         public ICollection<MedicalManipulation> MedicalManipulations { get; set; } = new List<MedicalManipulation>();
     }

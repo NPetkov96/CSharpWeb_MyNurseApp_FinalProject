@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using MyNurseApp.Data;
 using MyNurseApp.Data.Models;
 using MyNurseApp.Data.Repository.Interfaces;
 using MyNurseApp.Web.ViewModels;
@@ -13,15 +14,22 @@ namespace MyNurseApp.Services.Data
     {
         private readonly IRepository<HomeVisitation, Guid> _visitationRepository;
         private readonly IRepository<PatientProfile, Guid> _patientRepository;
+        private readonly IRepository<NurseProfile, Guid> _nurseRepository;
         private readonly IRepository<MedicalManipulation, Guid> _manipulationRepository;
         private readonly IHttpContextAccessor _currentAccsessor;
 
-        public ScheduleService(IRepository<MedicalManipulation, Guid> manipulationRepository, IRepository<HomeVisitation, Guid> scheduleRepository, IRepository<PatientProfile, Guid> patientRepository, IHttpContextAccessor httpContextAccessor)
+        public ScheduleService(
+            IRepository<MedicalManipulation, Guid> manipulationRepository,
+            IRepository<HomeVisitation, Guid> scheduleRepository,
+            IRepository<PatientProfile, Guid> patientRepository,
+            IHttpContextAccessor httpContextAccessor,
+            IRepository<NurseProfile, Guid> nurseRepository)
         {
             this._visitationRepository = scheduleRepository;
             this._currentAccsessor = httpContextAccessor;
             this._patientRepository = patientRepository;
             this._manipulationRepository = manipulationRepository;
+            this._nurseRepository = nurseRepository;
         }
 
         public async Task<IEnumerable<PatientAndHomeVisitationViewModel>> GetVisitationsForUserAsync()
@@ -39,7 +47,7 @@ namespace MyNurseApp.Services.Data
 
             if (patient == null)
             {
-                return null;
+                return null!;
             }
 
             // Филтриране на домашните посещения за този пациент
@@ -74,7 +82,8 @@ namespace MyNurseApp.Services.Data
                     Note = item.Note,
                     PaymentMethod = item.PaymentMethod,
                     PatientId = item.PatientId,
-                    PriceForVisitation = item.PriceForVisitation
+                    PriceForVisitation = item.PriceForVisitation,
+                    
                 },
 
                 MedicalManipulations = item.MedicalManipulations?.Select(manipulation => new MedicalManipulationsViewModel
@@ -122,7 +131,8 @@ namespace MyNurseApp.Services.Data
                     Note = item.Note,
                     PaymentMethod = item.PaymentMethod,
                     PatientId = item.PatientId,
-                    PriceForVisitation = item.PriceForVisitation
+                    PriceForVisitation = item.PriceForVisitation,
+                    NurseId = item.Nurse?.Id
                 },
 
                 MedicalManipulations = item.MedicalManipulations?.Select(manipulation => new MedicalManipulationsViewModel
@@ -198,5 +208,14 @@ namespace MyNurseApp.Services.Data
             await _visitationRepository.AddAsync(homeVisitation);
         }
 
+        public async Task AssignVisitationToNurseAsync(Guid visitationId, Guid nurseId)
+        {
+            var nurse = await _nurseRepository.FirstOrDefaultAsync(n => n.Id == nurseId);
+            var homeVisitation = await _visitationRepository.FirstOrDefaultAsync(v => v.Id == visitationId);
+
+            nurse.HomeVisitations.Add(homeVisitation);
+            homeVisitation.IsHomeVisitationConfirmed = true;
+            await _nurseRepository.UpdateAsync(nurse);
+        }
     }
 }
