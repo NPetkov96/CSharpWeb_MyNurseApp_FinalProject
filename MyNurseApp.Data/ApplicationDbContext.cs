@@ -21,5 +21,6 @@ namespace MyNurseApp.Data
         public DbSet<NurseProfile> NurseProfiles { get; set; } = null!;
         public DbSet<HomeVisitation> HomeVisitations { get; set; } = null!;
         public DbSet<MedicalManipulation> MedicalManipulations { get; set; } = null!;
+        public DbSet<Review> Reviews { get; set; } = null!;
     }
 }

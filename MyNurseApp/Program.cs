@@ -55,6 +55,7 @@ namespace MyNurseApp
             builder.Services.AddScoped<ManipulationsService>();
             builder.Services.AddScoped<ScheduleService>();
             builder.Services.AddScoped<NurseService>();
+            builder.Services.AddScoped<ReviewService>();
             builder.Services.AddScoped(typeof(IRepository<,>), typeof(BaseRepository<,>));
 
 
