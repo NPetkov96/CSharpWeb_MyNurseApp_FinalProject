@@ -1,0 +1,41 @@
+﻿@model IEnumerable<MyNurseApp.Web.ViewModels.AdminInformation.ApplicationUserViewModel>
+
+@{
+    ViewData["Title"] = "Admin Information - All Users";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>User ID</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Has Nurse Profile</th>
+            <th>Has Patient Profile</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.Id</td>
+                <td>@(string.IsNullOrEmpty(user.FirstName) ? "N/A" : user.FirstName)</td>
+                <td>@(string.IsNullOrEmpty(user.LastName) ? "N/A" : user.LastName)</td>
+                <td>@user.Email</td>
+                <td>@user.Role</td>
+                <td>@(user.HasNurseProfile ? "Yes" : "No")</td>
+                <td>@(user.HasPatientProfile ? "Yes" : "No")</td>
+                <td>
+                    <form asp-action="DeleteUser" asp-route-id="@user.Id" method="post" onsubmit="return confirm('Are you sure you want to delete this user?');">
+                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

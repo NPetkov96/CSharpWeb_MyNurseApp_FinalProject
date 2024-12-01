@@ -21,6 +21,9 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Manipulations" asp-action="Index">Manipulations</a>
+                        </li>
                         @if (User.IsInRole("Admin"))
                         {
                             <li class="nav-item">
@@ -31,6 +34,9 @@
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Schedule" asp-action="GetAllHomeVisitations">Schedules</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="AdminInformation" asp-action="Index">All Profiles</a>
                             </li>
                         }
                         @if (User.IsInRole("User"))
@@ -48,9 +54,6 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Nurse" asp-action="Profile">Nurse Profile</a>
                             </li>
                         }
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Manipulations" asp-action="Index">Manipulations</a>
-                        </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Review" asp-action="Index">Reviews</a>
                         </li>
