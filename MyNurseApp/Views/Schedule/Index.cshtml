@@ -19,58 +19,77 @@ else
     <!-- Section for Pending Visitations -->
     <h2 class="text-warning mt-4">Pending</h2>
     <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Visitation Date</th>
-                <th>Patient Name</th>
-                <th>Address</th>
-                <th>Phone</th>
-                <th>Emergency Contact</th>
-                <th>Payment Method</th>
-                <th>Price</th>
-                <th>Status</th>
-                <th>Manipulations</th>
-            </tr>
-        </thead>
         <tbody>
-            @foreach (var visitation in Model.Where(m => !m.HomeVisitation.IsComplete))
+            @if (!Model.Any(m => m.HomeVisitation.IsComplete == false))
             {
+                <div class="text-center mt-3">
+                    <p style="font-size: 1.2rem;">No visitations available.</p>
+                    <a asp-action="Index" asp-controller="Manipulations" class="btn btn-primary">Book a Visitation</a>
+                </div>
+            }
+            else
+            {
+            <thead>
+                <tr>
+                    <th>Visitation Date</th>
+                    <th>Patient Name</th>
+                    <th>Address</th>
+                    <th>Phone</th>
+                    <th>Emergency Contact</th>
+                    <th>Payment Method</th>
+                    <th>Price</th>
+                    <th>Status</th>
+                    <th>Manipulations</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+                @foreach (var visitation in Model.Where(m => !m.HomeVisitation.IsComplete))
+                {
                 <tr>
                     <td>@visitation.HomeVisitation.DateTimeManipulation.ToString("g")</td>
                     <td>@visitation.PatientProfile.FirstName @visitation.PatientProfile.LastName</td>
                     <td>@visitation.PatientProfile.HomeAddress</td>
                     <td>@visitation.PatientProfile.PhoneNumber</td>
                     <td>
-                        @visitation.PatientProfile.EmergencyContactFullName
+                            @visitation.PatientProfile.EmergencyContactFullName
                         <br />
-                        @visitation.PatientProfile.EmergencyContactPhone
+                            @visitation.PatientProfile.EmergencyContactPhone
                     </td>
                     <td>@visitation.HomeVisitation.PaymentMethod</td>
                     <td>@visitation.HomeVisitation.PriceForVisitation.ToString("C")</td>
                     <td>@(visitation.HomeVisitation.IsHomeVisitationConfirmed ? "Confirmed" : "Pending")</td>
                     <td>
-                        @if (visitation.MedicalManipulations.Any())
-                        {
+                            @if (visitation.MedicalManipulations.Any())
+                            {
                             <ul>
-                                @foreach (var manipulation in visitation.MedicalManipulations)
-                                {
+                                    @foreach (var manipulation in visitation.MedicalManipulations)
+                                    {
                                     <li>
                                         <strong>@manipulation.Name</strong> - @manipulation.Duration minutes, @manipulation.Price.ToString("C")
                                         <br />
                                         <small>@manipulation.Description</small>
                                     </li>
-                                }
+                                    }
                             </ul>
-                        }
-                        else
-                        {
+                            }
+                            else
+                            {
                             <span>No manipulations</span>
-                        }
+                            }
+                    </td>
+                    <td>
+                        <form asp-action="DeleteHomeVisitationFromPatient" method="post">
+                            <input type="hidden" name="visitationId" value="@visitation.HomeVisitation.Id" />
+                            <button type="submit" class="btn btn-danger btn-sm">Cancel</button>
+                        </form>
                     </td>
                 </tr>
+
+                }
             }
         </tbody>
     </table>
+
 
     <!-- Section for Completed Visitations -->
     <h2 class="text-success mt-4">Completed</h2>

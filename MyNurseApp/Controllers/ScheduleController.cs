@@ -30,6 +30,18 @@ namespace MyNurseApp.Controllers
             return View(model);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> DeleteHomeVisitationFromPatient(Guid visitationId)
+        {
+            var isDeleted = await _scheduleService.DeleteHomeVisitationAsync(visitationId);
+            if (!isDeleted)
+            {
+                return RedirectToAction("Index"); //TODO Handle exception
+            }
+
+            return RedirectToAction("Index");
+        }
+
         [HttpGet]
         public async Task<IActionResult> Schedule()
         {
