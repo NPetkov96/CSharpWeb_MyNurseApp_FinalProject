@@ -24,7 +24,7 @@
             @foreach (var visitation in Model)
             {
                 <div class="col">
-                    <div class="card h-100 shadow-sm">
+                    <div class="card h-100 shadow-sm @(visitation.HomeVisitation.IsComplete ? "" : "border-warning")">
                         <div class="card-body">
                             <h5 class="card-title">@visitation.PatientProfile.FirstName @visitation.PatientProfile.LastName</h5>
                             <p class="card-text">
@@ -46,6 +46,7 @@
                                 <strong>Price:</strong> @visitation.HomeVisitation.PriceForVisitation.ToString("C") <br />
                                 <strong>Payment Method:</strong> @visitation.HomeVisitation.PaymentMethod <br />
                                 <strong>Status:</strong> @(visitation.HomeVisitation.IsHomeVisitationConfirmed ? "Confirmed" : "Pending") <br />
+                                <strong>IsComplete:</strong> @(visitation.HomeVisitation.IsComplete ? "Complete" : "Pending") <br />
                                 @if (!string.IsNullOrEmpty(visitation.HomeVisitation.Note))
                                 {
                                     <strong>Note:</strong> @visitation.HomeVisitation.Note
@@ -111,6 +112,33 @@
                                 <input type="hidden" name="visitationId" value="@visitation.HomeVisitation.Id" />
                                 <button class="btn btn-danger btn-sm" type="submit">Delete</button>
                             </form>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        <!-- Секция за Completed Visitations -->
+        <h2 class="text-success mt-4">Completed Visitations</h2>
+        <div class="row row-cols-1 row-cols-md-3 g-3">
+            @foreach (var visitation in Model.Where(v => v.HomeVisitation.IsComplete))
+            {
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">@visitation.PatientProfile.FirstName @visitation.PatientProfile.LastName</h5>
+                            <p class="card-text">
+                                <strong>Date & Time:</strong> @visitation.HomeVisitation.DateTimeManipulation.ToString("dd/MM/yyyy HH:mm") <br />
+                                <strong>Price:</strong> @visitation.HomeVisitation.PriceForVisitation.ToString("C") <br />
+                                <strong>Payment Method:</strong> @visitation.HomeVisitation.PaymentMethod <br />
+                                <strong>Status:</strong> Completed <br />
+                                @if (!string.IsNullOrEmpty(visitation.HomeVisitation.Note))
+                                {
+                                    <strong>Note:</strong> @visitation.HomeVisitation.Note
+                                }
+                            </p>
+                        </div>
+                        <div class="card-footer text-center">
+                            <p class="text-muted">This visitation is complete.</p>
                         </div>
                     </div>
                 </div>

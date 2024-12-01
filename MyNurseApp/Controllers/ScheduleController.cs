@@ -84,7 +84,7 @@ namespace MyNurseApp.Controllers
         public async Task<IActionResult> DeleteHomeVisitation(Guid visitationId)
         {
             var isDeleted = await _scheduleService.DeleteHomeVisitationAsync(visitationId);
-            if (isDeleted)
+            if (!isDeleted)
             {
                 return RedirectToAction("Index"); //TODO Handle exception
             }

@@ -5,27 +5,32 @@ using MyNurseApp.Common.Enums;
 using MyNurseApp.Data;
 using MyNurseApp.Data.Models;
 using MyNurseApp.Data.Repository.Interfaces;
+using MyNurseApp.Web.ViewModels.HomeVisitation;
 using MyNurseApp.Web.ViewModels.NurseProfile;
+using MyNurseApp.Web.ViewModels.PatientProfile;
+using System.Security.Claims;
 
 namespace MyNurseApp.Services.Data
 {
     public class NurseService
     {
         private readonly IRepository<NurseProfile, Guid> _nurseRepository;
+        private readonly IRepository<HomeVisitation, Guid> _visitationRepository;
         private readonly IHttpContextAccessor _currentAccsessor;
         private readonly UserManager<ApplicationUser> _userManager;
 
 
-        public NurseService(IRepository<NurseProfile, Guid> patientRepository, IHttpContextAccessor httpContextAccessor, UserManager<ApplicationUser> userManager)
+        public NurseService(IRepository<HomeVisitation, Guid> visitationRepository, IRepository<NurseProfile, Guid> patientRepository, IHttpContextAccessor httpContextAccessor, UserManager<ApplicationUser> userManager)
         {
             this._nurseRepository = patientRepository;
             this._currentAccsessor = httpContextAccessor;
             this._userManager = userManager;
+            this._visitationRepository = visitationRepository;
         }
 
         public async Task<NurseProfileViewModel> GetNurseProfileAsync()
         {
-            var userId = _currentAccsessor.HttpContext?.User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            var userId = _currentAccsessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var model = await _nurseRepository.FirstOrDefaultAsync(m => m.UserId == Guid.Parse(userId!));
 
             if (model == null)
@@ -152,6 +157,41 @@ namespace MyNurseApp.Services.Data
             };
 
             return model;
+        }
+
+        public async Task<ICollection<HomeVisitationViewModel>?> GetNurseHomeVisitatonsAync() //PROBLEM
+        {
+            var userId = _currentAccsessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var nurse = await _nurseRepository.FirstOrDefaultAsync(n => n.UserId == Guid.Parse(userId!));
+            var models = await _visitationRepository
+                .GetAllAttached()
+                .Where(v => v.Nurse == nurse)
+                .Include(p => p.Patient)
+                .Include(p => p.MedicalManipulations)
+                .ToListAsync();
+
+            var viewModelList = models.Select(v => new HomeVisitationViewModel()
+            {
+                Id = v.Id,
+                DateTimeManipulation = v.DateTimeManipulation,
+                MedicalManipulations = v.MedicalManipulations,
+                Note = v.Note,
+                IsHomeVisitationConfirmed = v.IsHomeVisitationConfirmed,
+                PatientId = v.PatientId,
+                PriceForVisitation = v.MedicalManipulations.Sum(p => p.Price) + v.PriceForVisitation,
+                PaymentMethod = v.PaymentMethod,
+                Patient = new PatientProfileViewModel
+                {
+                    Id = v.Patient.Id,
+                    FirstName = v.Patient.FirstName,
+                    LastName = v.Patient.LastName,
+                    PhoneNumber = v.Patient.PhoneNumber,
+                    HomeAddress = v.Patient.HomeAddress
+                },
+            })
+                .ToList();
+
+            return viewModelList;
         }
     }
 }

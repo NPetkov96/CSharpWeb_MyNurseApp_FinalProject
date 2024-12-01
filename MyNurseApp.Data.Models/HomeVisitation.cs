@@ -32,6 +32,7 @@ namespace MyNurseApp.Data.Models
         [Required]
         public PatientProfile Patient { get; set; } = null!;
 
+        public bool IsComplete { get; set; } = false;
 
         public ICollection<MedicalManipulation> MedicalManipulations { get; set; } = new List<MedicalManipulation>();
 

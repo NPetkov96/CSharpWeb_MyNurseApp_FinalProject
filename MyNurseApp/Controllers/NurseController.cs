@@ -37,6 +37,12 @@ namespace MyNurseApp.Controllers
             var viewModels = await _nurseService.GetNurseProfileAsync();
             return View(viewModels);
         }
+        
+        public async Task<IActionResult> RequestedVisitations()
+        {
+            var viewModels = await _nurseService.GetNurseHomeVisitatonsAync();
+            return View(viewModels);
+        }
 
         [HttpGet]
         public async Task<IActionResult> CreateNurseProfile()

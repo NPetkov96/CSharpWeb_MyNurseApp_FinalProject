@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MyNurseApp.Common.Enums;
 using MyNurseApp.Data.Models;
+using MyNurseApp.Web.ViewModels.PatientProfile;
 using System.ComponentModel.DataAnnotations;
 
 namespace MyNurseApp.Web.ViewModels.HomeVisitation
@@ -32,7 +33,11 @@ namespace MyNurseApp.Web.ViewModels.HomeVisitation
         [Required]
         public Guid PatientId { get; set; }
 
+        public PatientProfileViewModel? Patient { get; set; }
+
         public Guid? NurseId { get; set; }
+
+        public bool IsComplete { get; set; }
 
         [Required]
         public ICollection<MedicalManipulation> MedicalManipulations { get; set; } = new List<MedicalManipulation>();

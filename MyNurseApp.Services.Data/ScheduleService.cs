@@ -132,7 +132,8 @@ namespace MyNurseApp.Services.Data
                     PaymentMethod = item.PaymentMethod,
                     PatientId = item.PatientId,
                     PriceForVisitation = item.PriceForVisitation,
-                    NurseId = item.Nurse?.Id
+                    NurseId = item.Nurse?.Id,
+                    IsComplete = item.IsComplete,
                 },
 
                 MedicalManipulations = item.MedicalManipulations?.Select(manipulation => new MedicalManipulationsViewModel
@@ -228,5 +229,6 @@ namespace MyNurseApp.Services.Data
             }
             return true;
         }
+
     }
 }

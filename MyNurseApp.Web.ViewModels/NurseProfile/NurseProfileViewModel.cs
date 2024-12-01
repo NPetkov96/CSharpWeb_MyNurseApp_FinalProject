@@ -1,5 +1,6 @@
 ﻿using MyNurseApp.Common.Enums;
 using MyNurseApp.Data.Models;
+using MyNurseApp.Web.ViewModels.HomeVisitation;
 using System.ComponentModel.DataAnnotations;
 
 namespace MyNurseApp.Web.ViewModels.NurseProfile
@@ -44,6 +45,6 @@ namespace MyNurseApp.Web.ViewModels.NurseProfile
 
         public Guid UserId { get; set; }
 
-        public NurseProfileViewModel? NurseView { get; set; } //???
+        public ICollection<HomeVisitationViewModel>? HomeVisitations { get; set; } = new List<HomeVisitationViewModel>();
     }
 }

@@ -74,7 +74,7 @@ else
         <p>No manipulations selected.</p>
     }
 
-    @if (!User.IsInRole("Admin"))
+    @if (!User.IsInRole("Admin") && !User.IsInRole("Nurse"))
     {
         <div class="mt-2">
             <a class="btn btn-primary" asp-action="SaveSelection">Book home visitation</a>

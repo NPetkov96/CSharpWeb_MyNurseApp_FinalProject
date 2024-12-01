@@ -7,10 +7,11 @@ public class RedirectIfPendingMiddleware
     private readonly IServiceProvider _serviceProvider;
 
     private readonly string[] _excludedPaths = [
+    "/Nurse/EditNurseProfile",
     "/Home/PendingApproval",
     "/Identity/Account/Logout",
     "/Nurse/CreateNurseProfile",
-    "/Nurse/Profile"
+    "/Nurse/Profile",
 ];
     public RedirectIfPendingMiddleware(RequestDelegate next, IServiceProvider serviceProvider)
     {
