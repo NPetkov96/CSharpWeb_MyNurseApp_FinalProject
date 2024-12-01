@@ -75,6 +75,11 @@ namespace MyNurseApp.Services.Data
 
         public async Task RegisterNurseAsync(NurseProfileViewModel viewModel)
         {
+            bool isMedicalLicenseExist = _nurseRepository.GetAllAttached().Any(m => m.MedicalLicenseNumber == viewModel.MedicalLicenseNumber);
+            if (isMedicalLicenseExist)
+            {
+                throw new ArgumentException("Medical License number exist"); //TODO better exception handling
+            }
             var nurse = ConvertToModel(viewModel);
             nurse.IsRegistrated = true;
             await _nurseRepository.AddAsync(nurse);

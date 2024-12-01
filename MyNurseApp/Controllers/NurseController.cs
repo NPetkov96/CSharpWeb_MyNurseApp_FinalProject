@@ -59,7 +59,7 @@ namespace MyNurseApp.Controllers
             }
             await _nurseService.RegisterNurseAsync(model);
 
-            return View("Profile");
+            return RedirectToAction("Index","Home");
         }
 
         [Authorize(Roles = "Admin")]
