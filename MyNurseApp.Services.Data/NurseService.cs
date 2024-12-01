@@ -178,7 +178,7 @@ namespace MyNurseApp.Services.Data
                 Note = v.Note,
                 IsHomeVisitationConfirmed = v.IsHomeVisitationConfirmed,
                 PatientId = v.PatientId,
-                PriceForVisitation = v.MedicalManipulations.Sum(p => p.Price) + v.PriceForVisitation,
+                PriceForVisitation =v.PriceForVisitation,
                 PaymentMethod = v.PaymentMethod,
                 Patient = new PatientProfileViewModel
                 {

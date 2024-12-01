@@ -34,7 +34,6 @@ namespace MyNurseApp.Services.Data
 
         public async Task<IEnumerable<PatientAndHomeVisitationViewModel>> GetVisitationsForUserAsync()
         {
-            // Вземане на UserId на текущо логнатия потребител
             var userId = _currentAccsessor.HttpContext?.User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
             if (userId == null)
@@ -42,7 +41,6 @@ namespace MyNurseApp.Services.Data
                 throw new UnauthorizedAccessException("User is not authenticated.");
             }
 
-            // Намиране на пациента, свързан с логнатия потребител
             var patient = await _patientRepository.FirstOrDefaultAsync(p => p.UserId == Guid.Parse(userId));
 
             if (patient == null)
@@ -50,11 +48,10 @@ namespace MyNurseApp.Services.Data
                 return null!;
             }
 
-            // Филтриране на домашните посещения за този пациент
             var visitationsListModel = await _visitationRepository.GetAllAttached()
-                .Where(hv => hv.PatientId == patient.Id) // Филтър за посещения само на логнатия потребител
                 .Include(hv => hv.Patient)
                 .Include(hv => hv.MedicalManipulations)
+                .Where(hv => hv.PatientId == patient.Id)
                 .ToListAsync();
 
             // Преобразуване на резултатите във ViewModel
@@ -83,7 +80,7 @@ namespace MyNurseApp.Services.Data
                     PaymentMethod = item.PaymentMethod,
                     PatientId = item.PatientId,
                     PriceForVisitation = item.PriceForVisitation,
-
+                    IsComplete = item.IsComplete,
                 },
 
                 MedicalManipulations = item.MedicalManipulations?.Select(manipulation => new MedicalManipulationsViewModel

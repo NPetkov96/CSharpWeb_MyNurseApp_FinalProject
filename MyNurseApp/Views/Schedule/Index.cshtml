@@ -16,6 +16,8 @@
 }
 else
 {
+    <!-- Section for Pending Visitations -->
+    <h2 class="text-warning mt-4">Pending</h2>
     <table class="table table-striped">
         <thead>
             <tr>
@@ -31,7 +33,63 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach (var visitation in Model)
+            @foreach (var visitation in Model.Where(m => !m.HomeVisitation.IsComplete))
+            {
+                <tr>
+                    <td>@visitation.HomeVisitation.DateTimeManipulation.ToString("g")</td>
+                    <td>@visitation.PatientProfile.FirstName @visitation.PatientProfile.LastName</td>
+                    <td>@visitation.PatientProfile.HomeAddress</td>
+                    <td>@visitation.PatientProfile.PhoneNumber</td>
+                    <td>
+                        @visitation.PatientProfile.EmergencyContactFullName
+                        <br />
+                        @visitation.PatientProfile.EmergencyContactPhone
+                    </td>
+                    <td>@visitation.HomeVisitation.PaymentMethod</td>
+                    <td>@visitation.HomeVisitation.PriceForVisitation.ToString("C")</td>
+                    <td>@(visitation.HomeVisitation.IsHomeVisitationConfirmed ? "Confirmed" : "Pending")</td>
+                    <td>
+                        @if (visitation.MedicalManipulations.Any())
+                        {
+                            <ul>
+                                @foreach (var manipulation in visitation.MedicalManipulations)
+                                {
+                                    <li>
+                                        <strong>@manipulation.Name</strong> - @manipulation.Duration minutes, @manipulation.Price.ToString("C")
+                                        <br />
+                                        <small>@manipulation.Description</small>
+                                    </li>
+                                }
+                            </ul>
+                        }
+                        else
+                        {
+                            <span>No manipulations</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <!-- Section for Completed Visitations -->
+    <h2 class="text-success mt-4">Completed</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Visitation Date</th>
+                <th>Patient Name</th>
+                <th>Address</th>
+                <th>Phone</th>
+                <th>Emergency Contact</th>
+                <th>Payment Method</th>
+                <th>Price</th>
+                <th>Status</th>
+                <th>Manipulations</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var visitation in Model.Where(m => m.HomeVisitation.IsComplete))
             {
                 <tr>
                     <td>@visitation.HomeVisitation.DateTimeManipulation.ToString("g")</td>

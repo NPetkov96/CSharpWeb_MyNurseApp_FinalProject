@@ -136,6 +136,7 @@
                                     <strong>Note:</strong> @visitation.HomeVisitation.Note
                                 }
                             </p>
+                           
                             <p class="card-text">
                                 <strong>Medical Manipulations:</strong>
                                 @if (visitation.MedicalManipulations.Any())
@@ -158,11 +159,26 @@
                             </p>
                         </div>
                         <div class="card-footer text-center">
+                            <p class="text-muted">
+                                <strong>Assigned Nurse:</strong>
+                                @{
+                                    var assignedNurse = nurses?.FirstOrDefault(n => n.Id == visitation.HomeVisitation.NurseId);
+                                    if (assignedNurse != null)
+                                    {
+                                        <span>@assignedNurse.FirstName @assignedNurse.LastName</span>
+                                    }
+                                    else
+                                    {
+                                        <span>Unknown</span>
+                                    }
+                                }
+                            </p>
                             <p class="text-muted">This visitation is complete.</p>
                         </div>
                     </div>
                 </div>
             }
         </div>
+
     }
 </div>
