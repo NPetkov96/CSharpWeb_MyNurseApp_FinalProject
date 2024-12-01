@@ -159,13 +159,13 @@ namespace MyNurseApp.Services.Data
             return model;
         }
 
-        public async Task<ICollection<HomeVisitationViewModel>?> GetNurseHomeVisitatonsAync() //PROBLEM
+        public async Task<ICollection<HomeVisitationViewModel>?> GetNurseHomeVisitatonsAync()
         {
             var userId = _currentAccsessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var nurse = await _nurseRepository.FirstOrDefaultAsync(n => n.UserId == Guid.Parse(userId!));
             var models = await _visitationRepository
                 .GetAllAttached()
-                .Where(v => v.Nurse == nurse)
+                .Where(v => v.Nurse == nurse && v.IsComplete == false)
                 .Include(p => p.Patient)
                 .Include(p => p.MedicalManipulations)
                 .ToListAsync();
@@ -192,6 +192,14 @@ namespace MyNurseApp.Services.Data
                 .ToList();
 
             return viewModelList;
+        }
+
+        public async Task GetNurseHomeVisitatonsAync(Guid id)
+        {
+            var currentVisitation = await _visitationRepository.FirstOrDefaultAsync(v => v.Id == id);
+            currentVisitation.IsComplete = true;
+            await _visitationRepository.UpdateAsync(currentVisitation);
+            await GetNurseHomeVisitatonsAync();
         }
     }
 }

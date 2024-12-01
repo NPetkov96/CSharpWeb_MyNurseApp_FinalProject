@@ -15,7 +15,7 @@ namespace MyNurseApp.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> EditNurseProfile(/*Guid id*/)
+        public async Task<IActionResult> EditNurseProfile()
         {
             var profile = await _nurseService.GetNurseProfileAsync();
             return View(profile);
@@ -37,12 +37,21 @@ namespace MyNurseApp.Controllers
             var viewModels = await _nurseService.GetNurseProfileAsync();
             return View(viewModels);
         }
-        
+
+        [HttpGet]
         public async Task<IActionResult> RequestedVisitations()
         {
             var viewModels = await _nurseService.GetNurseHomeVisitatonsAync();
             return View(viewModels);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> FinishVisitaion(Guid id)
+        {
+            await _nurseService.GetNurseHomeVisitatonsAync(id);
+            return RedirectToAction("RequestedVisitations");
+        }
+
 
         [HttpGet]
         public async Task<IActionResult> CreateNurseProfile()

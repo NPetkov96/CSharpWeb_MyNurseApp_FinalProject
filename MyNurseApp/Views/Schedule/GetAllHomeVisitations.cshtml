@@ -21,7 +21,7 @@
     else
     {
         <div class="row row-cols-1 row-cols-md-3 g-3">
-            @foreach (var visitation in Model)
+            @foreach (var visitation in Model.Where(v => v.HomeVisitation.IsComplete == false))
             {
                 <div class="col">
                     <div class="card h-100 shadow-sm @(visitation.HomeVisitation.IsComplete ? "" : "border-warning")">
@@ -117,7 +117,6 @@
                 </div>
             }
         </div>
-        <!-- Секция за Completed Visitations -->
         <h2 class="text-success mt-4">Completed Visitations</h2>
         <div class="row row-cols-1 row-cols-md-3 g-3">
             @foreach (var visitation in Model.Where(v => v.HomeVisitation.IsComplete))
@@ -126,6 +125,7 @@
                     <div class="card h-100 shadow-sm">
                         <div class="card-body">
                             <h5 class="card-title">@visitation.PatientProfile.FirstName @visitation.PatientProfile.LastName</h5>
+                            <h6 class="card-title">@visitation.PatientProfile.UIN</h6>
                             <p class="card-text">
                                 <strong>Date & Time:</strong> @visitation.HomeVisitation.DateTimeManipulation.ToString("dd/MM/yyyy HH:mm") <br />
                                 <strong>Price:</strong> @visitation.HomeVisitation.PriceForVisitation.ToString("C") <br />
@@ -134,6 +134,26 @@
                                 @if (!string.IsNullOrEmpty(visitation.HomeVisitation.Note))
                                 {
                                     <strong>Note:</strong> @visitation.HomeVisitation.Note
+                                }
+                            </p>
+                            <p class="card-text">
+                                <strong>Medical Manipulations:</strong>
+                                @if (visitation.MedicalManipulations.Any())
+                                {
+                                    <ul>
+                                        @foreach (var manipulation in visitation.MedicalManipulations)
+                                        {
+                                            <li>
+                                                <strong>@manipulation.Name</strong> - @manipulation.Duration minutes,
+                                                @manipulation.Price.ToString("C")<br />
+                                                <em>@manipulation.Description</em>
+                                            </li>
+                                        }
+                                    </ul>
+                                }
+                                else
+                                {
+                                    <span>No medical manipulations added.</span>
                                 }
                             </p>
                         </div>

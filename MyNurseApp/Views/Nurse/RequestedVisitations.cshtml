@@ -34,9 +34,9 @@
                     <td>@visitation.Patient!.FirstName @visitation.Patient!.LastName</td>
                     <td>@visitation.Patient!.PhoneNumber</td>
                     <td>@visitation.Patient!.HomeAddress</td>
-                    <td>@visitation.IsHomeVisitationConfirmed</td>
+                    <td>@(visitation.IsHomeVisitationConfirmed ? "Confirmed" : "Pending")</td>
                     <td>
-                        <a asp-action="Details" asp-route-id="@visitation.Id" class="btn btn-info btn-sm">Finish</a>
+                        <a asp-action="FinishVisitaion" asp-route-id="@visitation.Id" class="btn btn-info btn-sm">Finish</a>
                     </td>
                 </tr>
             }
