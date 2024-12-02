@@ -31,12 +31,16 @@ namespace MyNurseApp.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateReview(ReviewViewModel model)
         {
-            var isCreated = await _reviewService.CreateReviewAsync(model);
-            if (!isCreated) 
+            try
             {
-                throw new ArgumentException("Couldn't create review"); //TODO better handling
+                await _reviewService.CreateReviewAsync(model);
+                return RedirectToAction("Index");
             }
-            return RedirectToAction("Index");
+            catch (InvalidOperationException ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Error", "Home");
+            }
         }
 
         [HttpPost]
