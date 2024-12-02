@@ -6,7 +6,7 @@ namespace MyNurseApp.Web.ViewModels
 {
     public class PatientAndHomeVisitationViewModel
     {
-        public PatientProfileViewModel PatientProfile { get; set; } = null!;
+        public PatientProfileViewModel? PatientProfile { get; set; }
         public HomeVisitationViewModel HomeVisitation { get; set; } = null!;
 
         public IEnumerable<MedicalManipulationsViewModel> MedicalManipulations = new List<MedicalManipulationsViewModel>();

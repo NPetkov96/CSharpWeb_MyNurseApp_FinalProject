@@ -54,7 +54,6 @@ namespace MyNurseApp.Services.Data
                 .Where(hv => hv.PatientId == patient.Id)
                 .ToListAsync();
 
-            // Преобразуване на резултатите във ViewModel
             return visitationsListModel.Select(item => new PatientAndHomeVisitationViewModel
             {
                 PatientProfile = item.Patient != null ? new PatientProfileViewModel
@@ -152,7 +151,7 @@ namespace MyNurseApp.Services.Data
 
             if (patient == null)
             {
-                throw new ArgumentException("No user found"); //make better exception handling....
+                throw new InvalidOperationException("No user found");
             }
 
             PatientProfileViewModel viewModel = new PatientProfileViewModel()
@@ -177,7 +176,7 @@ namespace MyNurseApp.Services.Data
             var isManipulationExist = await _visitationRepository.FirstOrDefaultAsync(m => m.Id == model.HomeVisitation.Id);
             if (isManipulationExist != null)
             {
-                throw new ArgumentException("The manipulation already exist!"); //TODO better handling the exception.
+                throw new InvalidOperationException("The manipulation already exist!");
             }
             decimal priceForVisitation = model.HomeVisitation.PriceForVisitation + model.MedicalManipulations.Sum(m => m.Price);
 
@@ -204,6 +203,11 @@ namespace MyNurseApp.Services.Data
                 PatientId = model.PatientProfile.Id
             };
             await _visitationRepository.AddAsync(homeVisitation);
+
+            if(!_visitationRepository.GetAllAttached().Any(v=>v.Id == homeVisitation.Id))
+            {
+                throw new InvalidOperationException("Failed to create new home visitation.");
+            }
         }
 
         public async Task AssignVisitationToNurseAsync(Guid visitationId, Guid nurseId)
@@ -211,20 +215,42 @@ namespace MyNurseApp.Services.Data
             var nurse = await _nurseRepository.FirstOrDefaultAsync(n => n.Id == nurseId);
             var homeVisitation = await _visitationRepository.FirstOrDefaultAsync(v => v.Id == visitationId);
 
-            nurse.HomeVisitations.Add(homeVisitation);
+            if (nurse == null && homeVisitation == null)
+            {
+                throw new InvalidOperationException("Visitation not found.");
+            }
+
+            nurse!.HomeVisitations.Add(homeVisitation);
             homeVisitation.IsHomeVisitationConfirmed = true;
             await _nurseRepository.UpdateAsync(nurse);
+
+            if (!_nurseRepository.GetAllAttached().Any(n=>n.HomeVisitations.Any(v=>v.Id == visitationId)))
+            {
+                throw new InvalidOperationException("Failed to assign home visitation for choosen nurse.");
+            }
         }
 
-        public async Task<bool> DeleteHomeVisitationAsync(Guid visitationId)
+        public async Task DeleteHomeVisitationAsync(Guid visitationId)
         {
+            var user = _currentAccsessor.HttpContext?.User;
             var model = await _visitationRepository.GetByIdAsync(visitationId);
+
+            if (model == null)
+            {
+                throw new InvalidOperationException("Visitation not found.");
+            }
+
+            if (model.IsHomeVisitationConfirmed == true && !user!.IsInRole("Admin"))
+            {
+                throw new InvalidOperationException("You can't cancel home visitation which is already approved.");
+            }
+
             var isDeleted = await _visitationRepository.DeleteAsync(model);
+
             if (!isDeleted)
             {
-                return false;
+                throw new InvalidOperationException("Failed to delete the visitation.");
             }
-            return true;
         }
 
     }

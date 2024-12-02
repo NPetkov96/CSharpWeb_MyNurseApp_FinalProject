@@ -33,20 +33,32 @@ namespace MyNurseApp.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteHomeVisitationFromPatient(Guid visitationId)
         {
-            var isDeleted = await _scheduleService.DeleteHomeVisitationAsync(visitationId);
-            if (!isDeleted)
+            try
             {
-                return RedirectToAction("Index"); //TODO Handle exception
+                await _scheduleService.DeleteHomeVisitationAsync(visitationId);
+                return RedirectToAction("Index");
             }
-
-            return RedirectToAction("Index");
+            catch (InvalidOperationException ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Error", "Home");
+            }
         }
 
         [HttpGet]
         public async Task<IActionResult> Schedule()
         {
             List<MedicalManipulationsViewModel> selectedManipulations = GetSelectedManipulations();
-            PatientProfileViewModel patientModel = await _scheduleService.GetPatientAync();
+            PatientProfileViewModel patientModel = new PatientProfileViewModel();
+            try
+            {
+                patientModel = await _scheduleService.GetPatientAync();
+            }
+            catch (InvalidOperationException ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Error", "Home");
+            }
             HomeVisitationViewModel homeVisitation = new HomeVisitationViewModel();
 
             PatientAndHomeVisitationViewModel viewModel = new PatientAndHomeVisitationViewModel()
@@ -62,15 +74,37 @@ namespace MyNurseApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Schedule(PatientAndHomeVisitationViewModel model)
         {
+
             List<MedicalManipulationsViewModel> selectedManipulations = GetSelectedManipulations();
-            PatientProfileViewModel patientModel = await _scheduleService.GetPatientAync();
+            PatientProfileViewModel patientModel = new PatientProfileViewModel();
+
+            try
+            {
+                patientModel = await _scheduleService.GetPatientAync();
+            }
+            catch (InvalidOperationException ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Error", "Home");
+            }
 
             model.MedicalManipulations = selectedManipulations;
             model.PatientProfile = patientModel;
 
-            await _scheduleService.AddHomeVisitationAsync(model);
-
-            return RedirectToAction("Index");
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+            try
+            {
+                await _scheduleService.AddHomeVisitationAsync(model);
+                return RedirectToAction("Index");
+            }
+            catch (InvalidOperationException ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Error", "Home");
+            }
         }
 
 
@@ -87,21 +121,32 @@ namespace MyNurseApp.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AssignVisitationToNurse(Guid visitationId, Guid nurseId)
         {
-            await _scheduleService.AssignVisitationToNurseAsync(visitationId, nurseId);
-            return RedirectToAction("GetAllHomeVisitations");
+            try
+            {
+                await _scheduleService.AssignVisitationToNurseAsync(visitationId, nurseId);
+                return RedirectToAction("GetAllHomeVisitations");
+            }
+            catch (InvalidOperationException ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Error", "Home");
+            }
         }
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteHomeVisitation(Guid visitationId)
         {
-            var isDeleted = await _scheduleService.DeleteHomeVisitationAsync(visitationId);
-            if (!isDeleted)
+            try
             {
-                return RedirectToAction("Index"); //TODO Handle exception
+                await _scheduleService.DeleteHomeVisitationAsync(visitationId);
+                return RedirectToAction("GetAllHomeVisitations");
             }
-
-            return RedirectToAction("GetAllHomeVisitations");
+            catch (InvalidOperationException ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Error", "Home");
+            }
         }
 
 
