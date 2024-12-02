@@ -33,10 +33,11 @@ namespace MyNurseApp.Services.Data
             var userId = _currentAccsessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var model = await _nurseRepository.FirstOrDefaultAsync(m => m.UserId == Guid.Parse(userId!));
 
-            if (model == null)
+            if(model == null)
             {
-                throw new InvalidOperationException("No user found");
+                return null;
             }
+
             return ConvertToViewModel(model);
         }
 
@@ -111,13 +112,25 @@ namespace MyNurseApp.Services.Data
             user.Nurse!.IsConfirmed = NurseStatus.Declined;
             await _userManager.UpdateAsync(user);
         }
-        public async Task DeleteNurseAync(Guid id)
+        public async Task DeleteNurseProfileAync(Guid id)
         {
-            var user = await _userManager.Users
-                .Include(u => u.Nurse)
-                .FirstOrDefaultAsync(u => u.Nurse!.Id == id);
+            var nurseProfile = await _nurseRepository.FirstOrDefaultAsync(u => u.Id == id);
 
-            await _userManager.DeleteAsync(user!);
+            if (nurseProfile == null)
+            {
+                throw new InvalidOperationException("Nurse profile doesnt exist");
+            }
+
+            if(nurseProfile.HomeVisitations.Any())
+            {
+
+            }
+
+            bool isDeleted = await _nurseRepository.DeleteAsync(nurseProfile!);
+            if (!isDeleted)
+            {
+                throw new InvalidOperationException("Nurse profile could not be deleted!");
+            }
         }
 
         private NurseProfileViewModel ConvertToViewModel(NurseProfile model)

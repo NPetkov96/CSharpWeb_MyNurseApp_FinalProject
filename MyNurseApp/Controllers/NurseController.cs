@@ -89,20 +89,13 @@ namespace MyNurseApp.Controllers
         [HttpGet]
         public async Task<IActionResult> CreateNurseProfile()
         {
-            try
+
+            var viewModels = await _nurseService.GetNurseProfileAsync();
+            if (viewModels != null)
             {
-                var viewModels = await _nurseService.GetNurseProfileAsync();
-                if (viewModels != null)
-                {
-                    return RedirectToAction("Profile", viewModels);
-                }
-                return View();
+                return RedirectToAction("Profile", viewModels);
             }
-            catch (InvalidOperationException ex)
-            {
-                TempData["ErrorMessage"] = ex.Message;
-                return RedirectToAction("Error", "Home");
-            }
+            return View();
         }
 
         [HttpPost]
@@ -112,16 +105,8 @@ namespace MyNurseApp.Controllers
             {
                 return View(model);
             }
-            try
-            {
-                await _nurseService.RegisterNurseAsync(model);
-                return RedirectToAction("Index", "Home");
-            }
-            catch (InvalidOperationException ex)
-            {
-                TempData["ErrorMessage"] = ex.Message;
-                return RedirectToAction("Error", "Home");
-            }
+            await _nurseService.RegisterNurseAsync(model);
+            return RedirectToAction("Index", "Home");
         }
 
         [Authorize(Roles = "Admin")]
@@ -148,11 +133,18 @@ namespace MyNurseApp.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> DeleteNurse(Guid id)
+        public async Task<IActionResult> DeleteNurseProfile(Guid id)
         {
-            await _nurseService.DeleteNurseAync(id);
-            await Task.CompletedTask;
-            return RedirectToAction("GetAllNursesProfiles");
+            try
+            {
+                await _nurseService.DeleteNurseProfileAync(id);
+                return RedirectToAction("GetAllNursesProfiles");
+            }
+            catch (InvalidOperationException ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Error", "Home");
+            }
         }
     }
 }

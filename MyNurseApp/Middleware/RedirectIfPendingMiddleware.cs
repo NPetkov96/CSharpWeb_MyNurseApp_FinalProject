@@ -7,11 +7,12 @@ public class RedirectIfPendingMiddleware
     private readonly IServiceProvider _serviceProvider;
 
     private readonly string[] _excludedPaths = [
-    "/Nurse/EditNurseProfile",
     "/Home/PendingApproval",
     "/Identity/Account/Logout",
+    "/Review",
     "/Nurse/CreateNurseProfile",
     "/Nurse/Profile",
+    "/Nurse/EditNurseProfile",
 ];
     public RedirectIfPendingMiddleware(RequestDelegate next, IServiceProvider serviceProvider)
     {
@@ -26,7 +27,9 @@ public class RedirectIfPendingMiddleware
         var excludedPaths = _excludedPaths;
         if (path != null && excludedPaths.Any(p => path.StartsWith(p, StringComparison.OrdinalIgnoreCase)))
         {
+            Console.WriteLine($"Path {path} is excluded. Continuing pipeline...");
             await _next(context);
+            Console.WriteLine($"Pipeline continued successfully for {path}.");
             return;
         }
 
