@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using MyNurseApp.Services.Data;
 using MyNurseApp.Web.ViewModels.Review;
 
@@ -38,27 +39,21 @@ namespace MyNurseApp.Controllers
             return RedirectToAction("Index");
         }
 
-        //[HttpPost]
-        //[Authorize]
-        //public async Task<IActionResult> DeleteReview(Guid id)
-        //{
-        //    //var review = await _reviewService.GetByIdAsync(id);
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> DeleteReview(Guid id)
+        {
+            try
+            {
+                await _reviewService.DeleteAsync(id);
+                return RedirectToAction("Index");
+            }
+            catch (InvalidOperationException ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Error", "Home");
+            }
+        }
 
-        //    //if (review == null)
-        //    //{
-        //    //    return NotFound();
-        //    //}
-
-        //    //// Проверка дали потребителят има право да изтрие ревюто
-        //    //var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-        //    //if (review.UserId.ToString() != currentUserId && !User.IsInRole("Admin"))
-        //    //{
-        //    //    return Forbid();
-        //    //}
-
-        //    //await _reviewService.DeleteAsync(review);
-
-        //    //return RedirectToAction("Index");
-        //}
     }
 }

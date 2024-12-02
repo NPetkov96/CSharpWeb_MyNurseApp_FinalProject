@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MyNurseApp.Data.Models;
 using MyNurseApp.Data.Repository.Interfaces;
@@ -11,11 +12,13 @@ namespace MyNurseApp.Services.Data
     {
         private readonly IRepository<Review, Guid> _reviewRepository;
         private readonly IHttpContextAccessor _currentAccsessor;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public ReviewService(IRepository<Review, Guid> reviewRepository, IHttpContextAccessor httpContextAccessor)
+        public ReviewService(IRepository<Review, Guid> reviewRepository, IHttpContextAccessor httpContextAccessor, UserManager<ApplicationUser> userManager)
         {
             this._reviewRepository = reviewRepository;
             this._currentAccsessor = httpContextAccessor;
+            this._userManager = userManager;
         }
 
         public async Task<IEnumerable<ReviewViewModel>> GetAllReviewsAsync()
@@ -44,6 +47,7 @@ namespace MyNurseApp.Services.Data
             return true;
         }
 
+
         private ReviewViewModel ConvertToViewModel(Review model)
         {
             var viewModel = new ReviewViewModel()
@@ -71,6 +75,35 @@ namespace MyNurseApp.Services.Data
             };
 
             return model;
+        }
+
+        public async Task<ReviewViewModel> GetByIdAsync(Guid id)
+        {
+            var review = await _reviewRepository.FirstOrDefaultAsync(r => r.Id == id);
+            var currentUserId = _currentAccsessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var isAdmin = _currentAccsessor.HttpContext?.User?.IsInRole("Admin") ?? false;
+            if (review.UserId.ToString() != currentUserId && !isAdmin)
+            {
+                throw new InvalidOperationException("You do not have access to this review.");
+            }
+            return ConvertToViewModel(review);
+        }
+
+
+
+        public async Task DeleteAsync(Guid id)
+        {
+            var review = await _reviewRepository.FirstOrDefaultAsync(r => r.Id == id);
+            var model = new Review()
+            {
+                Id = review.Id,
+                Content = review.Content,
+                Rating = review.Rating,
+                UserId = review.UserId
+            };
+
+            await _reviewRepository.DeleteAsync(model);
+
         }
     }
 }

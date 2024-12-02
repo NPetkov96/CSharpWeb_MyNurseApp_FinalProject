@@ -22,7 +22,7 @@ namespace MyNurseApp.Controllers
             var selectedManipulations = GetFromTempData<MedicalManipulationsViewModel>("SelectedManipulations", this);
 
             HttpContext.Session.SetString("SelectedManipulations", JsonConvert.SerializeObject(selectedManipulations));
-            ClearTempData("SelectedManipulations", this); // ????????
+            ClearTempData("SelectedManipulations", this);
             return RedirectToAction("Schedule", "Schedule");
         }
 
