@@ -35,7 +35,7 @@ namespace MyNurseApp.Services.Data
 
             if (model == null)
             {
-                return null!;
+                throw new InvalidOperationException("No user found");
             }
             return ConvertToViewModel(model);
         }
@@ -43,14 +43,7 @@ namespace MyNurseApp.Services.Data
         public async Task<List<NurseProfileViewModel>> GetAllNursesAsync()
         {
             var profiles = await _nurseRepository.GetAllAsync();
-            var viewProfiles = new List<NurseProfileViewModel>();
-
-            foreach (var profile in profiles)
-            {
-                var model = ConvertToViewModel(profile);
-                viewProfiles.Add(model);
-            }
-
+            var viewProfiles = profiles.Select(p => ConvertToViewModel(p)).ToList();
             return viewProfiles;
         }
         public async Task EditNurseProfileAync(NurseProfileViewModel model)
@@ -58,13 +51,12 @@ namespace MyNurseApp.Services.Data
             var nurse = await _nurseRepository.GetByIdAsync(model.Id);
             if (nurse == null)
             {
-                throw new ArgumentException("Nurse profile not found.");
+                throw new InvalidOperationException("Nurse profile not found.");
             }
 
-            // Проверка дали UserId е валиден
             if (!await _userManager.Users.AnyAsync(u => u.Id == model.UserId))
             {
-                throw new ArgumentException("Invalid UserId. User does not exist.");
+                throw new InvalidOperationException("Invalid UserId. User does not exist.");
             }
 
             nurse.FirstName = model.FirstName;
@@ -75,7 +67,11 @@ namespace MyNurseApp.Services.Data
             nurse.Recommendations = model.Recommendations;
             nurse.YearsOfExperience = model.YearsOfExperience;
 
-            await _nurseRepository.UpdateAsync(nurse);
+            bool isUpdated = await _nurseRepository.UpdateAsync(nurse);
+            if (!isUpdated)
+            {
+                throw new InvalidOperationException("Nurse profile could not be updated.");
+            }
         }
 
         public async Task RegisterNurseAsync(NurseProfileViewModel viewModel)
@@ -83,16 +79,20 @@ namespace MyNurseApp.Services.Data
             bool isMedicalLicenseExist = _nurseRepository.GetAllAttached().Any(m => m.MedicalLicenseNumber == viewModel.MedicalLicenseNumber);
             if (isMedicalLicenseExist)
             {
-                throw new ArgumentException("Medical License number exist"); //TODO better exception handling
+                throw new InvalidOperationException("Medical License number exist");
             }
             var nurse = ConvertToModel(viewModel);
             nurse.IsRegistrated = true;
             await _nurseRepository.AddAsync(nurse);
+
+            if(!_nurseRepository.GetAllAttached().Any(n=>n.Id == nurse.Id))
+            {
+                throw new InvalidOperationException("Nurse profile could not be registrated");
+            }
         }
 
         public async Task AprooveNurseAync(Guid id)
         {
-
             var user = await _userManager.Users
                 .Include(u => u.Nurse)
                 .FirstOrDefaultAsync(u => u.Nurse!.Id == id);
@@ -103,7 +103,6 @@ namespace MyNurseApp.Services.Data
         }
         public async Task DeclineNurseAync(Guid id)
         {
-
             var user = await _userManager.Users
                 .Include(u => u.Nurse)
                 .FirstOrDefaultAsync(u => u.Nurse!.Id == id);
@@ -197,8 +196,16 @@ namespace MyNurseApp.Services.Data
         public async Task GetNurseHomeVisitatonsAync(Guid id)
         {
             var currentVisitation = await _visitationRepository.FirstOrDefaultAsync(v => v.Id == id);
+            if(currentVisitation.IsComplete == true)
+            {
+                throw new InvalidOperationException("Home visitation is already completed.");
+            }
             currentVisitation.IsComplete = true;
-            await _visitationRepository.UpdateAsync(currentVisitation);
+            bool isUpdated = await _visitationRepository.UpdateAsync(currentVisitation);
+            if(!isUpdated)
+            {
+                throw new InvalidOperationException("Visitation could not be updated.");
+            }
             await GetNurseHomeVisitatonsAync();
         }
     }

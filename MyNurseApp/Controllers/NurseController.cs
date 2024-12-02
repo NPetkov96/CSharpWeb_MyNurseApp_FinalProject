@@ -14,11 +14,33 @@ namespace MyNurseApp.Controllers
             this._nurseService = nurseService;
         }
 
+        public async Task<IActionResult> Profile()
+        {
+            try
+            {
+                var viewModels = await _nurseService.GetNurseProfileAsync();
+                return View(viewModels);
+            }
+            catch (InvalidOperationException ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Error", "Home");
+            }
+        }
+
         [HttpGet]
         public async Task<IActionResult> EditNurseProfile()
         {
-            var profile = await _nurseService.GetNurseProfileAsync();
-            return View(profile);
+            try
+            {
+                var profile = await _nurseService.GetNurseProfileAsync();
+                return View(profile);
+            }
+            catch (InvalidOperationException ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Error", "Home");
+            }
         }
 
         [HttpPost]
@@ -28,15 +50,18 @@ namespace MyNurseApp.Controllers
             {
                 return View(model);
             }
-            await _nurseService.EditNurseProfileAync(model);
-            return RedirectToAction("Profile");
+            try
+            {
+                await _nurseService.EditNurseProfileAync(model);
+                return RedirectToAction("Profile");
+            }
+            catch (InvalidOperationException ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Error", "Home");
+            }
         }
 
-        public async Task<IActionResult> Profile()
-        {
-            var viewModels = await _nurseService.GetNurseProfileAsync();
-            return View(viewModels);
-        }
 
         [HttpGet]
         public async Task<IActionResult> RequestedVisitations()
@@ -48,21 +73,36 @@ namespace MyNurseApp.Controllers
         [HttpGet]
         public async Task<IActionResult> FinishVisitaion(Guid id)
         {
-            await _nurseService.GetNurseHomeVisitatonsAync(id);
-            return RedirectToAction("RequestedVisitations");
+            try
+            {
+                await _nurseService.GetNurseHomeVisitatonsAync(id);
+                return RedirectToAction("RequestedVisitations");
+            }
+            catch (InvalidOperationException ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Error", "Home");
+            }
         }
 
 
         [HttpGet]
         public async Task<IActionResult> CreateNurseProfile()
         {
-            var viewModels = await _nurseService.GetNurseProfileAsync();
-            if (viewModels != null)
+            try
             {
-                return RedirectToAction("Profile", viewModels);
+                var viewModels = await _nurseService.GetNurseProfileAsync();
+                if (viewModels != null)
+                {
+                    return RedirectToAction("Profile", viewModels);
+                }
+                return View();
             }
-            await Task.CompletedTask;
-            return View();
+            catch (InvalidOperationException ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Error", "Home");
+            }
         }
 
         [HttpPost]
@@ -72,9 +112,16 @@ namespace MyNurseApp.Controllers
             {
                 return View(model);
             }
-            await _nurseService.RegisterNurseAsync(model);
-
-            return RedirectToAction("Index","Home");
+            try
+            {
+                await _nurseService.RegisterNurseAsync(model);
+                return RedirectToAction("Index", "Home");
+            }
+            catch (InvalidOperationException ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Error", "Home");
+            }
         }
 
         [Authorize(Roles = "Admin")]
@@ -84,11 +131,11 @@ namespace MyNurseApp.Controllers
             return View(viewModels);
         }
 
+
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AprooveNurse(Guid id)
         {
             await _nurseService.AprooveNurseAync(id);
-            await Task.CompletedTask;
             return RedirectToAction("GetAllNursesProfiles");
         }
 
