@@ -9,14 +9,12 @@ namespace MyNurseApp.Services.Data
     public class ManipulationsService
     {
         private readonly IRepository<MedicalManipulation, Guid> _manipulationRepository;
-        private readonly IHttpContextAccessor _currentAccsessor;
         private readonly List<MedicalManipulationsViewModel> manipulationsViewModellist;
 
 
-        public ManipulationsService(IRepository<MedicalManipulation, Guid> manipulationRepository, IHttpContextAccessor httpContextAccessor)
+        public ManipulationsService(IRepository<MedicalManipulation, Guid> manipulationRepository)
         {
             this._manipulationRepository = manipulationRepository;
-            this._currentAccsessor = httpContextAccessor;
             manipulationsViewModellist = new List<MedicalManipulationsViewModel>();
         }
 

@@ -7,6 +7,7 @@ using MyNurseApp.Web.ViewModels;
 using MyNurseApp.Web.ViewModels.HomeVisitation;
 using MyNurseApp.Web.ViewModels.Manipulations;
 using MyNurseApp.Web.ViewModels.PatientProfile;
+using System.Security.Claims;
 
 namespace MyNurseApp.Services.Data
 {
@@ -34,7 +35,7 @@ namespace MyNurseApp.Services.Data
 
         public async Task<IEnumerable<PatientAndHomeVisitationViewModel>> GetVisitationsForUserAsync()
         {
-            var userId = _currentAccsessor.HttpContext?.User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            var userId = _currentAccsessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
             if (userId == null)
             {
@@ -146,7 +147,7 @@ namespace MyNurseApp.Services.Data
 
         public async Task<PatientProfileViewModel> GetPatientAync()
         {
-            var userId = _currentAccsessor.HttpContext?.User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            var userId = _currentAccsessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var patient = await _patientRepository.FirstOrDefaultAsync(p => p.UserId == Guid.Parse(userId!));
 
             if (patient == null)

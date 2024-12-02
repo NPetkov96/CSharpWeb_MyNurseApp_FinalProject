@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MyNurseApp.Models;
 using MyNurseApp.Services.Data;
 using MyNurseApp.Web.ViewModels.PatientProfile;
-using System.Diagnostics;
 
 namespace MyNurseApp.Controllers
 {
@@ -55,16 +53,32 @@ namespace MyNurseApp.Controllers
                 return this.View(inputModel);
             }
 
-            await _patientService.AddPatientAsync(inputModel);
+            try
+            {
+                await _patientService.AddPatientAsync(inputModel);
+                return RedirectToAction("Index");
+            }
+            catch (InvalidOperationException ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Error", "Home");
+            }
 
-            return RedirectToAction("Index");
         }
 
         [HttpGet]
         public async Task<IActionResult> EditPatientProfile(Guid id)
         {
-            var profile = await _patientService.GetPatientProfileAync(id);
-            return View(profile);
+            try
+            {
+                var profile = await _patientService.GetPatientProfileAync(id);
+                return View(profile);
+            }
+            catch (InvalidOperationException ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Error", "Home");
+            }
         }
 
         [HttpPost]
@@ -74,23 +88,33 @@ namespace MyNurseApp.Controllers
             {
                 return View(model);
             }
-            await _patientService.EditPatientProfileAync(model);
-            return RedirectToAction("Index");
+
+            try
+            {
+                await _patientService.EditPatientProfileAync(model);
+                return RedirectToAction("Index");
+            }
+            catch (InvalidOperationException ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Error", "Home");
+            }
         }
 
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeletePatient(Guid id)
         {
-            await _patientService.DeletePatientAync(id);
-            await Task.CompletedTask;
-            return RedirectToAction("GetAllPatientsProfiles");
+            try
+            {
+                await _patientService.DeletePatientAync(id);
+                return RedirectToAction("GetAllPatientsProfiles");
+            }
+            catch (InvalidOperationException ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Error", "Home");
+            }
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public async Task<IActionResult> Error()
-        {
-            await Task.CompletedTask;
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
     }
 }

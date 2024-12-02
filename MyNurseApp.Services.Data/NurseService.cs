@@ -142,7 +142,7 @@ namespace MyNurseApp.Services.Data
 
         private NurseProfile ConvertToModel(NurseProfileViewModel viewModel)
         {
-            var userId = _currentAccsessor.HttpContext?.User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            var userId = _currentAccsessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var model = new NurseProfile()
             {
                 Id = Guid.NewGuid(),

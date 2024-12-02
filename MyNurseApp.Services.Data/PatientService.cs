@@ -1,11 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using MyNurseApp.Data;
 using MyNurseApp.Data.Models;
 using MyNurseApp.Data.Repository.Interfaces;
-using MyNurseApp.Web.ViewModels.NurseProfile;
 using MyNurseApp.Web.ViewModels.PatientProfile;
+using System.Security.Claims;
 
 namespace MyNurseApp.Services.Data
 {
@@ -24,7 +23,7 @@ namespace MyNurseApp.Services.Data
 
         public async Task<PatientProfileViewModel> GetPatientProfileByUserIdAsync(IHttpContextAccessor httpContextAccessor)
         {
-            var userId = _currentAccsessor.HttpContext?.User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            var userId = _currentAccsessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             PatientProfile existingProfile = await _patientRepository.FirstOrDefaultAsync(p => p.UserId == Guid.Parse(userId!));
 
             if (existingProfile != null)
@@ -37,10 +36,10 @@ namespace MyNurseApp.Services.Data
         }
 
 
-        public async Task<bool> AddPatientAsync(PatientProfileViewModel inputModel)
+        public async Task AddPatientAsync(PatientProfileViewModel inputModel)
         {
 
-            var userId = _currentAccsessor.HttpContext?.User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            var userId = _currentAccsessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
             if (string.IsNullOrEmpty(userId))
             {
@@ -51,13 +50,19 @@ namespace MyNurseApp.Services.Data
 
             await _patientRepository.AddAsync(patient);
 
-            return true;
+            if(!_patientRepository.GetAllAttached().Any(p=>p.Id == patient.Id))
+            {
+                throw new InvalidOperationException("Profile could not be created.");
+            }
         }
 
         public async Task<PatientProfileViewModel> GetPatientProfileAync(Guid id)
         {
             var model = await _patientRepository.GetByIdAsync(id);
-
+            if(model == null)
+            {
+                throw new InvalidOperationException("No user found");
+            }
             var viewModel = ConvertToViewModel(model);
 
             return viewModel;
@@ -68,7 +73,7 @@ namespace MyNurseApp.Services.Data
             var patient = await _patientRepository.GetByIdAsync(model.Id);
             if (patient == null)
             {
-                throw new ArgumentException("Patient not found");
+                throw new InvalidOperationException("Patient not found");
             }
 
             patient.FirstName = model.FirstName;
@@ -84,6 +89,27 @@ namespace MyNurseApp.Services.Data
             await _patientRepository.UpdateAsync(patient);
         }
 
+        public async Task<List<PatientProfileViewModel>> GetAllPatientsAsync()
+        {
+            var patientsProfiles = await _patientRepository.GetAllAsync();
+            var viewProfiles = patientsProfiles.Select(p=> ConvertToViewModel(p)).ToList();
+
+            return viewProfiles;
+        }
+
+        public async Task DeletePatientAync(Guid id)
+        {
+            var user = await _userManager.Users
+               .Include(u => u.Patient)
+               .FirstOrDefaultAsync(u => u.Patient!.Id == id);
+
+            await _userManager.DeleteAsync(user!);
+
+            if (_userManager.Users.Any(u => u.Id == id))
+            {
+                throw new InvalidOperationException("User could not be deleted.");
+            }
+        }
         private PatientProfileViewModel ConvertToViewModel(PatientProfile model)
         {
             var viewModel = new PatientProfileViewModel()
@@ -105,7 +131,7 @@ namespace MyNurseApp.Services.Data
 
         private PatientProfile ConvertToModel(PatientProfileViewModel viewModel)
         {
-            var userId = _currentAccsessor.HttpContext?.User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            var userId = _currentAccsessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var model = new PatientProfile()
             {
                 Id = Guid.NewGuid(),
@@ -123,27 +149,5 @@ namespace MyNurseApp.Services.Data
             return model;
         }
 
-        public async Task<List<PatientProfileViewModel>> GetAllPatientsAsync()
-        {
-            var patientsProfiles = await _patientRepository.GetAllAsync();
-            var viewProfiles = new List<PatientProfileViewModel>();
-
-            foreach (var profile in patientsProfiles)
-            {
-                var model = ConvertToViewModel(profile);
-                viewProfiles.Add(model);
-            }
-
-            return viewProfiles;
-        }
-
-        public async Task DeletePatientAync(Guid id)
-        {
-            var user = await _userManager.Users
-               .Include(u => u.Patient)
-               .FirstOrDefaultAsync(u => u.Patient!.Id == id);
-
-            await _userManager.DeleteAsync(user!);
-        }
     }
 }
