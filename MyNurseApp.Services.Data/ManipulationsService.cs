@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using MyNurseApp.Data.Models;
+﻿using MyNurseApp.Data.Models;
 using MyNurseApp.Data.Repository.Interfaces;
 using MyNurseApp.Web.ViewModels.Manipulations;
 
@@ -60,7 +59,7 @@ namespace MyNurseApp.Services.Data
 
             if (isManipulationExist != null)
             {
-                throw new ArgumentException("The manipulation already exist!"); //TODO better handling the exception.
+                throw new InvalidOperationException("The manipulation already exist!");
             }
             MedicalManipulation manipulation = new MedicalManipulation()
             {
@@ -103,7 +102,7 @@ namespace MyNurseApp.Services.Data
             var manipulationToDelete = await _manipulationRepository.FirstOrDefaultAsync(x => x.Id == id);
             if (manipulationToDelete == null)
             {
-                throw new ArgumentException("The manipulation doestn exist!"); //TODO better handling the exception.
+                throw new InvalidOperationException("The manipulation doestn exist!");
             }
 
             await _manipulationRepository.DeleteAsync(manipulationToDelete);

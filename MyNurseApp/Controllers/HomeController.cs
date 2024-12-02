@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MyNurseApp.Models;
-using System.Diagnostics;
 
 namespace MyNurseApp.Controllers
 {
@@ -17,8 +15,9 @@ namespace MyNurseApp.Controllers
             await Task.CompletedTask; 
             return View();
         }
-        public IActionResult PendingApproval()
+        public async Task<IActionResult> PendingApproval()
         {
+            await Task.CompletedTask;
             return View();
         }
 

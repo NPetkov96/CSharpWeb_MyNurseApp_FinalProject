@@ -201,7 +201,7 @@ namespace MyNurseApp.Services.Data
                 PaymentMethod = model.HomeVisitation.PaymentMethod,
                 PriceForVisitation = priceForVisitation,
                 MedicalManipulations = medicalManipulations,
-                PatientId = model.PatientProfile.Id
+                PatientId = model.PatientProfile!.Id
             };
             await _visitationRepository.AddAsync(homeVisitation);
 

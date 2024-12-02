@@ -11,7 +11,7 @@
     <div class="col-md-6">
         <div class="patient-profile">
             <h3>Patient Profile</h3>
-            <p><strong>Name:</strong> @Model.PatientProfile.FirstName @Model.PatientProfile.LastName</p>
+            <p><strong>Name:</strong> @Model.PatientProfile!.FirstName @Model.PatientProfile.LastName</p>
             <p><strong>DateOfBirth:</strong> @Model.PatientProfile.DateOfBirth</p>
             <p><strong>EGN:</strong> @Model.PatientProfile.UIN</p>
             <p><strong>Address:</strong> @Model.PatientProfile.HomeAddress</p>

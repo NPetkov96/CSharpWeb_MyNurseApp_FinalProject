@@ -71,16 +71,33 @@ namespace MyNurseApp.Controllers
                 return RedirectToAction("Index");
             }
 
-            await _manipulationsService.AddManipulationAsync(model);
-            return RedirectToAction("Index");
+            try
+            {
+                await _manipulationsService.AddManipulationAsync(model);
+                return RedirectToAction("Index");
+            }
+            catch (InvalidOperationException ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Error", "Home");
+            }
+
         }
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> RemoveManipulation(Guid id)
         {
-            await _manipulationsService.RemoveManipulationAsync(id);
-            return RedirectToAction("Index");
+            try
+            {
+                await _manipulationsService.RemoveManipulationAsync(id);
+                return RedirectToAction("Index");
+            }
+            catch (InvalidOperationException ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Error", "Home");
+            }
         }
 
         [HttpGet]
@@ -93,6 +110,10 @@ namespace MyNurseApp.Controllers
         [HttpPost]
         public async Task<IActionResult> EditManipulation(MedicalManipulationsViewModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction("Index");
+            }
             await _manipulationsService.EditManipulationAsync(model);
             return RedirectToAction("Index");
         }
@@ -102,7 +123,7 @@ namespace MyNurseApp.Controllers
         {
             var existingData = controller.TempData[key] as string;
             var list = string.IsNullOrEmpty(existingData)
-                ? new List<T>() 
+                ? new List<T>()
                 : JsonConvert.DeserializeObject<List<T>>(existingData);
 
             list!.Add(item);
@@ -115,16 +136,13 @@ namespace MyNurseApp.Controllers
         {
             var data = controller.TempData.Peek(key) as string;
             return string.IsNullOrEmpty(data)
-                ? new List<T>() 
+                ? new List<T>()
                 : JsonConvert.DeserializeObject<List<T>>(data)!;
         }
-        
+
         public void ClearTempData(string key, Controller controller)
         {
             controller.TempData[key] = null;
         }
-
-
-
     }
 }
