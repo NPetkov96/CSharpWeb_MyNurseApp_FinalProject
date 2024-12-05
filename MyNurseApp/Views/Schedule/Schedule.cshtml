@@ -24,7 +24,7 @@
     <div class="col-md-6">
         <form asp-action="CreateHomeVisitation" method="post">
             <div class="form-group">
-                <label asp-for="HomeVisitation.DateTimeManipulation">Date and Time for Manipulation</label>
+                <label asp-for="HomeVisitation.DateTimeManipulation" class="control-label">Date and Time for visitation</label>
                 <input asp-for="HomeVisitation.DateTimeManipulation" type="datetime-local" class="form-control" />
                 <span asp-validation-for="HomeVisitation.DateTimeManipulation" class="text-danger"></span>
             </div>
@@ -79,24 +79,22 @@ else
 
 @section Scripts {
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const dateTimeInput = document.querySelector("[name='DateTimeManipulation']");
-            const priceInput = document.querySelector("[name='PriceForVisitation']");
-            const basePrice = 20;
+        document.getElementById('DateTimeManipulation').addEventListener('change', function () {
+            const selectedDateTime = new Date(this.value);
+            const now = new Date();
+            const oneYearFromNow = new Date();
+            oneYearFromNow.setFullYear(now.getFullYear() + 1);
 
-            const today = new Date();
-            const isoDate = today.toISOString().slice(0, 16);
-            dateTimeInput.min = isoDate;
-
-            dateTimeInput.addEventListener("change", function () {
-                const selectedDateTime = new Date(dateTimeInput.value);
-
-                if (selectedDateTime.getHours() || selectedDateTime.getMinutes()) {
-                    priceInput.value = basePrice + 20; 
-                } else {
-                    priceInput.value = basePrice; 
-                }
-            });
+            if (selectedDateTime <= now) {
+                alert("The date and time for visitation must be in the future.");
+                this.value = '';
+            } else if (selectedDateTime > oneYearFromNow) {
+                alert("The visit date must be within the next year.");
+                this.value = '';
+            } else if (selectedDateTime.getHours() < 8 || selectedDateTime.getHours() > 18) {
+                alert("Visiting hours must be between 8:00 AM and 6:00 PM.");
+                this.value = '';
+            }
         });
     </script>
 }

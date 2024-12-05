@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using MyNurseApp.Common.DatetimeValidations.HomeVisitation;
 using MyNurseApp.Common.Enums;
 using MyNurseApp.Data.Models;
 using MyNurseApp.Web.ViewModels.PatientProfile;
@@ -13,7 +14,8 @@ namespace MyNurseApp.Web.ViewModels.HomeVisitation
 
         [Required(ErrorMessage = "The date and time for the manipulation is required.")]
         [Comment("Date and time for applying the manipulation")]
-        [DataType(DataType.DateTime, ErrorMessage = "Invalid date and time format.")]
+        [DataType(DataType.DateTime)]
+        [CustomValidation(typeof(VisitationDateValidator), nameof(VisitationDateValidator.ValidateFutureDate))]
         public DateTime DateTimeManipulation { get; set; }
 
         [Required(ErrorMessage = "The payment method is required.")]

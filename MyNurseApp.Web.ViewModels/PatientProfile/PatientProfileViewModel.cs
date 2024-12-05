@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using MyNurseApp.Common.DatetimeValidations.PatientProfile;
+using System.ComponentModel.DataAnnotations;
 
 namespace MyNurseApp.Web.ViewModels.PatientProfile
 {
@@ -17,6 +18,8 @@ namespace MyNurseApp.Web.ViewModels.PatientProfile
         public string LastName { get; set; } = null!;
 
         [Required(ErrorMessage = "Date of birth is required.")]
+        [DataType(DataType.Date)]
+        [CustomValidation(typeof(DateOfBirthValidator), nameof(DateOfBirthValidator.ValidateDateOfBirth))]
         public DateTime? DateOfBirth { get; set; }
 
         [Required(ErrorMessage = "Unique identification number is required.")]

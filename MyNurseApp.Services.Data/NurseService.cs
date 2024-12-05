@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 using MyNurseApp.Common.Enums;
 using MyNurseApp.Data;
 using MyNurseApp.Data.Models;
@@ -35,7 +36,7 @@ namespace MyNurseApp.Services.Data
 
             if(model == null)
             {
-                return null;
+                return null!;
             }
 
             return ConvertToViewModel(model);
@@ -121,9 +122,14 @@ namespace MyNurseApp.Services.Data
                 throw new InvalidOperationException("Nurse profile doesnt exist");
             }
 
-            if(nurseProfile.HomeVisitations.Any())
+            var nurseVisitations = await _visitationRepository.GetAllAttached().Where(v => v.Nurse!.Id == nurseProfile.Id).ToListAsync();
+            if(nurseVisitations != null)
             {
-
+                foreach (var visitation in nurseVisitations)
+                {
+                    visitation.Nurse = null;
+                    await _visitationRepository.UpdateAsync(visitation);
+                }
             }
 
             bool isDeleted = await _nurseRepository.DeleteAsync(nurseProfile!);

@@ -174,6 +174,16 @@ namespace MyNurseApp.Services.Data
 
         public async Task AddHomeVisitationAsync(PatientAndHomeVisitationViewModel model)
         {
+            if (model.HomeVisitation.DateTimeManipulation <= DateTime.Now)
+            {
+                throw new InvalidOperationException("The date and time for visitation must be in the future.");
+            }
+
+            if (model.HomeVisitation.DateTimeManipulation > DateTime.Now.AddYears(1))
+            {
+                throw new InvalidOperationException("The visit date must be within the next year.");
+            }
+
             var isManipulationExist = await _visitationRepository.FirstOrDefaultAsync(m => m.Id == model.HomeVisitation.Id);
             if (isManipulationExist != null)
             {

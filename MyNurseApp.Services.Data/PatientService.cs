@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using MyNurseApp.Data.Models;
 using MyNurseApp.Data.Repository.Interfaces;
 using MyNurseApp.Web.ViewModels.PatientProfile;
@@ -38,6 +37,18 @@ namespace MyNurseApp.Services.Data
 
         public async Task AddPatientAsync(PatientProfileViewModel inputModel)
         {
+            if (inputModel.DateOfBirth > DateTime.Now)
+            {
+                throw new InvalidOperationException("Date of birth cannot be in the future.");
+            }
+
+            int age = DateTime.Now.Year - inputModel.DateOfBirth!.Value.Year;
+            if (inputModel.DateOfBirth.Value.Date > DateTime.Now.AddYears(-age)) age--;
+
+            if (age < 18)
+            {
+                throw new InvalidOperationException("Patient must be at least 18 years old.");
+            }
 
             var userId = _currentAccsessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
@@ -46,6 +57,10 @@ namespace MyNurseApp.Services.Data
                 throw new InvalidOperationException("User is not logged in.");
             }
 
+            if (_patientRepository.GetAllAttached().Any(p=>p.UIN == inputModel.UIN))
+            {
+                throw new InvalidOperationException($"Profile with {inputModel.UIN} already exist.");
+            }
             PatientProfile patient = ConvertToModel(inputModel);
 
             await _patientRepository.AddAsync(patient);
@@ -99,13 +114,10 @@ namespace MyNurseApp.Services.Data
 
         public async Task DeletePatientAync(Guid id)
         {
-            var user = await _userManager.Users
-               .Include(u => u.Patient)
-               .FirstOrDefaultAsync(u => u.Patient!.Id == id);
+            var patientProfile = await _patientRepository.GetByIdAsync(id);
+            await _patientRepository.DeleteAsync(patientProfile);
 
-            await _userManager.DeleteAsync(user!);
-
-            if (_userManager.Users.Any(u => u.Id == id))
+            if (_patientRepository.GetAllAttached().Any(u => u.Id == id))
             {
                 throw new InvalidOperationException("User could not be deleted.");
             }
