@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyNurseApp.Web.ViewModels",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyNurseApp.Common", "MyNurseApp.Common\MyNurseApp.Common.csproj", "{E9AD5CB9-C249-4B72-95A4-9170D1939D50}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyNurseApp.Tests", "MyNurseApp.Tests\MyNurseApp.Tests.csproj", "{B1DAA79D-3FE4-4444-AD70-8307424A8AC7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{E9AD5CB9-C249-4B72-95A4-9170D1939D50}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E9AD5CB9-C249-4B72-95A4-9170D1939D50}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E9AD5CB9-C249-4B72-95A4-9170D1939D50}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B1DAA79D-3FE4-4444-AD70-8307424A8AC7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1DAA79D-3FE4-4444-AD70-8307424A8AC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1DAA79D-3FE4-4444-AD70-8307424A8AC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B1DAA79D-3FE4-4444-AD70-8307424A8AC7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
