@@ -1,4 +1,5 @@
-﻿using MyNurseApp.Data.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using MyNurseApp.Data.Models;
 using MyNurseApp.Data.Repository.Interfaces;
 using MyNurseApp.Web.ViewModels.Manipulations;
 
@@ -122,5 +123,28 @@ namespace MyNurseApp.Services.Data
             await _manipulationRepository.UpdateAsync(manipulation);
         }
 
+        public async Task<IEnumerable<MedicalManipulationsViewModel>> SearchManipulationsAsync(string query)
+        {
+            if (string.IsNullOrWhiteSpace(query))
+            {
+                return await GetAllManipulationsAsync();
+            }
+
+            var manipulations = await _manipulationRepository.GetAllAsync();
+
+            return manipulations
+                .Where(m => m.Name.Contains(query, StringComparison.OrdinalIgnoreCase) ||
+                            (m.Description != null && m.Description.Contains(query, StringComparison.OrdinalIgnoreCase)))
+                .Select(m => new MedicalManipulationsViewModel
+                {
+                    Id = m.Id,
+                    Name = m.Name,
+                    Description = m.Description,
+                    Duration = m.Duration,
+                    Price = m.Price
+                })
+                .OrderBy(m => m.Name)
+                .ToList();
+        }
     }
 }

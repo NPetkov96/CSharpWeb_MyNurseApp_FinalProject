@@ -20,44 +20,13 @@
 }
 else
 {
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Price</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var manipulation in Model)
-            {
-                <tr>
-                    <td>@manipulation.Name</td>
-                    <td>@manipulation.Description</td>
-                    <td>@manipulation.Price.ToString("C")</td>
-                    <td>
-                        @if (User.IsInRole("Admin"))
-                        {
-                            <form asp-action="EditManipulation" asp-route-id="@manipulation.Id" method="get" style="display:inline;">
-                                <button class="btn btn-warning btn-sm" type="submit">Edit</button>
-                            </form>
-                            <form asp-action="RemoveManipulation" asp-route-id="@manipulation.Id" method="post" onsubmit="return confirm('Are you sure you want to delete this user?')" style="display:inline;">
-                                <button class="btn btn-danger btn-sm" type="submit">Delete</button>
-                            </form>
-                        }
-                        else
-                        {
-                            <form asp-action="AddToSelection" asp-route-id="@manipulation.Id" method="post" style="display:inline;">
-                                <button class="btn btn-primary btn-sm" type="submit">Choose</button>
-                            </form>
+    <div class="mb-3">
+        <input type="text" id="searchBox" class="form-control" placeholder="Search manipulations..." oninput="searchManipulations()" />
+    </div>
 
-                        }
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <div id="searchResults">
+        @Html.Partial("_MedicalManipulationsList", Model)
+    </div>
 
     <h3>Selected Manipulations</h3>
     @if (ViewBag.SelectedManipulations != null && ((List<MedicalManipulationsViewModel>)ViewBag.SelectedManipulations).Any())
@@ -93,4 +62,17 @@ else
             <a class="btn btn-success" asp-action="AddManipulation">Add New Manipulation</a>
         </div>
     }
+
+    <script>
+        function searchManipulations() {
+        const query = document.getElementById("searchBox").value;
+
+        fetch(`/Manipulations/SearchMedicalManipulations?query=${encodeURIComponent(query)}`)
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById("searchResults").innerHTML = data;
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
 }

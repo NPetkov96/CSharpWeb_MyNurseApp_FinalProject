@@ -59,7 +59,10 @@ namespace MyNurseApp.Controllers
                 TempData["ErrorMessage"] = ex.Message;
                 return RedirectToAction("Error", "Home");
             }
-            HomeVisitationViewModel homeVisitation = new HomeVisitationViewModel();
+            HomeVisitationViewModel homeVisitation = new HomeVisitationViewModel()
+            {
+                DateTimeManipulation = DateTime.Today
+            };
 
             PatientAndHomeVisitationViewModel viewModel = new PatientAndHomeVisitationViewModel()
             {

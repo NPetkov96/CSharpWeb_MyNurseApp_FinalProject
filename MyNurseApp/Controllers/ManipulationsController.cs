@@ -144,5 +144,15 @@ namespace MyNurseApp.Controllers
         {
             controller.TempData[key] = null;
         }
+
+
+
+
+        [HttpGet]
+        public async Task<IActionResult> SearchMedicalManipulations(string query)
+        {
+            var manipulations = await _manipulationsService.SearchManipulationsAsync(query);
+            return PartialView("_MedicalManipulationsList", manipulations);
+        }
     }
 }
