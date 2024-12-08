@@ -30,6 +30,7 @@ namespace MyNurseApp.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IsPending = table.Column<bool>(type: "bit", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -178,13 +179,14 @@ namespace MyNurseApp.Data.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(99)", maxLength: 99, nullable: false, comment: "First name of the nurse"),
                     LastName = table.Column<string>(type: "nvarchar(99)", maxLength: 99, nullable: false, comment: "Last name of the nurse"),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PhoneNumber = table.Column<string>(type: "nvarchar(13)", maxLength: 13, nullable: false),
                     YearsOfExperience = table.Column<int>(type: "int", nullable: false, comment: "Min years of experience for this work"),
+                    MedicalLicenseNumber = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Recommendations = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Education = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Education = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                    IsConfirmed = table.Column<int>(type: "int", nullable: false),
+                    IsRegistrated = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -226,6 +228,26 @@ namespace MyNurseApp.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Reviews",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Content = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Rating = table.Column<double>(type: "float", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Reviews", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Reviews_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "HomeVisitations",
                 columns: table => new
                 {
@@ -236,6 +258,8 @@ namespace MyNurseApp.Data.Migrations
                     PriceForVisitation = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     IsHomeVisitationConfirmed = table.Column<bool>(type: "bit", nullable: false),
                     PatientId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IsComplete = table.Column<bool>(type: "bit", nullable: false),
+                    NurseId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ApplicationUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
@@ -245,6 +269,11 @@ namespace MyNurseApp.Data.Migrations
                         name: "FK_HomeVisitations_AspNetUsers_ApplicationUserId",
                         column: x => x.ApplicationUserId,
                         principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_HomeVisitations_NurseProfiles_NurseId",
+                        column: x => x.NurseId,
+                        principalTable: "NurseProfiles",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_HomeVisitations_PatientProfiles_PatientId",
@@ -328,6 +357,11 @@ namespace MyNurseApp.Data.Migrations
                 column: "ApplicationUserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_HomeVisitations_NurseId",
+                table: "HomeVisitations",
+                column: "NurseId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_HomeVisitations_PatientId",
                 table: "HomeVisitations",
                 column: "PatientId");
@@ -343,6 +377,11 @@ namespace MyNurseApp.Data.Migrations
                 table: "PatientProfiles",
                 column: "UserId",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Reviews_UserId",
+                table: "Reviews",
+                column: "UserId");
         }
 
         /// <inheritdoc />
@@ -367,7 +406,7 @@ namespace MyNurseApp.Data.Migrations
                 name: "HomeVisitationMedicalManipulation");
 
             migrationBuilder.DropTable(
-                name: "NurseProfiles");
+                name: "Reviews");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -377,6 +416,9 @@ namespace MyNurseApp.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "MedicalManipulations");
+
+            migrationBuilder.DropTable(
+                name: "NurseProfiles");
 
             migrationBuilder.DropTable(
                 name: "PatientProfiles");

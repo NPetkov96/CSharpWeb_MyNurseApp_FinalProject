@@ -12,8 +12,8 @@ using MyNurseApp.Data;
 namespace MyNurseApp.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241201132610_IsCopletePropertyAddedInHomeVisitation")]
-    partial class IsCopletePropertyAddedInHomeVisitation
+    [Migration("20241208135910_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -15,7 +15,6 @@
 }
 else
 {
-    <!-- Section for Pending Visitations -->
     <h2 class="text-warning mt-4">Pending</h2>
     @if (!Model.Any(m => !m.HomeVisitation.IsComplete))
     {
@@ -88,7 +87,6 @@ else
         </table>
     }
 
-    <!-- Section for Completed Visitations -->
     <h2 class="text-success mt-4">Completed</h2>
     @if (!Model.Any(m => m.HomeVisitation.IsComplete))
     {
