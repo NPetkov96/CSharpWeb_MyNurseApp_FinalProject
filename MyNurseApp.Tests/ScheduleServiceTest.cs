@@ -11,10 +11,10 @@ namespace MyNurseApp.Tests
     [TestFixture]
     public class ScheduleServiceTest
     {
-        private Mock<IRepository<HomeVisitation, Guid>> _mockVisitationRepository;
-        private Mock<IRepository<PatientProfile, Guid>> _mockPatientRepository;
-        private Mock<IHttpContextAccessor> _mockHttpContextAccessor;
-        private ScheduleService _scheduleService;
+        private Mock<IRepository<HomeVisitation, Guid>> _mockVisitationRepository = null!;
+        private Mock<IRepository<PatientProfile, Guid>> _mockPatientRepository = null!;
+        private Mock<IHttpContextAccessor> _mockHttpContextAccessor = null!;
+        private ScheduleService _scheduleService = null!;
 
         [SetUp]
         public void Setup()
@@ -24,21 +24,19 @@ namespace MyNurseApp.Tests
             _mockHttpContextAccessor = new Mock<IHttpContextAccessor>();
 
             _scheduleService = new ScheduleService(
-                null, // manipulationRepository (не е използван тук)
+                null!, 
                 _mockVisitationRepository.Object,
                 _mockPatientRepository.Object,
                 _mockHttpContextAccessor.Object,
-                null // nurseRepository (не е използван тук)
+                null!
             );
         }
 
         [Test]
         public void GetVisitationsForUserAsync_ThrowsUnauthorizedAccessException_WhenUserIsNotAuthenticated()
         {
-            // Arrange
-            _mockHttpContextAccessor.Setup(x => x.HttpContext).Returns((HttpContext)null);
+            _mockHttpContextAccessor.Setup(x => x.HttpContext).Returns((HttpContext)null!);
 
-            // Act & Assert
             Assert.That(async () => await _scheduleService.GetVisitationsForUserAsync(),
                 Throws.TypeOf<UnauthorizedAccessException>().With.Message.EqualTo("User is not authenticated."));
         }
@@ -46,7 +44,6 @@ namespace MyNurseApp.Tests
         [Test]
         public async Task GetVisitationsForUserAsync_ReturnsNull_WhenPatientDoesNotExist()
         {
-            // Arrange
             var userId = Guid.NewGuid().ToString();
             var mockHttpContext = new DefaultHttpContext();
             mockHttpContext.User = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
@@ -57,12 +54,10 @@ namespace MyNurseApp.Tests
 
             _mockPatientRepository
                 .Setup(repo => repo.FirstOrDefaultAsync(It.IsAny<Expression<Func<PatientProfile, bool>>>()))
-                .ReturnsAsync((PatientProfile)null);
+                .ReturnsAsync((PatientProfile)null!);
 
-            // Act
             var result = await _scheduleService.GetVisitationsForUserAsync();
 
-            // Assert
             Assert.That(result, Is.Null);
         }
     }

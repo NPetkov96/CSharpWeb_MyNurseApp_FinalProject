@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Moq;
 using MyNurseApp.Data.Models;
 using MyNurseApp.Data.Repository.Interfaces;
@@ -12,18 +11,15 @@ namespace MyNurseApp.Tests
     [TestFixture]
     public class PatientServiceTest
     {
-        private Mock<IRepository<PatientProfile, Guid>> _mockPatientRepository;
-        private Mock<IHttpContextAccessor> _mockHttpContextAccessor;
-        private Mock<UserManager<ApplicationUser>> _mockUserManager;
-        private PatientService _patientService;
+        private Mock<IRepository<PatientProfile, Guid>> _mockPatientRepository = null!;
+        private Mock<IHttpContextAccessor> _mockHttpContextAccessor = null!;
+        private PatientService _patientService = null!;
 
         [SetUp]
         public void Setup()
         {
             _mockPatientRepository = new Mock<IRepository<PatientProfile, Guid>>();
             _mockHttpContextAccessor = new Mock<IHttpContextAccessor>();
-            _mockUserManager = new Mock<UserManager<ApplicationUser>>(
-                Mock.Of<IUserStore<ApplicationUser>>(), null, null, null, null, null, null, null, null);
 
             _patientService = new PatientService(
                 _mockPatientRepository.Object,
@@ -34,7 +30,6 @@ namespace MyNurseApp.Tests
         [Test]
         public async Task GetPatientProfileByUserIdAsync_ReturnsProfile_WhenUserExists()
         {
-            // Arrange
             var userId = Guid.NewGuid().ToString();
             var mockHttpContext = new DefaultHttpContext();
             mockHttpContext.User = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
@@ -55,10 +50,8 @@ namespace MyNurseApp.Tests
                 .Setup(repo => repo.FirstOrDefaultAsync(It.IsAny<Expression<Func<PatientProfile, bool>>>()))
                 .ReturnsAsync(patientProfile);
 
-            // Act
             var result = await _patientService.GetPatientProfileByUserIdAsync(_mockHttpContextAccessor.Object);
 
-            // Assert
             Assert.That(result, Is.Not.Null);
             Assert.That(result.FirstName, Is.EqualTo("John"));
             Assert.That(result.LastName, Is.EqualTo("Doe"));
@@ -67,7 +60,6 @@ namespace MyNurseApp.Tests
         [Test]
         public async Task DeletePatientAync_RemovesPatientSuccessfully()
         {
-            // Arrange
             var patientId = Guid.NewGuid();
             var patient = new PatientProfile { Id = patientId, FirstName = "John" };
 
@@ -79,17 +71,14 @@ namespace MyNurseApp.Tests
                 .Setup(repo => repo.DeleteAsync(It.IsAny<PatientProfile>()))
                 .ReturnsAsync(true);
 
-            // Act
             await _patientService.DeletePatientAync(patientId);
 
-            // Assert
             _mockPatientRepository.Verify(repo => repo.DeleteAsync(It.Is<PatientProfile>(p => p.Id == patientId)), Times.Once);
         }
 
         [Test]
         public async Task GetAllPatientsAsync_ReturnsAllPatients()
         {
-            // Arrange
             var patients = new List<PatientProfile>
         {
             new PatientProfile { Id = Guid.NewGuid(), FirstName = "John", LastName = "Doe" },
@@ -100,10 +89,8 @@ namespace MyNurseApp.Tests
                 .Setup(repo => repo.GetAllAsync())
                 .ReturnsAsync(patients);
 
-            // Act
             var result = await _patientService.GetAllPatientsAsync();
 
-            // Assert
             Assert.That(result, Has.Exactly(2).Items);
             Assert.That(result.First().FirstName, Is.EqualTo("John"));
             Assert.That(result.Last().LastName, Is.EqualTo("Smith"));

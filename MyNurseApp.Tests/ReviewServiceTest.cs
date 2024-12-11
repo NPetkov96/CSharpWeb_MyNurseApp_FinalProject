@@ -4,18 +4,16 @@ using Moq;
 using MyNurseApp.Data.Models;
 using MyNurseApp.Data.Repository.Interfaces;
 using MyNurseApp.Services.Data;
-using MyNurseApp.Web.ViewModels.Review;
 using System.Linq.Expressions;
-using System.Security.Claims;
 
 namespace MyNurseApp.Tests
 {
     [TestFixture]
     public class ReviewServiceTest
     {
-        private Mock<IRepository<Review, Guid>> _mockReviewRepository;
-        private Mock<IHttpContextAccessor> _mockHttpContextAccessor;
-        private ReviewService _reviewService;
+        private Mock<IRepository<Review, Guid>> _mockReviewRepository = null!;
+        private Mock<IHttpContextAccessor> _mockHttpContextAccessor = null!;
+        private ReviewService _reviewService = null!;
 
         [SetUp]
         public void Setup()
@@ -32,7 +30,6 @@ namespace MyNurseApp.Tests
         [Test]
         public async Task GetAllReviewsAsync_ReturnsAllReviews()
         {
-            // Arrange
             var reviews = new List<Review>
         {
             new Review { Id = Guid.NewGuid(), Content = "Great service!", Rating = 5, UserId = Guid.NewGuid() },
@@ -43,10 +40,8 @@ namespace MyNurseApp.Tests
 
             _mockReviewRepository.Setup(repo => repo.GetAllAttached()).Returns(mockDbSet.Object);
 
-            // Act
             var result = await _reviewService.GetAllReviewsAsync();
 
-            // Assert
             Assert.That(result, Is.Not.Null);
             Assert.That(result, Has.Exactly(2).Items);
             Assert.That(result.First().Content, Is.EqualTo("Great service!"));
@@ -55,7 +50,6 @@ namespace MyNurseApp.Tests
         [Test]
         public async Task DeleteAsync_RemovesReviewSuccessfully()
         {
-            // Arrange
             var reviewId = Guid.NewGuid();
             var review = new Review { Id = reviewId, Content = "Good", Rating = 4 };
 
@@ -67,29 +61,24 @@ namespace MyNurseApp.Tests
                 .Setup(repo => repo.DeleteAsync(It.IsAny<Review>()))
                 .ReturnsAsync(true);
 
-            // Act
             await _reviewService.DeleteAsync(reviewId);
 
-            // Assert
             _mockReviewRepository.Verify(repo => repo.DeleteAsync(It.Is<Review>(r => r.Id == reviewId)), Times.Once);
         }
 
         [Test]
         public void DeleteAsync_ThrowsException_WhenReviewNotFound()
         {
-            // Arrange
             _mockReviewRepository
                 .Setup(repo => repo.FirstOrDefaultAsync(It.IsAny<Expression<Func<Review, bool>>>()))
-                .ReturnsAsync((Review)null);
+                .ReturnsAsync((Review)null!);
 
             var reviewId = Guid.NewGuid();
 
-            // Act & Assert
             Assert.That(async () => await _reviewService.DeleteAsync(reviewId),
                 Throws.TypeOf<InvalidOperationException>().With.Message.EqualTo("Review could not be found."));
         }
 
-        // Helper method to mock DbSet with async support
         private static Mock<DbSet<T>> CreateMockAsyncDbSet<T>(IQueryable<T> data) where T : class
         {
             var mockSet = new Mock<DbSet<T>>();

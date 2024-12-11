@@ -13,11 +13,11 @@ namespace MyNurseApp.Tests
     [TestFixture]
     public class NurseServiceTest
     {
-        private Mock<IRepository<NurseProfile, Guid>> _mockNurseRepository;
-        private Mock<IRepository<HomeVisitation, Guid>> _mockVisitationRepository;
-        private Mock<IHttpContextAccessor> _mockHttpContextAccessor;
-        private Mock<UserManager<ApplicationUser>> _mockUserManager;
-        private NurseService _nurseService;
+        private Mock<IRepository<NurseProfile, Guid>> _mockNurseRepository = null!;
+        private Mock<IRepository<HomeVisitation, Guid>> _mockVisitationRepository = null!;
+        private Mock<IHttpContextAccessor> _mockHttpContextAccessor = null!;
+        private Mock<UserManager<ApplicationUser>> _mockUserManager = null!;
+        private NurseService _nurseService = null!;
 
         [SetUp]
         public void Setup()
@@ -26,7 +26,7 @@ namespace MyNurseApp.Tests
             _mockVisitationRepository = new Mock<IRepository<HomeVisitation, Guid>>();
             _mockHttpContextAccessor = new Mock<IHttpContextAccessor>();
             _mockUserManager = new Mock<UserManager<ApplicationUser>>(
-                Mock.Of<IUserStore<ApplicationUser>>(), null, null, null, null, null, null, null, null);
+                Mock.Of<IUserStore<ApplicationUser>>(), null!, null!, null!, null!, null!, null!, null!, null!);
 
             _nurseService = new NurseService(
                 _mockVisitationRepository.Object,
@@ -39,7 +39,6 @@ namespace MyNurseApp.Tests
         [Test]
         public async Task GetNurseProfileAsync_ReturnsProfile_WhenUserExists()
         {
-            // Arrange
             var userId = Guid.NewGuid().ToString();
             var mockHttpContext = new DefaultHttpContext();
             mockHttpContext.User = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
@@ -61,10 +60,8 @@ namespace MyNurseApp.Tests
                 .Setup(repo => repo.FirstOrDefaultAsync(It.IsAny<Expression<Func<NurseProfile, bool>>>()))
                 .ReturnsAsync(nurseProfile);
 
-            // Act
             var result = await _nurseService.GetNurseProfileAsync();
 
-            // Assert
             Assert.That(result, Is.Not.Null);
             Assert.That(result.FirstName, Is.EqualTo("John"));
             Assert.That(result.LastName, Is.EqualTo("Doe"));
@@ -73,7 +70,6 @@ namespace MyNurseApp.Tests
         [Test]
         public async Task GetNurseProfileAsync_ReturnsNull_WhenProfileDoesNotExist()
         {
-            // Arrange
             var userId = Guid.NewGuid().ToString();
             var mockHttpContext = new DefaultHttpContext();
             mockHttpContext.User = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
@@ -87,10 +83,8 @@ namespace MyNurseApp.Tests
                 .Setup(repo => repo.FirstOrDefaultAsync(It.IsAny<Expression<Func<NurseProfile, bool>>>()))
                 .ReturnsAsync((NurseProfile)null!);
 
-            // Act
             var result = await _nurseService.GetNurseProfileAsync();
 
-            // Assert
             Assert.That(result, Is.Null);
         }
     }
