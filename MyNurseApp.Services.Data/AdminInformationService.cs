@@ -3,11 +3,12 @@ using Microsoft.EntityFrameworkCore;
 using MyNurseApp.Data;
 using MyNurseApp.Data.Models;
 using MyNurseApp.Data.Repository.Interfaces;
+using MyNurseApp.Services.Data.Interfaces;
 using MyNurseApp.Web.ViewModels.AdminInformation;
 
 namespace MyNurseApp.Services.Data
 {
-    public class AdminInformationService
+    public class AdminInformationService : IAdminInformationService
     {
         private readonly IRepository<NurseProfile, Guid> _nurseRepository;
         private readonly IRepository<PatientProfile, Guid> _patientRepository;

@@ -1,15 +1,15 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MyNurseApp.Services.Data;
+using MyNurseApp.Services.Data.Interfaces;
 using MyNurseApp.Web.ViewModels.NurseProfile;
 
 namespace MyNurseApp.Controllers
 {
     public class NurseController : Controller
     {
-        private readonly NurseService _nurseService;
+        private readonly INurseService _nurseService;
 
-        public NurseController(NurseService nurseService)
+        public NurseController(INurseService nurseService)
         {
             this._nurseService = nurseService;
         }

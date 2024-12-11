@@ -6,6 +6,7 @@ using MyNurseApp.Data.Models;
 using MyNurseApp.Data.Repository;
 using MyNurseApp.Data.Repository.Interfaces;
 using MyNurseApp.Services.Data;
+using MyNurseApp.Services.Data.Interfaces;
 
 namespace MyNurseApp
 {
@@ -51,12 +52,12 @@ namespace MyNurseApp
 
             builder.Services.AddHttpContextAccessor();
 
-            builder.Services.AddScoped<PatientService>();
-            builder.Services.AddScoped<ManipulationsService>();
-            builder.Services.AddScoped<ScheduleService>();
-            builder.Services.AddScoped<NurseService>();
-            builder.Services.AddScoped<ReviewService>();
-            builder.Services.AddScoped<AdminInformationService>();
+            builder.Services.AddScoped<IPatientService,PatientService>();
+            builder.Services.AddScoped<IManipulationsService,ManipulationsService>();
+            builder.Services.AddScoped<IScheduleService,ScheduleService>();
+            builder.Services.AddScoped<INurseService,NurseService>();
+            builder.Services.AddScoped<IReviewService,ReviewService>();
+            builder.Services.AddScoped<IAdminInformationService, AdminInformationService>();
             builder.Services.AddScoped(typeof(IRepository<,>), typeof(BaseRepository<,>));
 
 

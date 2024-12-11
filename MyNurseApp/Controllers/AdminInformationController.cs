@@ -1,13 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MyNurseApp.Services.Data;
+using MyNurseApp.Services.Data.Interfaces;
 
 namespace MyNurseApp.Controllers
 {
     public class AdminInformationController : Controller
     {
-        private readonly AdminInformationService _adminInformationService;
+        private readonly IAdminInformationService _adminInformationService;
 
-        public AdminInformationController(AdminInformationService adminInformationService)
+        public AdminInformationController(IAdminInformationService adminInformationService)
         {
             this._adminInformationService = adminInformationService;
         }

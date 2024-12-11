@@ -1,12 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
-using MyNurseApp.Data.Models;
+﻿using MyNurseApp.Data.Models;
 using MyNurseApp.Data.Repository.Interfaces;
+using MyNurseApp.Services.Data.Interfaces;
 using MyNurseApp.Web.ViewModels.Manipulations;
 
 
 namespace MyNurseApp.Services.Data
 {
-    public class ManipulationsService
+    public class ManipulationsService : IManipulationsService
     {
         private readonly IRepository<MedicalManipulation, Guid> _manipulationRepository;
         private readonly List<MedicalManipulationsViewModel> manipulationsViewModellist;
@@ -15,7 +15,7 @@ namespace MyNurseApp.Services.Data
         public ManipulationsService(IRepository<MedicalManipulation, Guid> manipulationRepository)
         {
             this._manipulationRepository = manipulationRepository;
-            manipulationsViewModellist = new List<MedicalManipulationsViewModel>();
+            this.manipulationsViewModellist = new List<MedicalManipulationsViewModel>();
         }
 
         public async Task<List<MedicalManipulationsViewModel>> PatientBookManipulationAsync(Guid manipulationId)

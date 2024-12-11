@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MyNurseApp.Services.Data;
+using MyNurseApp.Services.Data.Interfaces;
 using MyNurseApp.Web.ViewModels.Review;
 
 namespace MyNurseApp.Controllers
@@ -8,9 +8,9 @@ namespace MyNurseApp.Controllers
     public class ReviewController : Controller
     {
 
-        private readonly ReviewService _reviewService;
+        private readonly IReviewService _reviewService;
 
-        public ReviewController(ReviewService reviewService)
+        public ReviewController(IReviewService reviewService)
         {
             this._reviewService = reviewService;
         }

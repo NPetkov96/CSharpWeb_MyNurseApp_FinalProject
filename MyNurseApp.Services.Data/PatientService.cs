@@ -1,23 +1,21 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using MyNurseApp.Data.Models;
 using MyNurseApp.Data.Repository.Interfaces;
+using MyNurseApp.Services.Data.Interfaces;
 using MyNurseApp.Web.ViewModels.PatientProfile;
 using System.Security.Claims;
 
 namespace MyNurseApp.Services.Data
 {
-    public class PatientService
+    public class PatientService : IPatientService
     {
         private readonly IRepository<PatientProfile, Guid> _patientRepository;
         private readonly IHttpContextAccessor _currentAccsessor;
-        private readonly UserManager<ApplicationUser> _userManager;
 
-        public PatientService(IRepository<PatientProfile, Guid> patientRepository, IHttpContextAccessor httpContextAccessor, UserManager<ApplicationUser> userManager)
+        public PatientService(IRepository<PatientProfile, Guid> patientRepository, IHttpContextAccessor httpContextAccessor)
         {
             this._patientRepository = patientRepository;
             this._currentAccsessor = httpContextAccessor;
-            this._userManager = userManager;
         }
 
         public async Task<PatientProfileViewModel> GetPatientProfileByUserIdAsync(IHttpContextAccessor httpContextAccessor)
@@ -160,6 +158,5 @@ namespace MyNurseApp.Services.Data
             };
             return model;
         }
-
     }
 }

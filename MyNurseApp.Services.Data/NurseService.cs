@@ -6,6 +6,7 @@ using MyNurseApp.Common.Enums;
 using MyNurseApp.Data;
 using MyNurseApp.Data.Models;
 using MyNurseApp.Data.Repository.Interfaces;
+using MyNurseApp.Services.Data.Interfaces;
 using MyNurseApp.Web.ViewModels.HomeVisitation;
 using MyNurseApp.Web.ViewModels.NurseProfile;
 using MyNurseApp.Web.ViewModels.PatientProfile;
@@ -13,7 +14,7 @@ using System.Security.Claims;
 
 namespace MyNurseApp.Services.Data
 {
-    public class NurseService
+    public class NurseService : INurseService
     {
         private readonly IRepository<NurseProfile, Guid> _nurseRepository;
         private readonly IRepository<HomeVisitation, Guid> _visitationRepository;

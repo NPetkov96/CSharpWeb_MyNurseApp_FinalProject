@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyNurseApp.Services.Data;
+using MyNurseApp.Services.Data.Interfaces;
 using MyNurseApp.Web.ViewModels.Manipulations;
 using Newtonsoft.Json;
 
@@ -10,8 +11,8 @@ namespace MyNurseApp.Controllers
     [Authorize]
     public class ManipulationsController : Controller
     {
-        private readonly ManipulationsService _manipulationsService;
-        public ManipulationsController(ManipulationsService manipulationsService)
+        private readonly IManipulationsService _manipulationsService;
+        public ManipulationsController(IManipulationsService manipulationsService)
         {
             _manipulationsService = manipulationsService;
         }

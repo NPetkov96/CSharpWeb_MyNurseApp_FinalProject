@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using MyNurseApp.Data;
 using MyNurseApp.Data.Models;
 using MyNurseApp.Data.Repository.Interfaces;
+using MyNurseApp.Services.Data.Interfaces;
 using MyNurseApp.Web.ViewModels;
 using MyNurseApp.Web.ViewModels.HomeVisitation;
 using MyNurseApp.Web.ViewModels.Manipulations;
@@ -11,7 +12,7 @@ using System.Security.Claims;
 
 namespace MyNurseApp.Services.Data
 {
-    public class ScheduleService
+    public class ScheduleService : IScheduleService
     {
         private readonly IRepository<HomeVisitation, Guid> _visitationRepository;
         private readonly IRepository<PatientProfile, Guid> _patientRepository;
@@ -263,6 +264,5 @@ namespace MyNurseApp.Services.Data
                 throw new InvalidOperationException("Failed to delete the visitation.");
             }
         }
-
     }
 }

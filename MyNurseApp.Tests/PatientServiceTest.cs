@@ -27,8 +27,7 @@ namespace MyNurseApp.Tests
 
             _patientService = new PatientService(
                 _mockPatientRepository.Object,
-                _mockHttpContextAccessor.Object,
-                _mockUserManager.Object
+                _mockHttpContextAccessor.Object
             );
         }
 

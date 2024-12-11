@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MyNurseApp.Services.Data;
+using MyNurseApp.Services.Data.Interfaces;
 using MyNurseApp.Web.ViewModels.PatientProfile;
 
 namespace MyNurseApp.Controllers
@@ -8,10 +8,10 @@ namespace MyNurseApp.Controllers
     [Authorize]
     public class PatientProfileController : Controller
     {
-        private readonly PatientService _patientService;
+        private readonly IPatientService _patientService;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public PatientProfileController(PatientService patientService, IHttpContextAccessor httpContextAccessor)
+        public PatientProfileController(IPatientService patientService, IHttpContextAccessor httpContextAccessor)
         {
             _patientService = patientService;
             _httpContextAccessor = httpContextAccessor;

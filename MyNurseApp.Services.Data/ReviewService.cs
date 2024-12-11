@@ -2,12 +2,13 @@
 using Microsoft.EntityFrameworkCore;
 using MyNurseApp.Data.Models;
 using MyNurseApp.Data.Repository.Interfaces;
+using MyNurseApp.Services.Data.Interfaces;
 using MyNurseApp.Web.ViewModels.Review;
 using System.Security.Claims;
 
 namespace MyNurseApp.Services.Data
 {
-    public class ReviewService
+    public class ReviewService : IReviewService
     {
         private readonly IRepository<Review, Guid> _reviewRepository;
         private readonly IHttpContextAccessor _currentAccsessor;

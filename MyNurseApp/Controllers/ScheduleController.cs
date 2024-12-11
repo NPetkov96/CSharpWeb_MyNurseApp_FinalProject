@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyNurseApp.Services.Data;
+using MyNurseApp.Services.Data.Interfaces;
 using MyNurseApp.Web.ViewModels;
 using MyNurseApp.Web.ViewModels.HomeVisitation;
 using MyNurseApp.Web.ViewModels.Manipulations;
@@ -12,11 +13,11 @@ namespace MyNurseApp.Controllers
     [Authorize]
     public class ScheduleController : Controller
     {
-        private readonly ScheduleService _scheduleService;
+        private readonly IScheduleService _scheduleService;
         private readonly NurseService _nurseService;
-        public ScheduleController(ScheduleService manipulationsService, NurseService nurseService)
+        public ScheduleController(IScheduleService scheduleService, NurseService nurseService)
         {
-            _scheduleService = manipulationsService;
+            _scheduleService = scheduleService;
             _nurseService = nurseService;
         }
 
