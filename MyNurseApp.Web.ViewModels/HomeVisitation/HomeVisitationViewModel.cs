@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using MyNurseApp.Common.Constants;
 using MyNurseApp.Common.DatetimeValidations.HomeVisitation;
 using MyNurseApp.Common.Enums;
 using MyNurseApp.Data.Models;
@@ -21,11 +22,11 @@ namespace MyNurseApp.Web.ViewModels.HomeVisitation
         [Required(ErrorMessage = "The payment method is required.")]
         public PaymentMethod PaymentMethod { get; set; }
 
-        [MaxLength(500, ErrorMessage = "The note cannot exceed 500 characters.")]
+        [MaxLength(HomeVisitationConstants.NoteMaxLength, ErrorMessage = "The note cannot exceed 500 characters.")]
         public string? Note { get; set; }
 
         [Required(ErrorMessage = "The price for the visitation is required.")]
-        [Range(20, 500, ErrorMessage = "The price must be between 20 and 500 BGN.")]
+        [Range(HomeVisitationConstants.PriceForVisitationMinLength, HomeVisitationConstants.PriceForVisitationMaxLength, ErrorMessage = "The price must be between 20 and 500 BGN.")]
         [Comment("Default value is 20 BGN. Extra charge applies if a specific hour is selected.")]
         public decimal PriceForVisitation { get; set; } = 20;
 
