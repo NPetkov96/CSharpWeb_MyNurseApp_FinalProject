@@ -133,3 +133,10 @@ div {
     line-height: 20px;
     text-align: center;
 }
+
+.centered-container {
+    display: flex;
+    justify-content:center;
+    align-items:start;
+    min-height: 100vh;
+}

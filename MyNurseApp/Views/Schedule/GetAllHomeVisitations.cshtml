@@ -9,8 +9,8 @@
     var nurses = ViewData["Nurses"] as IEnumerable<NurseProfileViewModel>;
 }
 
-<div class="container mt-4">
-    <h1 class="text-center">Home Visitations</h1>
+<h1 class="text-center">Home Visitations</h1>
+<div class="row centered-container">
 
     @if (!Model.Any())
     {
@@ -136,7 +136,7 @@
                                     <strong>Note:</strong> @visitation.HomeVisitation.Note
                                 }
                             </p>
-                           
+
                             <p class="card-text">
                                 <strong>Medical Manipulations:</strong>
                                 @if (visitation.MedicalManipulations.Any())

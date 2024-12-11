@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MyNurseApp.Services.Data;
 using MyNurseApp.Services.Data.Interfaces;
 
 namespace MyNurseApp.Controllers

@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using MyNurseApp.Data.Models;
-using MyNurseApp.Services.Data;
+using MyNurseApp.Services.Data.Interfaces;
 using MyNurseApp.Web.ViewModels.NurseProfile;
 using System.ComponentModel.DataAnnotations;
 
@@ -18,7 +18,7 @@ namespace MyNurseApp.Areas.Identity.Pages.Account
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IUserStore<ApplicationUser> _userStore;
         private readonly ILogger<RegisterModel> _logger;
-        private readonly NurseService _nurseServie;
+        private readonly INurseService _nurseServie;
 
 
         public RegisterModel(
@@ -26,7 +26,7 @@ namespace MyNurseApp.Areas.Identity.Pages.Account
             IUserStore<ApplicationUser> userStore,
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
-            NurseService nurseServie)
+            INurseService nurseServie)
         {
             _userManager = userManager;
             _userStore = userStore;

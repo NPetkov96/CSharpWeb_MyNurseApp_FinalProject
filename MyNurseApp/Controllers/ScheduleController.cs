@@ -14,8 +14,8 @@ namespace MyNurseApp.Controllers
     public class ScheduleController : Controller
     {
         private readonly IScheduleService _scheduleService;
-        private readonly NurseService _nurseService;
-        public ScheduleController(IScheduleService scheduleService, NurseService nurseService)
+        private readonly INurseService _nurseService;
+        public ScheduleController(IScheduleService scheduleService, INurseService nurseService)
         {
             _scheduleService = scheduleService;
             _nurseService = nurseService;

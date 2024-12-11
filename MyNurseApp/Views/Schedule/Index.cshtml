@@ -90,13 +90,13 @@ else
     <h2 class="text-success mt-4">Completed</h2>
     @if (!Model.Any(m => m.HomeVisitation.IsComplete))
     {
-        <div class="text-center mt-3">
+        <div class="row centered-container">
             <p style="font-size: 1.2rem;">No completed visitations available.</p>
         </div>
     }
     else
     {
-        <table class="table table-striped">
+        <table class="row centered-container">
             <thead>
                 <tr>
                     <th>Visitation Date</th>
