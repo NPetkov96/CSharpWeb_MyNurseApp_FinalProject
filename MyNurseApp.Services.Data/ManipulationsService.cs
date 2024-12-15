@@ -1,4 +1,5 @@
-﻿using MyNurseApp.Data.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using MyNurseApp.Data.Models;
 using MyNurseApp.Data.Repository.Interfaces;
 using MyNurseApp.Services.Data.Interfaces;
 using MyNurseApp.Web.ViewModels.Manipulations;
@@ -22,7 +23,7 @@ namespace MyNurseApp.Services.Data
         {
             var model = await _manipulationRepository.FirstOrDefaultAsync(m => m.Id == manipulationId);
 
-            var viewModel = new MedicalManipulationsViewModel() 
+            var viewModel = new MedicalManipulationsViewModel()
             {
                 Id = model.Id,
                 Name = model.Name,
@@ -75,27 +76,29 @@ namespace MyNurseApp.Services.Data
             await _manipulationRepository.AddAsync(manipulation);
         }
 
-        public async Task<IEnumerable<MedicalManipulationsViewModel>> GetAllManipulationsAsync()
+        public async Task<IEnumerable<MedicalManipulationsViewModel>> GetAllManipulationsAsync(int pageNumber, int pageSize)
         {
 
-            var manipulations = await _manipulationRepository.GetAllAsync();
+            var manipulations = await _manipulationRepository
+              .GetAllAttached()
+              .OrderBy(m => m.Name)
+              .Skip((pageNumber - 1) * pageSize)
+              .Take(pageSize)
+              .ToListAsync();
 
-            List<MedicalManipulationsViewModel> viewMnipulations = new List<MedicalManipulationsViewModel>();
-
-            foreach (var manipulation in manipulations)
+            return manipulations.Select(m => new MedicalManipulationsViewModel
             {
-                MedicalManipulationsViewModel currenctManipulation = new MedicalManipulationsViewModel()
-                {
-                    Id = manipulation.Id,
-                    Name = manipulation.Name,
-                    Duration = manipulation.Duration,
-                    Description = manipulation.Description,
-                    Price = manipulation.Price
-                };
+                Id = m.Id,
+                Name = m.Name,
+                Duration = m.Duration,
+                Description = m.Description,
+                Price = m.Price
+            });
+        }
 
-                viewMnipulations.Add(currenctManipulation);
-            }
-            return viewMnipulations.OrderBy(m => m.Price);
+        public int GetTotalCount()
+        {
+            return _manipulationRepository.GetAllAttached().Count();
         }
 
         public async Task RemoveManipulationAsync(Guid id)
@@ -111,7 +114,7 @@ namespace MyNurseApp.Services.Data
 
         public async Task EditManipulationAsync(MedicalManipulationsViewModel model)
         {
-            MedicalManipulation manipulation = new MedicalManipulation() 
+            MedicalManipulation manipulation = new MedicalManipulation()
             {
                 Id = model.Id,
                 Name = model.Name,
@@ -125,9 +128,11 @@ namespace MyNurseApp.Services.Data
 
         public async Task<IEnumerable<MedicalManipulationsViewModel>> SearchManipulationsAsync(string query)
         {
+            int pageNumber = 1;
+            int pageSize = 7;
             if (string.IsNullOrWhiteSpace(query))
             {
-                return await GetAllManipulationsAsync();
+                return await GetAllManipulationsAsync(pageNumber, pageSize);
             }
 
             var manipulations = await _manipulationRepository.GetAllAsync();
@@ -145,6 +150,11 @@ namespace MyNurseApp.Services.Data
                 })
                 .OrderBy(m => m.Name)
                 .ToList();
+        }
+
+        double IManipulationsService.GetTotalCount()
+        {
+            return _manipulationRepository.GetAllAttached().Count();
         }
     }
 }

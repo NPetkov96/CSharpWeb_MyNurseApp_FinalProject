@@ -133,6 +133,19 @@ namespace MyNurseApp.Data.Configuration
                     }
                 };
 
+                // Generate additional 43 manipulations
+                for (int i = 1; i <= 43; i++)
+                {
+                    manipulations.Add(new MedicalManipulation
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = $"zCustom Procedure {i}",
+                        Duration = 10 + (i % 5) * 10, // Randomize duration
+                        Description = $"Description for custom procedure {i}.",
+                        Price = 20m + (i % 10) * 10 // Randomize price
+                    });
+                }
+
                 foreach (var manipulation in manipulations)
                 {
                     await manipulationRepository.AddAsync(manipulation);

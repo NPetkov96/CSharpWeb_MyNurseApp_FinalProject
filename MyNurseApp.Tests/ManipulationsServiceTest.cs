@@ -86,7 +86,7 @@ namespace MyNurseApp.Tests
                 new MedicalManipulation { Name = "X-Ray", Duration = 45, Price = 50.00M });
             await _context.SaveChangesAsync();
 
-            var manipulations = await _service.GetAllManipulationsAsync();
+            var manipulations = await _service.GetAllManipulationsAsync(1,7);
 
             Assert.That(manipulations, Has.Exactly(2).Items);
             Assert.That(manipulations.First().Name, Is.EqualTo("Blood Test"));

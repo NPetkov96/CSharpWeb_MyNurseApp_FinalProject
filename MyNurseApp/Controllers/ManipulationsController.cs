@@ -27,13 +27,16 @@ namespace MyNurseApp.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 7)
         {
             var selectedManipulations = GetFromTempData<MedicalManipulationsViewModel>("SelectedManipulations", this);
 
             ViewBag.SelectedManipulations = selectedManipulations;
 
-            var manipulations = await _manipulationsService.GetAllManipulationsAsync();
+            var manipulations = await _manipulationsService.GetAllManipulationsAsync(pageNumber,pageSize);
+            ViewBag.CurrentPage = pageNumber;
+            ViewBag.PageSize = pageSize;
+            ViewBag.TotalPages = (int)Math.Ceiling((double)_manipulationsService.GetTotalCount() / pageSize);
             return View(manipulations);
         }
 
