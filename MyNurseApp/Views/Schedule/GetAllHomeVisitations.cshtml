@@ -95,6 +95,7 @@
                             else
                             {
                                 <form asp-action="AssignVisitationToNurse" method="post" style="display: inline-block;">
+                                    @Html.AntiForgeryToken()
                                     <input type="hidden" name="visitationId" value="@visitation.HomeVisitation.Id" />
                                     <div class="d-flex align-items-center">
                                         <select class="form-select form-select-sm me-2" name="nurseId" required>

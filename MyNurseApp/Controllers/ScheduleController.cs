@@ -20,6 +20,7 @@ namespace MyNurseApp.Controllers
             _nurseService = nurseService;
         }
 
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             var model = await _scheduleService.GetVisitationsForUserAsync();
@@ -31,6 +32,7 @@ namespace MyNurseApp.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteHomeVisitationFromPatient(Guid visitationId)
         {
             try
@@ -75,6 +77,7 @@ namespace MyNurseApp.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Schedule(PatientAndHomeVisitationViewModel model)
         {
 
@@ -110,7 +113,6 @@ namespace MyNurseApp.Controllers
             }
         }
 
-
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAllHomeVisitations()
         {
@@ -122,6 +124,8 @@ namespace MyNurseApp.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
+        [ValidateAntiForgeryToken]
+
         public async Task<IActionResult> AssignVisitationToNurse(Guid visitationId, Guid nurseId)
         {
             try
@@ -138,6 +142,7 @@ namespace MyNurseApp.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteHomeVisitation(Guid visitationId)
         {
             try
