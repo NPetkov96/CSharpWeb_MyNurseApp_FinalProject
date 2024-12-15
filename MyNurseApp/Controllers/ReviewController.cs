@@ -37,7 +37,7 @@ namespace MyNurseApp.Controllers
             try
             {
                 await _reviewService.CreateReviewAsync(model);
-                return RedirectToAction("Index");
+                return RedirectToAction(nameof(Index));
             }
             catch (InvalidOperationException ex)
             {
@@ -54,7 +54,7 @@ namespace MyNurseApp.Controllers
             try
             {
                 await _reviewService.DeleteAsync(id);
-                return RedirectToAction("Index");
+                return RedirectToAction(nameof(Index));
             }
             catch (InvalidOperationException ex)
             {

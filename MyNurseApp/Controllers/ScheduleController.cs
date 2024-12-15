@@ -104,7 +104,7 @@ namespace MyNurseApp.Controllers
             try
             {
                 await _scheduleService.AddHomeVisitationAsync(model);
-                return RedirectToAction("Index");
+                return RedirectToAction(nameof(Index));
             }
             catch (InvalidOperationException ex)
             {
@@ -131,7 +131,7 @@ namespace MyNurseApp.Controllers
             try
             {
                 await _scheduleService.AssignVisitationToNurseAsync(visitationId, nurseId);
-                return RedirectToAction("GetAllHomeVisitations");
+                return RedirectToAction(nameof(GetAllHomeVisitations));
             }
             catch (InvalidOperationException ex)
             {
@@ -148,7 +148,7 @@ namespace MyNurseApp.Controllers
             try
             {
                 await _scheduleService.DeleteHomeVisitationAsync(visitationId);
-                return RedirectToAction("GetAllHomeVisitations");
+                return RedirectToAction(nameof(GetAllHomeVisitations));
             }
             catch (InvalidOperationException ex)
             {

@@ -36,6 +36,7 @@
                                 }
                             </p>
                             <form asp-action="DeletePatient" asp-controller="PatientProfile" method="post" onsubmit="return confirm('Are you sure you want to delete this user?')" style="display: inline-block;">
+                                @Html.AntiForgeryToken()
                                 <input type="hidden" name="id" value="@patient.Id" />
                                 <button class="btn btn-danger btn-sm" type="submit">Delete</button>
                             </form>

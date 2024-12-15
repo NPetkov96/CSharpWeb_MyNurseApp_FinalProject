@@ -24,7 +24,7 @@ namespace MyNurseApp.Controllers
 
             if (patientProfile == null)
             {
-                return RedirectToAction("CreatePatientProfile");
+                return RedirectToAction(nameof(CreatePatientProfile));
             }
             return View(patientProfile);
         }
@@ -44,6 +44,7 @@ namespace MyNurseApp.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreatePatientProfile(PatientProfileViewModel inputModel)
         {
             if (!ModelState.IsValid)
@@ -54,7 +55,7 @@ namespace MyNurseApp.Controllers
             try
             {
                 await _patientService.AddPatientAsync(inputModel);
-                return RedirectToAction("Index");
+                return RedirectToAction(nameof(Index));
             }
             catch (InvalidOperationException ex)
             {
@@ -80,6 +81,7 @@ namespace MyNurseApp.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditPatientProfile(PatientProfileViewModel model)
         {
             if (!ModelState.IsValid)
@@ -90,7 +92,7 @@ namespace MyNurseApp.Controllers
             try
             {
                 await _patientService.EditPatientProfileAync(model);
-                return RedirectToAction("Index");
+                return RedirectToAction(nameof(Index));
             }
             catch (InvalidOperationException ex)
             {
@@ -99,13 +101,15 @@ namespace MyNurseApp.Controllers
             }
         }
 
+        [HttpPost]
         [Authorize(Roles = "Admin")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeletePatient(Guid id)
         {
             try
             {
                 await _patientService.DeletePatientAync(id);
-                return RedirectToAction("GetAllPatientsProfiles");
+                return RedirectToAction(nameof(GetAllPatientsProfiles));
             }
             catch (InvalidOperationException ex)
             {
