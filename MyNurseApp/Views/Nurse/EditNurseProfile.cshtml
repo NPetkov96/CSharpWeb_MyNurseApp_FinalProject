@@ -16,7 +16,7 @@
             <form asp-action="EditNurseProfile" asp-controller="NurseProfile" method="post">
                 <input type="hidden" asp-for="UserId" />
                 <input type="hidden" asp-for="Id" />
-
+                @Html.AntiForgeryToken()
                 <div class="row g-3">
                     <div class="col-md-6">
                         <label for="FirstName" class="form-label">First Name</label>

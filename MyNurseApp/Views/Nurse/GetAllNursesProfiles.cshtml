@@ -40,6 +40,7 @@
                             @if (nurse.IsConfirmed == NurseStatus.Pending || nurse.IsConfirmed == NurseStatus.Declined)
                             {
                                 <form asp-action="AprooveNurse" asp-controller="Nurse" method="post" style="display: inline-block;">
+                                    @Html.AntiForgeryToken()
                                     <input type="hidden" name="id" value="@nurse.Id" />
                                     <button class="btn btn-success btn-sm" type="submit">Approve</button>
                                 </form>
@@ -47,11 +48,13 @@
                             else if (nurse.IsConfirmed == NurseStatus.Approved)
                             {
                                 <form asp-action="DeclineNurse" asp-controller="Nurse" method="post" style="display: inline-block;">
+                                    @Html.AntiForgeryToken()
                                     <input type="hidden" name="id" value="@nurse.Id" />
                                     <button class="btn btn-warning btn-sm" type="submit">Decline</button>
                                 </form>
                             }
                             <form asp-action="DeleteNurseProfile" asp-controller="Nurse" method="post" onsubmit="return confirm('Are you sure you want to delete this user?')" style="display: inline-block;">
+                                @Html.AntiForgeryToken()
                                 <input type="hidden" name="id" value="@nurse.Id" />
                                 <button class="btn btn-danger btn-sm" type="submit">Delete</button>
                             </form>

@@ -45,6 +45,7 @@ namespace MyNurseApp.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditNurseProfile(NurseProfileViewModel model)
         {
             if (!ModelState.IsValid)
@@ -77,7 +78,7 @@ namespace MyNurseApp.Controllers
             try
             {
                 await _nurseService.GetNurseHomeVisitatonsAync(id);
-                return RedirectToAction("RequestedVisitations");
+                return RedirectToAction(nameof(RequestedVisitations));
             }
             catch (InvalidOperationException ex)
             {
@@ -93,12 +94,13 @@ namespace MyNurseApp.Controllers
             var viewModels = await _nurseService.GetNurseProfileAsync();
             if (viewModels != null)
             {
-                return RedirectToAction("Profile", viewModels);
+                return RedirectToAction(nameof(Profile), viewModels);
             }
             return View();
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateNurseProfile(NurseProfileViewModel model)
         {
             if (!ModelState.IsValid)
@@ -109,6 +111,7 @@ namespace MyNurseApp.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        [HttpGet]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAllNursesProfiles()
         {
@@ -116,28 +119,33 @@ namespace MyNurseApp.Controllers
             return View(viewModels);
         }
 
-
+        [HttpPost]
         [Authorize(Roles = "Admin")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> AprooveNurse(Guid id)
         {
             await _nurseService.AprooveNurseAync(id);
-            return RedirectToAction("GetAllNursesProfiles");
+            return RedirectToAction(nameof(GetAllNursesProfiles));
         }
 
+        [HttpPost]
         [Authorize(Roles = "Admin")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeclineNurse(Guid id)
         {
             await _nurseService.DeclineNurseAync(id);
-            return RedirectToAction("GetAllNursesProfiles");
+            return RedirectToAction(nameof(GetAllNursesProfiles));
         }
 
+        [HttpPost]
         [Authorize(Roles = "Admin")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteNurseProfile(Guid id)
         {
             try
             {
                 await _nurseService.DeleteNurseProfileAync(id);
-                return RedirectToAction("GetAllNursesProfiles");
+                return RedirectToAction(nameof(GetAllNursesProfiles));
             }
             catch (InvalidOperationException ex)
             {

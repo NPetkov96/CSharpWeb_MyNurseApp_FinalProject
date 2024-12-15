@@ -14,6 +14,7 @@
                 </div>
                 <div class="card-body">
                     <form asp-action="CreateNurseProfile" method="post">
+                        @Html.AntiForgeryToken()
                         <div class="form-group mb-3">
                             <label asp-for="MedicalLicenseNumber" class="form-label">Medical License Number</label>
                             <input asp-for="MedicalLicenseNumber" class="form-control" placeholder="Enter Medical License Number" />
