@@ -87,8 +87,8 @@ namespace MyNurseApp
 
                 //"Email": "admin@abv.bg",
                 //"Password": "Admin7!"
-                await DataBaseSeeder.SeedRolesAsync(serviceProvider);
                 DataBaseSeeder.SeedAdmin(serviceProvider);
+                await DataBaseSeeder.SeedRolesAsync(serviceProvider);
                 await DataBaseSeeder.SeedManipulationsAsync(serviceProvider);
             }
 
