@@ -5,6 +5,7 @@ using MyNurseApp.Web.ViewModels.NurseProfile;
 
 namespace MyNurseApp.Controllers
 {
+    [Authorize]
     public class NurseController : Controller
     {
         private readonly INurseService _nurseService;

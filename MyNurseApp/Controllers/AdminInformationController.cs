@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using MyNurseApp.Services.Data.Interfaces;
 
 namespace MyNurseApp.Controllers
 {
+    [Authorize]
     public class AdminInformationController : Controller
     {
         private readonly IAdminInformationService _adminInformationService;
