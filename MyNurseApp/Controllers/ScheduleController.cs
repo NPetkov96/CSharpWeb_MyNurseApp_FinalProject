@@ -10,7 +10,7 @@ using Newtonsoft.Json;
 namespace MyNurseApp.Controllers
 {
     [Authorize]
-    public class ScheduleController : Controller
+    public class ScheduleController : BaseController
     {
         private readonly IScheduleService _scheduleService;
         private readonly INurseService _nurseService;
@@ -38,12 +38,12 @@ namespace MyNurseApp.Controllers
             try
             {
                 await _scheduleService.DeleteHomeVisitationAsync(visitationId);
-                return RedirectToAction("Index");
+                return RedirectToAction(nameof(Index));
             }
             catch (InvalidOperationException ex)
             {
-                TempData["ErrorMessage"] = ex.Message;
-                return RedirectToAction("Error", "Home");
+                return HandleError(ex, nameof(Index));
+
             }
         }
 
@@ -58,8 +58,7 @@ namespace MyNurseApp.Controllers
             }
             catch (InvalidOperationException ex)
             {
-                TempData["ErrorMessage"] = ex.Message;
-                return RedirectToAction("Error", "Home");
+                return HandleError(ex, "Error", "Home");
             }
             HomeVisitationViewModel homeVisitation = new HomeVisitationViewModel()
             {
@@ -90,8 +89,7 @@ namespace MyNurseApp.Controllers
             }
             catch (InvalidOperationException ex)
             {
-                TempData["ErrorMessage"] = ex.Message;
-                return RedirectToAction("Error", "Home");
+                return HandleError(ex, "Error", "Home");
             }
 
             model.MedicalManipulations = selectedManipulations;
@@ -108,8 +106,7 @@ namespace MyNurseApp.Controllers
             }
             catch (InvalidOperationException ex)
             {
-                TempData["ErrorMessage"] = ex.Message;
-                return RedirectToAction("Error", "Home");
+                return HandleError(ex, nameof(Index));
             }
         }
 
@@ -135,8 +132,7 @@ namespace MyNurseApp.Controllers
             }
             catch (InvalidOperationException ex)
             {
-                TempData["ErrorMessage"] = ex.Message;
-                return RedirectToAction("Error", "Home");
+                return HandleError(ex, nameof(GetAllHomeVisitations));
             }
         }
 
@@ -152,8 +148,7 @@ namespace MyNurseApp.Controllers
             }
             catch (InvalidOperationException ex)
             {
-                TempData["ErrorMessage"] = ex.Message;
-                return RedirectToAction("Error", "Home");
+                return HandleError(ex, nameof(GetAllHomeVisitations));
             }
         }
 

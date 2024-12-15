@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 namespace MyNurseApp.Controllers
 {
     [Authorize]
-    public class ManipulationsController : Controller
+    public class ManipulationsController : BaseController
     {
         private readonly IManipulationsService _manipulationsService;
         public ManipulationsController(IManipulationsService manipulationsService)
@@ -82,10 +82,8 @@ namespace MyNurseApp.Controllers
             }
             catch (InvalidOperationException ex)
             {
-                TempData["ErrorMessage"] = ex.Message;
-                return RedirectToAction("Error", "Home");
+                return HandleError(ex, nameof(Index));
             }
-
         }
 
         [HttpPost]
@@ -100,8 +98,7 @@ namespace MyNurseApp.Controllers
             }
             catch (InvalidOperationException ex)
             {
-                TempData["ErrorMessage"] = ex.Message;
-                return RedirectToAction("Error", "Home");
+                return HandleError(ex, nameof(Index));
             }
         }
 

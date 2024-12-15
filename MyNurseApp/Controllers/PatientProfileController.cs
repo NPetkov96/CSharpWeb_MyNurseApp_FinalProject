@@ -6,7 +6,7 @@ using MyNurseApp.Web.ViewModels.PatientProfile;
 namespace MyNurseApp.Controllers
 {
     [Authorize]
-    public class PatientProfileController : Controller
+    public class PatientProfileController : BaseController
     {
         private readonly IPatientService _patientService;
         private readonly IHttpContextAccessor _httpContextAccessor;
@@ -59,8 +59,7 @@ namespace MyNurseApp.Controllers
             }
             catch (InvalidOperationException ex)
             {
-                TempData["ErrorMessage"] = ex.Message;
-                return RedirectToAction("Error", "Home");
+               return HandleError(ex, nameof(Index));
             }
 
         }
@@ -75,8 +74,7 @@ namespace MyNurseApp.Controllers
             }
             catch (InvalidOperationException ex)
             {
-                TempData["ErrorMessage"] = ex.Message;
-                return RedirectToAction("Error", "Home");
+                return HandleError(ex, nameof(Index));
             }
         }
 
@@ -96,8 +94,7 @@ namespace MyNurseApp.Controllers
             }
             catch (InvalidOperationException ex)
             {
-                TempData["ErrorMessage"] = ex.Message;
-                return RedirectToAction("Error", "Home");
+                return HandleError(ex, nameof(Index));
             }
         }
 
@@ -113,10 +110,8 @@ namespace MyNurseApp.Controllers
             }
             catch (InvalidOperationException ex)
             {
-                TempData["ErrorMessage"] = ex.Message;
-                return RedirectToAction("Error", "Home");
+                return HandleError(ex, nameof(GetAllPatientsProfiles));
             }
         }
-
     }
 }

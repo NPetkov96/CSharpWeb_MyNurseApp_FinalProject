@@ -6,7 +6,7 @@ using MyNurseApp.Web.ViewModels.NurseProfile;
 namespace MyNurseApp.Controllers
 {
     [Authorize]
-    public class NurseController : Controller
+    public class NurseController : BaseController
     {
         private readonly INurseService _nurseService;
 
@@ -24,8 +24,7 @@ namespace MyNurseApp.Controllers
             }
             catch (InvalidOperationException ex)
             {
-                TempData["ErrorMessage"] = ex.Message;
-                return RedirectToAction("Error", "Home");
+                return HandleError(ex, "Error", "Home");
             }
         }
 
@@ -39,8 +38,9 @@ namespace MyNurseApp.Controllers
             }
             catch (InvalidOperationException ex)
             {
-                TempData["ErrorMessage"] = ex.Message;
-                return RedirectToAction("Error", "Home");
+
+                return HandleError(ex, nameof(Profile));
+
             }
         }
 
@@ -55,12 +55,12 @@ namespace MyNurseApp.Controllers
             try
             {
                 await _nurseService.EditNurseProfileAync(model);
-                return RedirectToAction("Profile");
+                return RedirectToAction(nameof(Profile));
             }
             catch (InvalidOperationException ex)
             {
-                TempData["ErrorMessage"] = ex.Message;
-                return RedirectToAction("Error", "Home");
+                return HandleError(ex, nameof(Profile));
+
             }
         }
 
@@ -82,8 +82,7 @@ namespace MyNurseApp.Controllers
             }
             catch (InvalidOperationException ex)
             {
-                TempData["ErrorMessage"] = ex.Message;
-                return RedirectToAction("Error", "Home");
+                return HandleError(ex, nameof(RequestedVisitations));
             }
         }
 
@@ -149,8 +148,7 @@ namespace MyNurseApp.Controllers
             }
             catch (InvalidOperationException ex)
             {
-                TempData["ErrorMessage"] = ex.Message;
-                return RedirectToAction("Error", "Home");
+                return HandleError(ex, nameof(GetAllNursesProfiles));
             }
         }
     }

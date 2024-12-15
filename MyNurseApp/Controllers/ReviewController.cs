@@ -6,7 +6,7 @@ using MyNurseApp.Web.ViewModels.Review;
 namespace MyNurseApp.Controllers
 {
 
-    public class ReviewController : Controller
+    public class ReviewController : BaseController
     {
 
         private readonly IReviewService _reviewService;
@@ -41,8 +41,7 @@ namespace MyNurseApp.Controllers
             }
             catch (InvalidOperationException ex)
             {
-                TempData["ErrorMessage"] = ex.Message;
-                return RedirectToAction("Error", "Home");
+                return HandleError(ex, nameof(Index));
             }
         }
 
@@ -58,8 +57,7 @@ namespace MyNurseApp.Controllers
             }
             catch (InvalidOperationException ex)
             {
-                TempData["ErrorMessage"] = ex.Message;
-                return RedirectToAction("Error", "Home");
+                return HandleError(ex, nameof(Index));
             }
         }
 

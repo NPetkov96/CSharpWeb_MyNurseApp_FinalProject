@@ -5,7 +5,7 @@ using MyNurseApp.Services.Data.Interfaces;
 namespace MyNurseApp.Controllers
 {
     [Authorize]
-    public class AdminInformationController : Controller
+    public class AdminInformationController : BaseController
     {
         private readonly IAdminInformationService _adminInformationService;
 
@@ -34,7 +34,7 @@ namespace MyNurseApp.Controllers
             {
                 TempData["Success"] = "User deleted successfully.";
             }
-            return RedirectToAction("Index");
+            return RedirectToAction(nameof(Index));
         }
     }
 }
