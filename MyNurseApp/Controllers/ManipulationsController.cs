@@ -43,7 +43,7 @@ namespace MyNurseApp.Controllers
         {
             var manipulation = _manipulationsService.GetByIdAsync(id).Result;
             AddToTempData("SelectedManipulations", manipulation, this);
-            return RedirectToAction("Index");
+            return RedirectToAction(nameof(Index));
         }
 
 
@@ -52,7 +52,7 @@ namespace MyNurseApp.Controllers
         public IActionResult ClearSelection()
         {
             ClearTempData("SelectedManipulations", this);
-            return RedirectToAction("Index");
+            return RedirectToAction(nameof(Index));
         }
 
         [HttpGet]
@@ -69,13 +69,13 @@ namespace MyNurseApp.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return RedirectToAction("Index");
+                return RedirectToAction(nameof(Index));
             }
 
             try
             {
                 await _manipulationsService.AddManipulationAsync(model);
-                return RedirectToAction("Index");
+                return RedirectToAction(nameof(Index));
             }
             catch (InvalidOperationException ex)
             {
@@ -93,7 +93,7 @@ namespace MyNurseApp.Controllers
             try
             {
                 await _manipulationsService.RemoveManipulationAsync(id);
-                return RedirectToAction("Index");
+                return RedirectToAction(nameof(Index));
             }
             catch (InvalidOperationException ex)
             {
@@ -115,7 +115,7 @@ namespace MyNurseApp.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return RedirectToAction("Index");
+                return RedirectToAction(nameof(Index));
             }
             await _manipulationsService.EditManipulationAsync(model);
             return RedirectToAction("Index");
