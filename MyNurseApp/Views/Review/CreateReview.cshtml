@@ -8,6 +8,7 @@
 <h1>@ViewData["Title"]</h1>
 
 <form asp-action="CreateReview" method="post">
+    @Html.AntiForgeryToken()
     <div class="form-group">
         <label asp-for="Content" class="control-label"></label>
         <textarea asp-for="Content" class="form-control"></textarea>

@@ -23,12 +23,15 @@ namespace MyNurseApp.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public IActionResult CreateReview()
         {
             return View();
         }
 
         [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateReview(ReviewViewModel model)
         {
             try
@@ -45,6 +48,7 @@ namespace MyNurseApp.Controllers
 
         [HttpPost]
         [Authorize]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteReview(Guid id)
         {
             try
