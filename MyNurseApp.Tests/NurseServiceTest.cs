@@ -1,16 +1,14 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Moq;
-using MyNurseApp.Data.Models;
-using MyNurseApp.Data.Repository.Interfaces;
-using MyNurseApp.Data;
-using MyNurseApp.Services.Data;
-using System.Linq.Expressions;
-using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
+using Moq;
 using MyNurseApp.Common.Enums;
+using MyNurseApp.Data;
+using MyNurseApp.Data.Models;
 using MyNurseApp.Data.Repository;
+using MyNurseApp.Services.Data;
 using MyNurseApp.Web.ViewModels.NurseProfile;
+using System.Security.Claims;
 
 namespace MyNurseApp.Tests
 {
@@ -57,7 +55,6 @@ namespace MyNurseApp.Tests
         [Test]
         public async Task RegisterNurseAsync_AddsNurseSuccessfully()
         {
-            // Arrange
             var nurseViewModel = new NurseProfileViewModel
             {
                 FirstName = "John",
@@ -68,10 +65,8 @@ namespace MyNurseApp.Tests
                 YearsOfExperience = 5
             };
 
-            // Act
             await _nurseService.RegisterNurseAsync(nurseViewModel);
 
-            // Assert
             var nurse = await _context.NurseProfiles.FirstOrDefaultAsync(n => n.MedicalLicenseNumber == "ML12345");
             Assert.That(nurse, Is.Not.Null);
             Assert.That(nurse.FirstName, Is.EqualTo("John"));
@@ -80,7 +75,6 @@ namespace MyNurseApp.Tests
         [Test]
         public async Task DeleteNurseProfileAync_RemovesNurseSuccessfully()
         {
-            // Arrange
             var nurse = new NurseProfile
             {
                 Id = Guid.NewGuid(),
@@ -96,10 +90,8 @@ namespace MyNurseApp.Tests
             _context.NurseProfiles.Add(nurse);
             await _context.SaveChangesAsync();
 
-            // Act
             await _nurseService.DeleteNurseProfileAync(nurse.Id);
 
-            // Assert
             var deletedNurse = await _context.NurseProfiles.FirstOrDefaultAsync(n => n.Id == nurse.Id);
             Assert.That(deletedNurse, Is.Null);
         }
@@ -107,7 +99,6 @@ namespace MyNurseApp.Tests
         [Test]
         public async Task GetNurseProfileAsync_ReturnsCorrectNurse()
         {
-            // Arrange
             var nurseId = Guid.NewGuid();
             var nurse = new NurseProfile
             {
@@ -124,10 +115,8 @@ namespace MyNurseApp.Tests
             _context.NurseProfiles.Add(nurse);
             await _context.SaveChangesAsync();
 
-            // Act
             var result = await _nurseService.GetNurseProfileAsync();
 
-            // Assert
             Assert.That(result, Is.Not.Null);
             Assert.That(result.FirstName, Is.EqualTo("Alice"));
             Assert.That(result.MedicalLicenseNumber, Is.EqualTo("ML67890"));
@@ -136,7 +125,6 @@ namespace MyNurseApp.Tests
         [Test]
         public async Task RegisterNurseAsync_ThrowsException_WhenLicenseExists()
         {
-            // Arrange
             var nurse = new NurseProfile
             {
                 Id = Guid.NewGuid(),
@@ -160,7 +148,6 @@ namespace MyNurseApp.Tests
                 YearsOfExperience = 5
             };
 
-            // Act & Assert
             Assert.ThrowsAsync<InvalidOperationException>(async () =>
                 await _nurseService.RegisterNurseAsync(nurseViewModel));
         }
@@ -171,5 +158,4 @@ namespace MyNurseApp.Tests
             return new Mock<UserManager<ApplicationUser>>(store.Object, null, null, null, null, null, null, null, null);
         }
     }
-
 }

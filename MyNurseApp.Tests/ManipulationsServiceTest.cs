@@ -114,15 +114,11 @@ namespace MyNurseApp.Tests
         [Test]
         public void GetByIdAsync_ThrowsException_WhenManipulationNotFound()
         {
-            // Arrange
             var nonExistentId = Guid.NewGuid();
 
-            // Act & Assert
             Assert.ThrowsAsync<NullReferenceException>(async () =>
                 await _service.GetByIdAsync(nonExistentId), "Expected NullReferenceException when manipulation is not found.");
         }
-
-
 
         [Test]
         public async Task RemoveManipulationAsync_RemovesSuccessfully()
@@ -185,7 +181,6 @@ namespace MyNurseApp.Tests
             Assert.That(result.Price, Is.EqualTo(150.00m));
         }
 
-
         [Test]
         public async Task SearchManipulationsAsync_ReturnsFilteredResults()
         {
@@ -213,5 +208,4 @@ namespace MyNurseApp.Tests
             Assert.That(results, Has.Exactly(2).Items);
         }
     }
-
 }
