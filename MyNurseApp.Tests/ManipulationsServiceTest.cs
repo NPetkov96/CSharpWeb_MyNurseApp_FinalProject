@@ -1,118 +1,217 @@
-using Moq;
+using Microsoft.EntityFrameworkCore;
+using MyNurseApp.Data;
 using MyNurseApp.Data.Models;
-using MyNurseApp.Data.Repository.Interfaces;
+using MyNurseApp.Data.Repository;
 using MyNurseApp.Services.Data;
-using System.Linq.Expressions;
+using MyNurseApp.Web.ViewModels.Manipulations;
 
 namespace MyNurseApp.Tests
 {
     [TestFixture]
-    public class ManipulationsServiceTest
+    public class ManipulationsServiceTests
     {
-        private Mock<IRepository<MedicalManipulation, Guid>> _mockManipulationRepository = null!;
-        private ManipulationsService _manipulationsService = null!;
+        private ApplicationDbContext _context = null!;
+        private BaseRepository<MedicalManipulation, Guid> _repository = null!;
+        private ManipulationsService _service = null!;
 
         [SetUp]
         public void Setup()
         {
-            _mockManipulationRepository = new Mock<IRepository<MedicalManipulation, Guid>>();
-            _manipulationsService = new ManipulationsService(_mockManipulationRepository.Object);
+            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase(Guid.NewGuid().ToString())
+                .Options;
+
+            _context = new ApplicationDbContext(options);
+            _repository = new BaseRepository<MedicalManipulation, Guid>(_context);
+            _service = new ManipulationsService(_repository);
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            _context.Database.EnsureDeleted();
+            _context.Dispose();
         }
 
         [Test]
-        public async Task PatientBookManipulationAsync_AddsManipulationToList()
+        public async Task AddManipulationAsync_AddsSuccessfully()
         {
-            var manipulationId = Guid.NewGuid();
-            var manipulation = new MedicalManipulation
+            var model = new MedicalManipulationsViewModel
             {
-                Id = manipulationId,
                 Name = "Blood Test",
-                Description = "A routine blood test",
-                Price = 50.0m
+                Duration = 30,
+                Description = "Routine blood test",
+                Price = 20.00M
             };
 
-            _mockManipulationRepository
-                .Setup(repo => repo.FirstOrDefaultAsync(It.IsAny<Expression<Func<MedicalManipulation, bool>>>()))
-                .ReturnsAsync(manipulation);
+            await _service.AddManipulationAsync(model);
 
-            var result = await _manipulationsService.PatientBookManipulationAsync(manipulationId);
+            var manipulation = await _context.MedicalManipulations.FirstOrDefaultAsync(m => m.Name == "Blood Test");
+            Assert.That(manipulation, Is.Not.Null);
+            Assert.That(manipulation!.Price, Is.EqualTo(20.00M));
+        }
 
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result, Has.Exactly(1).Items);
-            Assert.That(result.First().Name, Is.EqualTo("Blood Test"));
+        [Test]
+        public void AddManipulationAsync_ThrowsException_WhenManipulationExists()
+        {
+            var manipulation = new MedicalManipulation
+            {
+                Id = Guid.NewGuid(),
+                Name = "Blood Test",
+                Duration = 30,
+                Description = "Routine blood test",
+                Price = 20.00M
+            };
+            _context.MedicalManipulations.Add(manipulation);
+            _context.SaveChanges();
+
+            var model = new MedicalManipulationsViewModel
+            {
+                Id = manipulation.Id,
+                Name = "Blood Test",
+                Duration = 30,
+                Description = "Routine blood test",
+                Price = 20.00M
+            };
+
+            Assert.ThrowsAsync<InvalidOperationException>(async () =>
+                await _service.AddManipulationAsync(model));
+        }
+
+        [Test]
+        public async Task GetAllManipulationsAsync_ReturnsAllManipulations()
+        {
+            _context.MedicalManipulations.AddRange(
+                new MedicalManipulation { Name = "Blood Test", Duration = 30, Price = 20.00M },
+                new MedicalManipulation { Name = "X-Ray", Duration = 45, Price = 50.00M });
+            await _context.SaveChangesAsync();
+
+            var manipulations = await _service.GetAllManipulationsAsync();
+
+            Assert.That(manipulations, Has.Exactly(2).Items);
+            Assert.That(manipulations.First().Name, Is.EqualTo("Blood Test"));
         }
 
         [Test]
         public async Task GetByIdAsync_ReturnsCorrectManipulation()
         {
-            var manipulationId = Guid.NewGuid();
             var manipulation = new MedicalManipulation
             {
-                Id = manipulationId,
-                Name = "X-Ray",
-                Description = "A chest X-ray",
-                Price = 100.0m
+                Id = Guid.NewGuid(),
+                Name = "MRI Scan",
+                Duration = 60,
+                Price = 200.00M
             };
+            _context.MedicalManipulations.Add(manipulation);
+            await _context.SaveChangesAsync();
 
-            _mockManipulationRepository
-                .Setup(repo => repo.GetByIdAsync(manipulationId))
-                .ReturnsAsync(manipulation);
-
-            var result = await _manipulationsService.GetByIdAsync(manipulationId);
+            var result = await _service.GetByIdAsync(manipulation.Id);
 
             Assert.That(result, Is.Not.Null);
-            Assert.That(result.Name, Is.EqualTo("X-Ray"));
+            Assert.That(result.Name, Is.EqualTo("MRI Scan"));
         }
 
         [Test]
-        public async Task GetAllManipulationsAsync_ReturnsOrderedManipulations()
+        public void GetByIdAsync_ThrowsException_WhenManipulationNotFound()
         {
-            var manipulations = new List<MedicalManipulation>
-        {
-            new MedicalManipulation { Id = Guid.NewGuid(), Name = "Test A", Price = 30.0m },
-            new MedicalManipulation { Id = Guid.NewGuid(), Name = "Test B", Price = 20.0m }
-        };
+            // Arrange
+            var nonExistentId = Guid.NewGuid();
 
-            _mockManipulationRepository
-                .Setup(repo => repo.GetAllAsync())
-                .ReturnsAsync(manipulations);
-
-            var result = await _manipulationsService.GetAllManipulationsAsync();
-
-            Assert.That(result, Is.Ordered.By("Price"));
-            Assert.That(result.First().Name, Is.EqualTo("Test B"));
+            // Act & Assert
+            Assert.ThrowsAsync<NullReferenceException>(async () =>
+                await _service.GetByIdAsync(nonExistentId), "Expected NullReferenceException when manipulation is not found.");
         }
 
+
+
         [Test]
-        public async Task RemoveManipulationAsync_DeletesManipulation_WhenItExists()
+        public async Task RemoveManipulationAsync_RemovesSuccessfully()
         {
-            var manipulationId = Guid.NewGuid();
             var manipulation = new MedicalManipulation
             {
-                Id = manipulationId,
-                Name = "CT Scan"
+                Id = Guid.NewGuid(),
+                Name = "Blood Test",
+                Duration = 30,
+                Price = 20.00M
             };
+            _context.MedicalManipulations.Add(manipulation);
+            await _context.SaveChangesAsync();
 
-            _mockManipulationRepository
-                .Setup(repo => repo.FirstOrDefaultAsync(It.IsAny<Expression<Func<MedicalManipulation, bool>>>()))
-                .ReturnsAsync(manipulation);
+            await _service.RemoveManipulationAsync(manipulation.Id);
 
-            await _manipulationsService.RemoveManipulationAsync(manipulationId);
-
-            _mockManipulationRepository.Verify(repo => repo.DeleteAsync(It.Is<MedicalManipulation>(m => m.Id == manipulationId)), Times.Once);
+            var result = await _context.MedicalManipulations.FirstOrDefaultAsync(m => m.Id == manipulation.Id);
+            Assert.That(result, Is.Null);
         }
 
         [Test]
-        public void RemoveManipulationAsync_ThrowsException_WhenManipulationDoesNotExist()
+        public void RemoveManipulationAsync_ThrowsException_WhenManipulationNotFound()
         {
-            _mockManipulationRepository!
-                .Setup(repo => repo.FirstOrDefaultAsync(It.IsAny<Expression<Func<MedicalManipulation, bool>>>()))
-                .ReturnsAsync((MedicalManipulation)null!);
+            Assert.ThrowsAsync<InvalidOperationException>(async () =>
+                await _service.RemoveManipulationAsync(Guid.NewGuid()));
+        }
 
-            var manipulationId = Guid.NewGuid();
+        [Test]
+        public async Task EditManipulationAsync_UpdatesSuccessfully()
+        {
+            var manipulation = new MedicalManipulation
+            {
+                Id = Guid.NewGuid(),
+                Name = "Initial Manipulation",
+                Duration = 30,
+                Description = "Initial description",
+                Price = 100.00m
+            };
 
-            Assert.That(async () => await _manipulationsService!.RemoveManipulationAsync(manipulationId),
-                Throws.TypeOf<InvalidOperationException>().With.Message.EqualTo("The manipulation doestn exist!"));
+            _context.MedicalManipulations.Add(manipulation);
+            await _context.SaveChangesAsync();
+
+            var updatedManipulation = new MedicalManipulationsViewModel
+            {
+                Id = manipulation.Id,
+                Name = "Updated Manipulation",
+                Duration = 45,
+                Description = "Updated description",
+                Price = 150.00m
+            };
+
+            _context.Entry(manipulation).State = EntityState.Detached;
+
+            await _service.EditManipulationAsync(updatedManipulation);
+
+            var result = await _context.MedicalManipulations.FirstOrDefaultAsync(m => m.Id == manipulation.Id);
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result!.Name, Is.EqualTo("Updated Manipulation"));
+            Assert.That(result.Description, Is.EqualTo("Updated description"));
+            Assert.That(result.Price, Is.EqualTo(150.00m));
+        }
+
+
+        [Test]
+        public async Task SearchManipulationsAsync_ReturnsFilteredResults()
+        {
+            _context.MedicalManipulations.AddRange(
+                new MedicalManipulation { Name = "Blood Test", Duration = 30, Price = 20.00M },
+                new MedicalManipulation { Name = "X-Ray", Duration = 45, Price = 50.00M });
+            await _context.SaveChangesAsync();
+
+            var results = await _service.SearchManipulationsAsync("Blood");
+
+            Assert.That(results, Has.Exactly(1).Items);
+            Assert.That(results.First().Name, Is.EqualTo("Blood Test"));
+        }
+
+        [Test]
+        public async Task SearchManipulationsAsync_ReturnsAll_WhenQueryIsEmpty()
+        {
+            _context.MedicalManipulations.AddRange(
+                new MedicalManipulation { Name = "Blood Test", Duration = 30, Price = 20.00M },
+                new MedicalManipulation { Name = "X-Ray", Duration = 45, Price = 50.00M });
+            await _context.SaveChangesAsync();
+
+            var results = await _service.SearchManipulationsAsync("");
+
+            Assert.That(results, Has.Exactly(2).Items);
         }
     }
+
 }

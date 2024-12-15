@@ -80,7 +80,5 @@ namespace MyNurseApp.Tests
             Assert.ThrowsAsync<InvalidOperationException>(async () =>
                 await _reviewService.DeleteAsync(reviewId));
         }
-
     }
-
 }

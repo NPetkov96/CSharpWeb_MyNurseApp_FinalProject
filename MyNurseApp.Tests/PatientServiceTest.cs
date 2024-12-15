@@ -106,9 +106,16 @@ namespace MyNurseApp.Tests
                 Id = Guid.NewGuid(),
                 FirstName = "John",
                 LastName = "Doe",
+                DateOfBirth = DateTime.Now.AddYears(-30),
                 UIN = "123456789",
+                HomeAddress = "123 Test Street",
+                PhoneNumber = "1234567890",
+                EmergencyContactFullName = "Jane Doe",
+                EmergencyContactPhone = "0987654321",
+                Notes = "Test notes",
                 UserId = Guid.NewGuid()
             };
+
             _context.PatientProfiles.Add(patient);
             await _context.SaveChangesAsync();
 
@@ -117,6 +124,7 @@ namespace MyNurseApp.Tests
             var deletedPatient = await _context.PatientProfiles.FirstOrDefaultAsync(p => p.Id == patient.Id);
             Assert.That(deletedPatient, Is.Null);
         }
+
 
         [Test]
         public void AddPatientAsync_ThrowsException_ForFutureDateOfBirth()
