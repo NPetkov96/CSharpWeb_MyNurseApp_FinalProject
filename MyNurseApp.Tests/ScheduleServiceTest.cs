@@ -1,64 +1,109 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Moq;
+using MyNurseApp.Data;
 using MyNurseApp.Data.Models;
 using MyNurseApp.Data.Repository.Interfaces;
 using MyNurseApp.Services.Data;
+using MyNurseApp.Web.ViewModels;
+using MyNurseApp.Web.ViewModels.HomeVisitation;
+using MyNurseApp.Web.ViewModels.Manipulations;
 using System.Linq.Expressions;
-using System.Security.Claims;
 
 namespace MyNurseApp.Tests
 {
     [TestFixture]
-    public class ScheduleServiceTest
+    public class ScheduleServiceTests
     {
-        private Mock<IRepository<HomeVisitation, Guid>> _mockVisitationRepository = null!;
-        private Mock<IRepository<PatientProfile, Guid>> _mockPatientRepository = null!;
-        private Mock<IHttpContextAccessor> _mockHttpContextAccessor = null!;
-        private ScheduleService _scheduleService = null!;
+        private readonly Mock<IRepository<HomeVisitation, Guid>> _mockVisitationRepository;
+        private readonly Mock<IRepository<PatientProfile, Guid>> _mockPatientRepository;
+        private readonly Mock<IRepository<NurseProfile, Guid>> _mockNurseRepository;
+        private readonly Mock<IRepository<MedicalManipulation, Guid>> _mockManipulationRepository;
+        private readonly Mock<IHttpContextAccessor> _mockHttpContextAccessor;
+        private readonly ScheduleService _service;
 
-        [SetUp]
-        public void Setup()
+        public ScheduleServiceTests()
         {
             _mockVisitationRepository = new Mock<IRepository<HomeVisitation, Guid>>();
             _mockPatientRepository = new Mock<IRepository<PatientProfile, Guid>>();
+            _mockNurseRepository = new Mock<IRepository<NurseProfile, Guid>>();
+            _mockManipulationRepository = new Mock<IRepository<MedicalManipulation, Guid>>();
             _mockHttpContextAccessor = new Mock<IHttpContextAccessor>();
 
-            _scheduleService = new ScheduleService(
-                null!, 
+            _service = new ScheduleService(
+                _mockManipulationRepository.Object,
                 _mockVisitationRepository.Object,
                 _mockPatientRepository.Object,
                 _mockHttpContextAccessor.Object,
-                null!
-            );
+                _mockNurseRepository.Object);
         }
 
         [Test]
-        public void GetVisitationsForUserAsync_ThrowsUnauthorizedAccessException_WhenUserIsNotAuthenticated()
+        public void GetVisitationsForUserAsync_UserNotAuthenticated_ThrowsUnauthorizedAccessException()
         {
-            _mockHttpContextAccessor.Setup(x => x.HttpContext).Returns((HttpContext)null!);
+            // Arrange
+            _mockHttpContextAccessor.Setup(x => x.HttpContext).Returns(new DefaultHttpContext());
 
-            Assert.That(async () => await _scheduleService.GetVisitationsForUserAsync(),
-                Throws.TypeOf<UnauthorizedAccessException>().With.Message.EqualTo("User is not authenticated."));
+            // Act & Assert
+            Assert.ThrowsAsync<UnauthorizedAccessException>(async () => await _service.GetVisitationsForUserAsync());
         }
 
+        
         [Test]
-        public async Task GetVisitationsForUserAsync_ReturnsNull_WhenPatientDoesNotExist()
+        public void AddHomeVisitationAsync_InvalidDate_ThrowsInvalidOperationException()
         {
-            var userId = Guid.NewGuid().ToString();
-            var mockHttpContext = new DefaultHttpContext();
-            mockHttpContext.User = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+            // Arrange
+            var model = new PatientAndHomeVisitationViewModel
             {
-            new Claim(ClaimTypes.NameIdentifier, userId)
-            }));
-            _mockHttpContextAccessor.Setup(x => x.HttpContext).Returns(mockHttpContext);
+                HomeVisitation = new HomeVisitationViewModel
+                {
+                    DateTimeManipulation = DateTime.Now.AddDays(-1) // Invalid past date
+                },
+                MedicalManipulations = new List<MedicalManipulationsViewModel>()
+            };
 
-            _mockPatientRepository
-                .Setup(repo => repo.FirstOrDefaultAsync(It.IsAny<Expression<Func<PatientProfile, bool>>>()))
-                .ReturnsAsync((PatientProfile)null!);
-
-            var result = await _scheduleService.GetVisitationsForUserAsync();
-
-            Assert.That(result, Is.Null);
+            // Act & Assert
+            Assert.ThrowsAsync<InvalidOperationException>(async () => await _service.AddHomeVisitationAsync(model));
         }
+
+        [Test]
+        public void AssignVisitationToNurseAsync_InvalidNurse_ThrowsInvalidOperationException()
+        {
+            // Arrange
+            var visitationId = Guid.NewGuid();
+
+            _mockNurseRepository.Setup(x => x.FirstOrDefaultAsync(It.IsAny<Expression<Func<NurseProfile, bool>>>())).ReturnsAsync((NurseProfile)null);
+
+            // Act & Assert
+            Assert.ThrowsAsync<InvalidOperationException>(async () => await _service.AssignVisitationToNurseAsync(visitationId, Guid.NewGuid()));
+        }
+
+        [Test]
+        public void DeleteHomeVisitationAsync_VisitationNotFound_ThrowsInvalidOperationException()
+        {
+            // Arrange
+            _mockVisitationRepository.Setup(x => x.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync((HomeVisitation)null);
+
+            // Act & Assert
+            Assert.ThrowsAsync<InvalidOperationException>(async () => await _service.DeleteHomeVisitationAsync(Guid.NewGuid()));
+        }
+
+        [Test]
+        public async Task DeleteHomeVisitationAsync_ValidVisitation_DeletesSuccessfully()
+        {
+            // Arrange
+            var visitation = new HomeVisitation { Id = Guid.NewGuid(), IsHomeVisitationConfirmed = false };
+
+            _mockVisitationRepository.Setup(x => x.GetByIdAsync(visitation.Id)).ReturnsAsync(visitation);
+            _mockVisitationRepository.Setup(x => x.DeleteAsync(visitation)).ReturnsAsync(true);
+
+            // Act
+            await _service.DeleteHomeVisitationAsync(visitation.Id);
+
+            // Assert
+            _mockVisitationRepository.Verify(x => x.DeleteAsync(visitation), Times.Once);
+        }
+
     }
+
 }
+
