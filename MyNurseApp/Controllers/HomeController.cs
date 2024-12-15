@@ -27,7 +27,7 @@ namespace MyNurseApp.Controllers
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public async Task<IActionResult> Error()
+        public IActionResult Error()
         {
             var message = TempData["ErrorMessage"] as string ?? "An unexpected error occurred.";
             return View(model: message);
