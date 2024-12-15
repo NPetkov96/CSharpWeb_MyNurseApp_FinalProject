@@ -86,7 +86,6 @@ namespace MyNurseApp
                 var serviceProvider = scope.ServiceProvider;
 
                 //"Email": "admin@abv.bg",
-                //"UserName": "Admin",
                 //"Password": "Admin7!"
                 await DataBaseSeeder.SeedRolesAsync(serviceProvider);
                 DataBaseSeeder.SeedAdmin(serviceProvider);
