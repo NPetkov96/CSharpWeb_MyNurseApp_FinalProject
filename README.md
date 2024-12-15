@@ -7,7 +7,7 @@ MyNurseApp is a platform that patients pay for home care nurses
 
 ## Functionalities
 Database diagram
-![image](https://github.com/user-attachments/assets/567146e9-59fc-41b1-b181-c5266b6a919c)
+![image](https://github.com/user-attachments/assets/5090c73e-bbfb-4259-8827-9bef34427781)
 
 Admin profile (Email: admin@abv.bg; Password: Admin7!;) has the functionality to approve nurse profiles, accept home manipulations which are send from patients and set them to nurses
 ![image](https://github.com/user-attachments/assets/e94db0ef-fc44-4dd2-bacd-604640bae156)
