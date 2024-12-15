@@ -1,115 +1,173 @@
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Moq;
+using MyNurseApp.Data;
 using MyNurseApp.Data.Models;
-using MyNurseApp.Data.Repository.Interfaces;
+using MyNurseApp.Data.Repository;
 using MyNurseApp.Services.Data;
-using System.Linq.Expressions;
+using MyNurseApp.Web.ViewModels.PatientProfile;
 using System.Security.Claims;
 
 namespace MyNurseApp.Tests
 {
     [TestFixture]
-    public class PatientServiceTest
+    public class PatientServiceTests
     {
-        private Mock<IRepository<PatientProfile, Guid>> _mockPatientRepository = null!;
-        private Mock<IHttpContextAccessor> _mockHttpContextAccessor = null!;
+        private ApplicationDbContext _context = null!;
+        private BaseRepository<PatientProfile, Guid> _patientRepository = null!;
         private PatientService _patientService = null!;
 
         [SetUp]
         public void Setup()
         {
-            _mockPatientRepository = new Mock<IRepository<PatientProfile, Guid>>();
-            _mockHttpContextAccessor = new Mock<IHttpContextAccessor>();
+            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
 
-            _patientService = new PatientService(
-                _mockPatientRepository.Object,
-                _mockHttpContextAccessor.Object
-            );
+            _context = new ApplicationDbContext(options);
+            _patientRepository = new BaseRepository<PatientProfile, Guid>(_context);
+
+            var userId = Guid.NewGuid();
+            var httpContextAccessor = new Mock<IHttpContextAccessor>();
+            httpContextAccessor.Setup(x => x.HttpContext).Returns(new DefaultHttpContext
+            {
+                User = new ClaimsPrincipal(new ClaimsIdentity(new[]
+                {
+            new Claim(ClaimTypes.NameIdentifier, userId.ToString())
+        }))
+            });
+
+            _patientService = new PatientService(_patientRepository, httpContextAccessor.Object);
+        }
+
+
+        [TearDown]
+        public void TearDown()
+        {
+            _context.Database.EnsureDeleted();
+            _context.Dispose();
         }
 
         [Test]
-        public async Task GetPatientProfileByUserIdAsync_ReturnsProfile_WhenUserExists()
+        public async Task AddPatientAsync_AddsPatientSuccessfully()
         {
-            var userId = Guid.NewGuid().ToString();
-            var mockHttpContext = new DefaultHttpContext();
-            mockHttpContext.User = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+            // Arrange
+            var patientViewModel = new PatientProfileViewModel
             {
-            new Claim(ClaimTypes.NameIdentifier, userId)
-            }));
-            _mockHttpContextAccessor.Setup(x => x.HttpContext).Returns(mockHttpContext);
+                FirstName = "John",
+                LastName = "Doe",
+                DateOfBirth = DateTime.Now.AddYears(-30),
+                UIN = "123456789",
+                HomeAddress = "123 Test Street",
+                PhoneNumber = "1234567890",
+                EmergencyContactFullName = "Jane Doe",
+                EmergencyContactPhone = "0987654321",
+                Notes = "Test patient"
+            };
 
-            var patientProfile = new PatientProfile
+            // Act
+            await _patientService.AddPatientAsync(patientViewModel);
+
+            // Assert
+            var patient = await _context.PatientProfiles.FirstOrDefaultAsync(p => p.UIN == "123456789");
+            Assert.That(patient, Is.Not.Null);
+            Assert.That(patient.FirstName, Is.EqualTo("John"));
+        }
+
+
+        [Test]
+        public async Task GetPatientProfileAync_ReturnsCorrectPatient()
+        {
+            // Arrange
+            var patient = new PatientProfile
             {
                 Id = Guid.NewGuid(),
                 FirstName = "John",
                 LastName = "Doe",
-                UserId = Guid.Parse(userId)
+                DateOfBirth = DateTime.Now.AddYears(-30),
+                UIN = "123456789",
+                HomeAddress = "123 Test Street",
+                PhoneNumber = "1234567890",
+                EmergencyContactFullName = "Jane Doe",
+                EmergencyContactPhone = "0987654321",
+                UserId = Guid.NewGuid()
             };
+            _context.PatientProfiles.Add(patient);
+            await _context.SaveChangesAsync();
 
-            _mockPatientRepository
-                .Setup(repo => repo.FirstOrDefaultAsync(It.IsAny<Expression<Func<PatientProfile, bool>>>()))
-                .ReturnsAsync(patientProfile);
+            // Act
+            var result = await _patientService.GetPatientProfileAync(patient.Id);
 
-            var result = await _patientService.GetPatientProfileByUserIdAsync(_mockHttpContextAccessor.Object);
-
+            // Assert
             Assert.That(result, Is.Not.Null);
             Assert.That(result.FirstName, Is.EqualTo("John"));
-            Assert.That(result.LastName, Is.EqualTo("Doe"));
+            Assert.That(result.UIN, Is.EqualTo("123456789"));
         }
 
         [Test]
         public async Task DeletePatientAync_RemovesPatientSuccessfully()
         {
-            var patientId = Guid.NewGuid();
-            var patient = new PatientProfile { Id = patientId, FirstName = "John" };
+            // Arrange
+            var patient = new PatientProfile
+            {
+                Id = Guid.NewGuid(),
+                FirstName = "John",
+                LastName = "Doe",
+                UIN = "123456789",
+                UserId = Guid.NewGuid()
+            };
+            _context.PatientProfiles.Add(patient);
+            await _context.SaveChangesAsync();
 
-            _mockPatientRepository
-                .Setup(repo => repo.GetByIdAsync(patientId))
-                .ReturnsAsync(patient);
+            // Act
+            await _patientService.DeletePatientAync(patient.Id);
 
-            _mockPatientRepository
-                .Setup(repo => repo.DeleteAsync(It.IsAny<PatientProfile>()))
-                .ReturnsAsync(true);
-
-            await _patientService.DeletePatientAync(patientId);
-
-            _mockPatientRepository.Verify(repo => repo.DeleteAsync(It.Is<PatientProfile>(p => p.Id == patientId)), Times.Once);
+            // Assert
+            var deletedPatient = await _context.PatientProfiles.FirstOrDefaultAsync(p => p.Id == patient.Id);
+            Assert.That(deletedPatient, Is.Null);
         }
 
         [Test]
-        public async Task GetAllPatientsAsync_ReturnsAllPatients()
+        public void AddPatientAsync_ThrowsException_ForFutureDateOfBirth()
         {
-            var patients = new List<PatientProfile>
-        {
-            new PatientProfile { Id = Guid.NewGuid(), FirstName = "John", LastName = "Doe" },
-            new PatientProfile { Id = Guid.NewGuid(), FirstName = "Jane", LastName = "Smith" }
-        };
+            // Arrange
+            var patientViewModel = new PatientProfileViewModel
+            {
+                FirstName = "John",
+                LastName = "Doe",
+                DateOfBirth = DateTime.Now.AddDays(1),
+                UIN = "123456789",
+                HomeAddress = "123 Test Street",
+                PhoneNumber = "1234567890",
+                EmergencyContactFullName = "Jane Doe",
+                EmergencyContactPhone = "0987654321"
+            };
 
-            _mockPatientRepository
-                .Setup(repo => repo.GetAllAsync())
-                .ReturnsAsync(patients);
-
-            var result = await _patientService.GetAllPatientsAsync();
-
-            Assert.That(result, Has.Exactly(2).Items);
-            Assert.That(result.First().FirstName, Is.EqualTo("John"));
-            Assert.That(result.Last().LastName, Is.EqualTo("Smith"));
+            // Act & Assert
+            Assert.ThrowsAsync<InvalidOperationException>(async () =>
+                await _patientService.AddPatientAsync(patientViewModel));
         }
 
-        private class TestAsyncEnumerator<T> : IAsyncEnumerator<T>
+        [Test]
+        public void AddPatientAsync_ThrowsException_WhenPatientIsUnderage()
         {
-            private readonly IEnumerator<T> _inner;
-
-            public TestAsyncEnumerator(IEnumerator<T> inner)
+            // Arrange
+            var patientViewModel = new PatientProfileViewModel
             {
-                _inner = inner;
-            }
+                FirstName = "John",
+                LastName = "Doe",
+                DateOfBirth = DateTime.Now.AddYears(-17), // Under 18
+                UIN = "123456789",
+                HomeAddress = "123 Test Street",
+                PhoneNumber = "1234567890",
+                EmergencyContactFullName = "Jane Doe",
+                EmergencyContactPhone = "0987654321"
+            };
 
-            public ValueTask DisposeAsync() => ValueTask.CompletedTask;
-
-            public ValueTask<bool> MoveNextAsync() => new ValueTask<bool>(_inner.MoveNext());
-
-            public T Current => _inner.Current;
+            // Act & Assert
+            Assert.ThrowsAsync<InvalidOperationException>(async () =>
+                await _patientService.AddPatientAsync(patientViewModel));
         }
     }
+
 }
