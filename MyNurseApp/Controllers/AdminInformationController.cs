@@ -14,6 +14,7 @@ namespace MyNurseApp.Controllers
             this._adminInformationService = adminInformationService;
         }
 
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             var users = await _adminInformationService.GetAllUsersAsync();
