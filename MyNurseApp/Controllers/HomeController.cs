@@ -10,21 +10,18 @@ namespace MyNurseApp.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            await Task.CompletedTask; 
             return View();
         }
-        public async Task<IActionResult> PendingApproval()
+        public IActionResult PendingApproval()
         {
-            await Task.CompletedTask;
             return View();
         }
 
         [HttpGet]
-        public async Task<IActionResult> Privacy()
+        public IActionResult Privacy()
         {
-            await Task.CompletedTask;
             return View();
         }
 
@@ -32,7 +29,6 @@ namespace MyNurseApp.Controllers
         public async Task<IActionResult> Error()
         {
             var message = TempData["ErrorMessage"] as string ?? "An unexpected error occurred.";
-            await Task.CompletedTask;
             return View(model: message);
         }
     }

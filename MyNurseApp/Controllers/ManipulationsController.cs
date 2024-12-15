@@ -43,7 +43,6 @@ namespace MyNurseApp.Controllers
         {
             var manipulation = _manipulationsService.GetByIdAsync(id).Result;
             AddToTempData("SelectedManipulations", manipulation, this);
-            await Task.CompletedTask;
             return RedirectToAction("Index");
         }
 
@@ -59,7 +58,6 @@ namespace MyNurseApp.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AddManipulation()
         {
-            await Task.CompletedTask;
             return View();
         }
 
@@ -132,7 +130,6 @@ namespace MyNurseApp.Controllers
             controller.TempData[key] = JsonConvert.SerializeObject(list);
         }
 
-
         public List<T> GetFromTempData<T>(string key, Controller controller)
         {
             var data = controller.TempData.Peek(key) as string;
@@ -145,9 +142,6 @@ namespace MyNurseApp.Controllers
         {
             controller.TempData[key] = null;
         }
-
-
-
 
         [HttpGet]
         public async Task<IActionResult> SearchMedicalManipulations(string query)

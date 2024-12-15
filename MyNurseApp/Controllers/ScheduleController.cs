@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MyNurseApp.Services.Data;
 using MyNurseApp.Services.Data.Interfaces;
 using MyNurseApp.Web.ViewModels;
 using MyNurseApp.Web.ViewModels.HomeVisitation;

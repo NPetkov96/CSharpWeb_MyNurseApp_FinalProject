@@ -26,7 +26,6 @@ namespace MyNurseApp.Controllers
             {
                 return RedirectToAction("CreatePatientProfile");
             }
-            await Task.CompletedTask;
             return View(patientProfile);
         }
 
@@ -39,9 +38,8 @@ namespace MyNurseApp.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> CreatePatientProfile()
+        public IActionResult CreatePatientProfile()
         {
-            await Task.CompletedTask;
             return View();
         }
 

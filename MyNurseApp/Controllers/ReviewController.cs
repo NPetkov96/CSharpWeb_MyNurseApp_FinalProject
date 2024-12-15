@@ -22,9 +22,8 @@ namespace MyNurseApp.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> CreateReview()
+        public IActionResult CreateReview()
         {
-            await Task.CompletedTask;
             return View();
         }
 

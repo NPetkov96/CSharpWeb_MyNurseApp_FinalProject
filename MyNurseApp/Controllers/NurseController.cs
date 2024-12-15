@@ -89,7 +89,6 @@ namespace MyNurseApp.Controllers
         [HttpGet]
         public async Task<IActionResult> CreateNurseProfile()
         {
-
             var viewModels = await _nurseService.GetNurseProfileAsync();
             if (viewModels != null)
             {
@@ -128,7 +127,6 @@ namespace MyNurseApp.Controllers
         public async Task<IActionResult> DeclineNurse(Guid id)
         {
             await _nurseService.DeclineNurseAync(id);
-            await Task.CompletedTask;
             return RedirectToAction("GetAllNursesProfiles");
         }
 
