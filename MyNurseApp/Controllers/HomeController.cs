@@ -14,6 +14,7 @@ namespace MyNurseApp.Controllers
         {
             return View();
         }
+
         public IActionResult PendingApproval()
         {
             return View();

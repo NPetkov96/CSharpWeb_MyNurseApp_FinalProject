@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MyNurseApp.Services.Data;
 using MyNurseApp.Services.Data.Interfaces;
 using MyNurseApp.Web.ViewModels.Manipulations;
 using Newtonsoft.Json;
@@ -39,6 +38,7 @@ namespace MyNurseApp.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddToSelection(Guid id)
         {
             var manipulation = _manipulationsService.GetByIdAsync(id).Result;
@@ -48,6 +48,7 @@ namespace MyNurseApp.Controllers
 
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult ClearSelection()
         {
             ClearTempData("SelectedManipulations", this);
@@ -63,6 +64,7 @@ namespace MyNurseApp.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddManipulation(MedicalManipulationsViewModel model)
         {
             if (!ModelState.IsValid)
@@ -85,6 +87,7 @@ namespace MyNurseApp.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> RemoveManipulation(Guid id)
         {
             try
@@ -107,6 +110,7 @@ namespace MyNurseApp.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditManipulation(MedicalManipulationsViewModel model)
         {
             if (!ModelState.IsValid)

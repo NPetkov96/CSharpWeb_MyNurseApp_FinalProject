@@ -8,6 +8,7 @@
 <h2>Add Manipulation</h2>
 
 <form asp-action="Add" method="post" class="form-horizontal">
+    @Html.AntiForgeryToken()
     <div class="form-group">
         <label asp-for="Name" class="control-label"></label>
         <input asp-for="Name" class="form-control" />
