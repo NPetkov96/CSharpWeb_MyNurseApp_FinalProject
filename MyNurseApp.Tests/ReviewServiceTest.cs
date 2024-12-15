@@ -41,7 +41,6 @@ namespace MyNurseApp.Tests
         [Test]
         public async Task GetAllReviewsAsync_ReturnsAllReviews()
         {
-            // Arrange
             var userId = Guid.NewGuid();
             var user = new ApplicationUser { Id = userId, UserName = "testUser" };
             _context.Users.Add(user);
@@ -52,10 +51,8 @@ namespace MyNurseApp.Tests
             );
             await _context.SaveChangesAsync();
 
-            // Act
             var reviews = await _reviewService.GetAllReviewsAsync();
 
-            // Assert
             Assert.That(reviews, Is.Not.Null);
             Assert.That(reviews.Count(), Is.EqualTo(2));
             Assert.That(reviews.First().Content, Is.EqualTo("Great service!"));
@@ -64,16 +61,13 @@ namespace MyNurseApp.Tests
         [Test]
         public async Task DeleteAsync_RemovesReviewSuccessfully()
         {
-            // Arrange
             var reviewId = Guid.NewGuid();
             var review = new Review { Id = reviewId, Content = "Good", Rating = 4, UserId = Guid.NewGuid() };
             _context.Reviews.Add(review);
             await _context.SaveChangesAsync();
 
-            // Act
             await _reviewService.DeleteAsync(reviewId);
 
-            // Assert
             var deletedReview = await _context.Reviews.FindAsync(reviewId);
             Assert.That(deletedReview, Is.Null);
         }
@@ -81,10 +75,8 @@ namespace MyNurseApp.Tests
         [Test]
         public void DeleteAsync_ThrowsException_WhenReviewNotFound()
         {
-            // Arrange
             var reviewId = Guid.NewGuid();
 
-            // Act & Assert
             Assert.ThrowsAsync<InvalidOperationException>(async () =>
                 await _reviewService.DeleteAsync(reviewId));
         }

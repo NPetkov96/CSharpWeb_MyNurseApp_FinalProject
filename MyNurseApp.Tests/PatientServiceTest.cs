@@ -51,7 +51,6 @@ namespace MyNurseApp.Tests
         [Test]
         public async Task AddPatientAsync_AddsPatientSuccessfully()
         {
-            // Arrange
             var patientViewModel = new PatientProfileViewModel
             {
                 FirstName = "John",
@@ -65,10 +64,8 @@ namespace MyNurseApp.Tests
                 Notes = "Test patient"
             };
 
-            // Act
             await _patientService.AddPatientAsync(patientViewModel);
 
-            // Assert
             var patient = await _context.PatientProfiles.FirstOrDefaultAsync(p => p.UIN == "123456789");
             Assert.That(patient, Is.Not.Null);
             Assert.That(patient.FirstName, Is.EqualTo("John"));
@@ -78,7 +75,6 @@ namespace MyNurseApp.Tests
         [Test]
         public async Task GetPatientProfileAync_ReturnsCorrectPatient()
         {
-            // Arrange
             var patient = new PatientProfile
             {
                 Id = Guid.NewGuid(),
@@ -95,10 +91,8 @@ namespace MyNurseApp.Tests
             _context.PatientProfiles.Add(patient);
             await _context.SaveChangesAsync();
 
-            // Act
             var result = await _patientService.GetPatientProfileAync(patient.Id);
 
-            // Assert
             Assert.That(result, Is.Not.Null);
             Assert.That(result.FirstName, Is.EqualTo("John"));
             Assert.That(result.UIN, Is.EqualTo("123456789"));
@@ -107,7 +101,6 @@ namespace MyNurseApp.Tests
         [Test]
         public async Task DeletePatientAync_RemovesPatientSuccessfully()
         {
-            // Arrange
             var patient = new PatientProfile
             {
                 Id = Guid.NewGuid(),
@@ -119,10 +112,8 @@ namespace MyNurseApp.Tests
             _context.PatientProfiles.Add(patient);
             await _context.SaveChangesAsync();
 
-            // Act
             await _patientService.DeletePatientAync(patient.Id);
 
-            // Assert
             var deletedPatient = await _context.PatientProfiles.FirstOrDefaultAsync(p => p.Id == patient.Id);
             Assert.That(deletedPatient, Is.Null);
         }
@@ -130,7 +121,6 @@ namespace MyNurseApp.Tests
         [Test]
         public void AddPatientAsync_ThrowsException_ForFutureDateOfBirth()
         {
-            // Arrange
             var patientViewModel = new PatientProfileViewModel
             {
                 FirstName = "John",
@@ -143,7 +133,6 @@ namespace MyNurseApp.Tests
                 EmergencyContactPhone = "0987654321"
             };
 
-            // Act & Assert
             Assert.ThrowsAsync<InvalidOperationException>(async () =>
                 await _patientService.AddPatientAsync(patientViewModel));
         }
@@ -151,7 +140,6 @@ namespace MyNurseApp.Tests
         [Test]
         public void AddPatientAsync_ThrowsException_WhenPatientIsUnderage()
         {
-            // Arrange
             var patientViewModel = new PatientProfileViewModel
             {
                 FirstName = "John",
@@ -164,7 +152,6 @@ namespace MyNurseApp.Tests
                 EmergencyContactPhone = "0987654321"
             };
 
-            // Act & Assert
             Assert.ThrowsAsync<InvalidOperationException>(async () =>
                 await _patientService.AddPatientAsync(patientViewModel));
         }
