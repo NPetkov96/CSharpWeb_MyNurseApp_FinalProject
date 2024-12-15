@@ -89,7 +89,8 @@ namespace MyNurseApp
                 //"UserName": "Admin",
                 //"Password": "Admin7!"
                 await DataBaseSeeder.SeedRolesAsync(serviceProvider);
-                DataBaseSeeder.SeedAndAdmin(serviceProvider);
+                DataBaseSeeder.SeedAdmin(serviceProvider);
+                await DataBaseSeeder.SeedManipulationsAsync(serviceProvider);
             }
 
 

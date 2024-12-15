@@ -2,12 +2,13 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MyNurseApp.Data.Models;
+using MyNurseApp.Data.Repository.Interfaces;
 
 namespace MyNurseApp.Data.Configuration
 {
     public static class DataBaseSeeder
     {
-        public static void SeedAndAdmin(IServiceProvider serviceProvider)
+        public static void SeedAdmin(IServiceProvider serviceProvider)
         {
             using var scope = serviceProvider.CreateScope();
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
@@ -56,18 +57,89 @@ namespace MyNurseApp.Data.Configuration
         {
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
 
-            // Уверете се, че ролята Nurse съществува
             if (!await roleManager.RoleExistsAsync("Nurse"))
             {
                 await roleManager.CreateAsync(new IdentityRole<Guid>("Nurse"));
             }
 
-            // Уверете се, че ролята User съществува
             if (!await roleManager.RoleExistsAsync("User"))
             {
                 await roleManager.CreateAsync(new IdentityRole<Guid>("User"));
             }
         }
+        public static async Task SeedManipulationsAsync(IServiceProvider serviceProvider)
+        {
+            var manipulationRepository = serviceProvider.GetRequiredService<IRepository<MedicalManipulation, Guid>>();
+
+            if (!manipulationRepository.GetAllAttached().Any())
+            {
+                var manipulations = new List<MedicalManipulation>
+                {
+                    new MedicalManipulation
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = "Blood Test",
+                        Duration = 30,
+                        Description = "A simple blood test to analyze general health markers.",
+                        Price = 50m
+                    },
+                    new MedicalManipulation
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = "Vaccination",
+                        Duration = 15,
+                        Description = "Basic vaccination procedure for immunization.",
+                        Price = 20m
+                    },
+                    new MedicalManipulation
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = "Electrocardiogram (ECG)",
+                        Duration = 40,
+                        Description = "A test to measure the electrical activity of the heart.",
+                        Price = 70m
+                    },
+                    new MedicalManipulation
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = "Wound Dressing",
+                        Duration = 25,
+                        Description = "Changing and cleaning wound dressings to prevent infection.",
+                        Price = 40m
+                    },
+                    new MedicalManipulation
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = "Ultrasound Scan",
+                        Duration = 60,
+                        Description = "An imaging procedure to evaluate internal organs and structures.",
+                        Price = 120m
+                    },
+                    new MedicalManipulation
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = "Blood Pressure Monitoring",
+                        Duration = 10,
+                        Description = "A quick check of blood pressure levels.",
+                        Price = 15m
+                    },
+                    new MedicalManipulation
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = "Intravenous Therapy",
+                        Duration = 45,
+                        Description = "Administration of fluids or medication through an IV.",
+                        Price = 100m
+                    }
+                };
+
+                foreach (var manipulation in manipulations)
+                {
+                    await manipulationRepository.AddAsync(manipulation);
+                }
+            }
+        }
+
     }
 
 }
